@@ -6,5 +6,5 @@ public interface Column {
 
     String getName();
 
-    Class<?> getColumnClass();
+    Class<?> getType();
 }

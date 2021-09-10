@@ -49,7 +49,6 @@ public class LambdaColumnBuilder implements ColumnBuilder {
         Field field = ReflectionUtils.getField(entityClass, fieldName);
         Class<? extends Annotation> columnClass = config.getColumnAnnotation().getAnnotationClass();
         if (!field.isAnnotationPresent(columnClass)) {
-            System.out.println(field.getName());
             throw new NoColumnAnnotationException(entityClass, columnClass);
         }
         String attribute = config.getColumnAnnotation().getColumnNameAttribute();

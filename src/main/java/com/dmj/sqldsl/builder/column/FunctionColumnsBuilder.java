@@ -5,7 +5,7 @@ import com.dmj.sqldsl.model.column.Column;
 
 import java.util.List;
 
-public class FunctionColumnsBuilder implements ColumnsBuilder{
+public class FunctionColumnsBuilder implements ColumnsBuilder {
 
     private List<ColumnFunction<?>> functions;
 

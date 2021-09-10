@@ -8,10 +8,10 @@ import lombok.Getter;
 public class SimpleColumn implements Column {
     private String tableName;
     private String name;
-    private Class<?> selfClass;
+    private Class<?> type;
 
     @Override
-    public Class<?> getColumnClass() {
-        return selfClass;
+    public Class<?> getType() {
+        return type;
     }
 }
