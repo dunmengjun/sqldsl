@@ -20,11 +20,11 @@ import static com.dmj.sqldsl.utils.ReflectionUtils.newInstance;
 import static com.dmj.sqldsl.utils.ReflectionUtils.setValue;
 import static java.util.stream.Collectors.joining;
 
-public class PostgresSqlDriver implements Driver {
+public class MysqlDriver implements Driver {
 
     private final Connection connection;
 
-    public PostgresSqlDriver(Connection connection) {
+    public MysqlDriver(Connection connection) {
         this.connection = connection;
     }
 
@@ -38,22 +38,37 @@ public class PostgresSqlDriver implements Driver {
     }
 
     private <T> List<T> executeQuery(DslQuery query, Class<T> tClass) throws SQLException {
-        Statement statement = connection.createStatement();
+        return executeQuery(connection, query, resultSet -> {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            List<Column> columns = query.getSelect().getColumns();
+            int columnsNumber = metaData.getColumnCount();
+            List<T> list = new ArrayList<>();
+            while (resultSet.next()) {
+                T target = newInstance(tClass);
+                for (int i = 1; i <= columnsNumber; i++) {
+                    setValue(columns.get(i - 1).getName(), target, resultSet.getObject(i));
+                }
+                list.add(target);
+            }
+            return list;
+        });
+    }
+
+    @FunctionalInterface
+    interface ResultSetFunction<T> {
+        List<T> apply(ResultSet resultSet) throws SQLException;
+    }
+
+    private <T> List<T> executeQuery(Connection connection,
+                                     DslQuery query,
+                                     ResultSetFunction<T> function) throws SQLException {
         String sql = toSqlString(query);
         System.out.println(sql);
-        ResultSet resultSet = statement.executeQuery(sql);
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        List<Column> columns = query.getSelect().getColumns();
-        int columnsNumber = metaData.getColumnCount();
-        List<T> list = new ArrayList<>();
-        while (resultSet.next()) {
-            T target = newInstance(tClass);
-            for (int i = 1; i <= columnsNumber; i++) {
-                setValue(columns.get(i - 1).getName(), target, resultSet.getObject(i));
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                return function.apply(resultSet);
             }
-            list.add(target);
         }
-        return list;
     }
 
     public String toSqlString(DslQuery query) {

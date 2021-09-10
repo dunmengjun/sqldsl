@@ -3,7 +3,7 @@ import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.ColumnAnnotation;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.config.TableAnnotation;
-import com.dmj.sqldsl.driver.PostgresSqlDriver;
+import com.dmj.sqldsl.driver.MysqlDriver;
 import com.dmj.sqldsl.model.DslQuery;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class SimpleTest {
                         .eq(user::getId, 1)
                         .or(x -> x.eq(user::getAge, 23).eq(user::getName, "alice")))
                 .toQuery(entityConfig);
-        PostgresSqlDriver driver = new PostgresSqlDriver(DatabaseManager.getConnection());
+        MysqlDriver driver = new MysqlDriver(DatabaseManager.getConnection());
 
         List<User> resultList = driver.execute(query, User.class);
 
@@ -42,7 +42,7 @@ public class SimpleTest {
                 .select(User.class)
                 .from(User.class)
                 .toQuery(entityConfig);
-        PostgresSqlDriver driver = new PostgresSqlDriver(DatabaseManager.getConnection());
+        MysqlDriver driver = new MysqlDriver(DatabaseManager.getConnection());
 
         List<User> resultList = driver.execute(query, User.class);
 
