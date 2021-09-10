@@ -16,11 +16,6 @@ public class MysqlDriver implements Driver {
 
     private final Connection connection;
 
-    @FunctionalInterface
-    interface ResultSetFunction<T> {
-        List<T> apply(ResultSet resultSet) throws SQLException;
-    }
-
     public MysqlDriver(Connection connection) {
         this.connection = connection;
     }
@@ -37,7 +32,15 @@ public class MysqlDriver implements Driver {
     private <T> List<T> executeQuery(DslQuery query, Class<T> tClass) throws SQLException {
         String sql = new DslQueryVisitor().visit(query);
         System.out.println(sql);
-        return executeQuery(connection, sql, resultSet -> {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            return executeQuery(statement, query, tClass);
+        }
+    }
+
+    private <T> List<T> executeQuery(PreparedStatement statement,
+                                     DslQuery query,
+                                     Class<T> tClass) throws SQLException {
+        try (ResultSet resultSet = statement.executeQuery()) {
             List<Column> columns = query.getSelect().getColumns();
             List<T> list = new ArrayList<>();
             while (resultSet.next()) {
@@ -49,16 +52,6 @@ public class MysqlDriver implements Driver {
                 list.add(target);
             }
             return list;
-        });
-    }
-
-    private <T> List<T> executeQuery(Connection connection,
-                                     String sql,
-                                     ResultSetFunction<T> function) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
-                return function.apply(resultSet);
-            }
         }
     }
 }
