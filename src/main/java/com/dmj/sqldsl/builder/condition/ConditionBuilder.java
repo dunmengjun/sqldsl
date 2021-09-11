@@ -7,16 +7,16 @@ import com.dmj.sqldsl.model.condition.ConditionElement;
 
 public class ConditionBuilder implements ConditionElementBuilder {
 
-    private final ColumnBuilder leftColumn;
-    private final Object value;
+  private final ColumnBuilder leftColumn;
+  private final Object value;
 
-    public ConditionBuilder(ColumnBuilder leftColumn, Object value) {
-        this.leftColumn = leftColumn;
-        this.value = value;
-    }
+  public ConditionBuilder(ColumnBuilder leftColumn, Object value) {
+    this.leftColumn = leftColumn;
+    this.value = value;
+  }
 
-    @Override
-    public ConditionElement build(EntityConfig config) {
-        return new ColumnValueCondition(leftColumn.build(config), value);
-    }
+  @Override
+  public ConditionElement build(EntityConfig config) {
+    return new ColumnValueCondition(leftColumn.build(config), value);
+  }
 }

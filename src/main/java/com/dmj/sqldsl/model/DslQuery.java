@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class DslQuery {
-    private Select select;
-    private Conditions conditions;
+
+  private Select select;
+  private Conditions conditions;
 }

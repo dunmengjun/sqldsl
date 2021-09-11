@@ -7,18 +7,18 @@ import com.dmj.sqldsl.model.condition.Conditions;
 
 public class WhereBuilder implements ToDslQuery {
 
-    private final FromBuilder fromBuilder;
-    private final ConditionsBuilder conditionsBuilder;
+  private final FromBuilder fromBuilder;
+  private final ConditionsBuilder conditionsBuilder;
 
-    public WhereBuilder(FromBuilder fromBuilder, ConditionsBuilder conditionsBuilder) {
-        this.fromBuilder = fromBuilder;
-        this.conditionsBuilder = conditionsBuilder;
-    }
+  public WhereBuilder(FromBuilder fromBuilder, ConditionsBuilder conditionsBuilder) {
+    this.fromBuilder = fromBuilder;
+    this.conditionsBuilder = conditionsBuilder;
+  }
 
-    public DslQuery toQuery(EntityConfig config) {
-        return DslQuery.builder()
-                .select(fromBuilder.build(config))
-                .conditions((Conditions) conditionsBuilder.build(config))
-                .build();
-    }
+  public DslQuery toQuery(EntityConfig config) {
+    return DslQuery.builder()
+        .select(fromBuilder.build(config))
+        .conditions((Conditions) conditionsBuilder.build(config))
+        .build();
+  }
 }

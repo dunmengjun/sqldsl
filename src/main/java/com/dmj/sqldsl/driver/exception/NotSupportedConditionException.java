@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class NotSupportedConditionException extends RuntimeException {
 
-    private final ConditionElement element;
+  private final ConditionElement element;
 
-    public NotSupportedConditionException(ConditionElement element) {
-        super("Not supported condition: " + element);
-        this.element = element;
-    }
+  public NotSupportedConditionException(ConditionElement element) {
+    super("Not supported condition: " + element);
+    this.element = element;
+  }
 }

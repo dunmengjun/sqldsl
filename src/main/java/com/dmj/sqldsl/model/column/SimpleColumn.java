@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class SimpleColumn implements Column {
-    private String tableName;
-    private String name;
+
+  private String tableName;
+  private String name;
 }

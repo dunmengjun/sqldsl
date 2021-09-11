@@ -5,8 +5,9 @@ import com.dmj.sqldsl.model.condition.ConditionElement;
 import com.dmj.sqldsl.model.condition.Or;
 
 public class OrBuilder implements JunctionBuilder {
-    @Override
-    public ConditionElement build(EntityConfig config) {
-        return new Or();
-    }
+
+  @Override
+  public ConditionElement build(EntityConfig config) {
+    return new Or();
+  }
 }

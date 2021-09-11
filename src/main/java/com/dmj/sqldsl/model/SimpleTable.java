@@ -6,5 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SimpleTable implements Table {
-    private final String tableName;
+
+  private final String tableName;
 }

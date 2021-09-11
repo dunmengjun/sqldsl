@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class Parameter {
-    private Class<?> type;
-    private Object value;
+
+  private Class<?> type;
+  private Object value;
 }

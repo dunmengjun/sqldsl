@@ -1,14 +1,14 @@
 package com.dmj.sqldsl.model;
 
 import com.dmj.sqldsl.model.column.Column;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Builder
 @Getter
 public class Select {
-    private List<Column> columns;
-    private List<Table> tables;
+
+  private List<Column> columns;
+  private List<Table> tables;
 }

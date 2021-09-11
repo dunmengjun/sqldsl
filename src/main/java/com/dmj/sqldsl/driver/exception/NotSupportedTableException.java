@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class NotSupportedTableException extends RuntimeException {
 
-    private final Table table;
+  private final Table table;
 
-    public NotSupportedTableException(Table table) {
-        super("Not supported column: " + table);
-        this.table = table;
-    }
+  public NotSupportedTableException(Table table) {
+    super("Not supported column: " + table);
+    this.table = table;
+  }
 }

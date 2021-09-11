@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ColumnValueCondition implements Condition {
-    private Column column;
-    private Object value;
+
+  private Column column;
+  private Object value;
 }
