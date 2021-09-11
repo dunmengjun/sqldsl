@@ -38,5 +38,9 @@ githook {
             task = "check test"
             shell = "echo pre-commit done!"
         }
+        "pre-push" {
+            task = "check test"
+            shell = "echo pre-push done!"
+        }
     }
 }
