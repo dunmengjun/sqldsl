@@ -133,7 +133,7 @@ public class SingleTableTest {
     }
 
     @Test
-    public void should_return_one_name_user_with_select_with_dto_when_result_is_dto() {
+    public void should_return_one_name_user_when_select_with_dto_given_result_is_dto() {
         DslQuery query = DslQueryBuilder
                 .selectAll(User.class)
                 .from(User.class)
@@ -144,6 +144,25 @@ public class SingleTableTest {
 
         List<NameUser> expected = singletonList(
                 new NameUser("alice")
+        );
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void should_return_one_user_when_select_given_multiple_select_function() {
+        DslQuery query = DslQueryBuilder
+                .selectAll(User.class)
+                .select(User::getId, User::getName)
+                .selectAll(User.class)
+                .select(User::getAge)
+                .from(User.class)
+                .where(new ConditionsBuilder().eq(User::getId, 1))
+                .toQuery();
+
+        List<User> result = driver.execute(query, User.class);
+
+        List<User> expected = singletonList(
+                new User(1, "alice", 16)
         );
         assertEquals(expected, result);
     }

@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 public class ReflectionUtils {
 
+    @SuppressWarnings("unchecked")
     public static <T> T getValue(String fieldName, Object object) {
         return accessField(getField(object.getClass(), fieldName), field -> {
             try {
@@ -20,6 +21,7 @@ public class ReflectionUtils {
         });
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T invokeMethod(String methodName, Object object, Object... args) {
         return accessMethod(getMethod(object.getClass(), methodName), m -> {
             try {

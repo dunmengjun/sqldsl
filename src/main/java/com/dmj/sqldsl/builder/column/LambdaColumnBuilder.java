@@ -56,6 +56,6 @@ public class LambdaColumnBuilder implements ColumnBuilder {
         if (StringUtils.isBlank(columnName)) {
             columnName = field.getName();
         }
-        return new SimpleColumn(tableName, columnName, field.getType());
+        return new SimpleColumn(tableName, columnName);
     }
 }

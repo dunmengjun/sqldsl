@@ -41,6 +41,9 @@ public class SelectBuilder {
     }
 
     protected List<Column> build(EntityConfig config) {
-        return this.columnsBuilders.stream().flatMap(x -> x.build(config).stream()).collect(Collectors.toList());
+        return this.columnsBuilders.stream()
+                .flatMap(x -> x.build(config).stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

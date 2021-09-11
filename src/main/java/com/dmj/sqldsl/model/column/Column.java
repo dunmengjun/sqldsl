@@ -5,6 +5,4 @@ public interface Column {
     String getTableName();
 
     String getName();
-
-    Class<?> getType();
 }
