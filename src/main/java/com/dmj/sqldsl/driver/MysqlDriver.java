@@ -2,10 +2,14 @@ package com.dmj.sqldsl.driver;
 
 import com.dmj.sqldsl.driver.exception.ExecutionException;
 import com.dmj.sqldsl.driver.visitor.DslQueryVisitor;
+import com.dmj.sqldsl.driver.visitor.Parameter;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.column.Column;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +34,20 @@ public class MysqlDriver implements Driver {
     }
 
     private <T> List<T> executeQuery(DslQuery query, Class<T> tClass) throws SQLException {
-        String sql = new DslQueryVisitor().visit(query);
+        DslQueryVisitor visitor = new DslQueryVisitor();
+        String sql = visitor.visit(query);
         System.out.println(sql);
         try (Connection connection = manager.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                setParameter(statement, visitor.getParams());
                 return executeQuery(statement, query, tClass);
             }
+        }
+    }
+
+    private void setParameter(PreparedStatement statement, List<Parameter> params) throws SQLException {
+        for (int i = 0; i < params.size(); i++) {
+            statement.setObject(i + 1, params.get(i).getValue());
         }
     }
 

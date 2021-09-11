@@ -7,13 +7,22 @@ import com.dmj.sqldsl.model.Table;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.model.condition.*;
+import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
+@Getter
 public class DslQueryVisitor extends ModelVisitor {
+
+    private final List<Parameter> params;
+
+    public DslQueryVisitor() {
+        this.params = new ArrayList<>();
+    }
 
     public String visit(DslQuery query) {
         String selectSqlString = visit(query.getSelect());
@@ -55,7 +64,8 @@ public class DslQueryVisitor extends ModelVisitor {
     protected String visit(ColumnValueCondition valueCondition) {
         Column column = valueCondition.getColumn();
         Object value = valueCondition.getValue();
-        return String.format("%s = %s", visit(column), visit(value));
+        params.add(new Parameter(value.getClass(), value));
+        return String.format("%s = ?", visit(column));
     }
 
     @Override
@@ -76,12 +86,5 @@ public class DslQueryVisitor extends ModelVisitor {
     @Override
     protected String visit(SimpleTable table) {
         return table.getTableName();
-    }
-
-    private String visit(Object value) {
-        if (value instanceof String) {
-            return String.format("'%s'", value);
-        }
-        return value.toString();
     }
 }
