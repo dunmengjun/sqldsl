@@ -1,3 +1,5 @@
+package com.dmj.sqldsl.entity;
+
 import lombok.Data;
 
 @Data
