@@ -3,6 +3,7 @@ package com.dmj.sqldsl;
 import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.driver.MysqlDriver;
+import com.dmj.sqldsl.dto.NameUser;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
 import org.junit.jupiter.api.AfterAll;
@@ -127,6 +128,22 @@ public class SingleTableTest {
 
         List<User> expected = singletonList(
                 new User(1, "alice", null)
+        );
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void should_return_one_name_user_with_select_with_dto_when_result_is_dto() {
+        DslQuery query = DslQueryBuilder
+                .selectAll(User.class)
+                .from(User.class)
+                .where(new ConditionsBuilder().eq(User::getId, 1))
+                .toQuery();
+
+        List<NameUser> result = driver.execute(query, NameUser.class);
+
+        List<NameUser> expected = singletonList(
+                new NameUser("alice")
         );
         assertEquals(expected, result);
     }

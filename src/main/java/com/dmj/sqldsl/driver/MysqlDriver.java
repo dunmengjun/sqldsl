@@ -13,8 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dmj.sqldsl.utils.ReflectionUtils.newInstance;
-import static com.dmj.sqldsl.utils.ReflectionUtils.setValue;
+import static com.dmj.sqldsl.utils.ReflectionUtils.*;
 
 public class MysqlDriver implements Driver {
 
@@ -61,7 +60,9 @@ public class MysqlDriver implements Driver {
                 T target = newInstance(tClass);
                 for (Column column : columns) {
                     String name = column.getName();
-                    setValue(name, target, resultSet.getObject(name));
+                    if (hasField(tClass, name)) {
+                        setValue(name, target, resultSet.getObject(name));
+                    }
                 }
                 list.add(target);
             }

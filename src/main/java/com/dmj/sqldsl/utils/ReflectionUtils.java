@@ -5,6 +5,7 @@ import com.dmj.sqldsl.utils.exception.ReflectionException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.function.Function;
 
 public class ReflectionUtils {
@@ -62,6 +63,11 @@ public class ReflectionUtils {
             }
             return null;
         });
+    }
+
+    public static boolean hasField(Class<?> targetClass, String fieldName) {
+        Field[] fields = targetClass.getDeclaredFields();
+        return Arrays.stream(fields).anyMatch(field -> field.getName().equals(fieldName));
     }
 
     private static <T> T accessField(Field field, Function<Field, T> function) {
