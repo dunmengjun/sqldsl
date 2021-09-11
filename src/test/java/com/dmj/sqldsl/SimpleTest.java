@@ -52,8 +52,7 @@ public class SimpleTest {
                 .selectAll(User.class)
                 .from(User.class)
                 .where(new ConditionsBuilder()
-                        .eq(User::getId, 1)
-                )
+                        .eq(User::getId, 1))
                 .toQuery();
 
         List<User> result = driver.execute(query, User.class);
@@ -68,8 +67,7 @@ public class SimpleTest {
                 .selectAll(User.class)
                 .from(User.class)
                 .where(new ConditionsBuilder()
-                        .eq(User::getName, "bob")
-                )
+                        .eq(User::getName, "bob"))
                 .toQuery();
 
         List<User> result = driver.execute(query, User.class);
@@ -86,8 +84,7 @@ public class SimpleTest {
                 .where(new ConditionsBuilder()
                         .eq(User::getId, 1)
                         .or()
-                        .eq(User::getId, 2)
-                )
+                        .eq(User::getId, 2))
                 .toQuery();
 
         List<User> result = driver.execute(query, User.class);
@@ -106,8 +103,7 @@ public class SimpleTest {
                 .from(User.class)
                 .where(new ConditionsBuilder()
                         .eq(User::getId, 1)
-                        .or(x -> x.eq(User::getAge, 17).eq(User::getName, "tom"))
-                )
+                        .or(x -> x.eq(User::getAge, 17).eq(User::getName, "tom")))
                 .toQuery();
 
         List<User> result = driver.execute(query, User.class);
