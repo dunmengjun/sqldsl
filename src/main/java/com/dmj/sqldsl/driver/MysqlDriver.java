@@ -14,10 +14,10 @@ import static com.dmj.sqldsl.utils.ReflectionUtils.setValue;
 
 public class MysqlDriver implements Driver {
 
-    private final Connection connection;
+    private final ConnectionManager manager;
 
-    public MysqlDriver(Connection connection) {
-        this.connection = connection;
+    public MysqlDriver(ConnectionManager manager) {
+        this.manager = manager;
     }
 
     @Override
@@ -32,8 +32,10 @@ public class MysqlDriver implements Driver {
     private <T> List<T> executeQuery(DslQuery query, Class<T> tClass) throws SQLException {
         String sql = new DslQueryVisitor().visit(query);
         System.out.println(sql);
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            return executeQuery(statement, query, tClass);
+        try (Connection connection = manager.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                return executeQuery(statement, query, tClass);
+            }
         }
     }
 

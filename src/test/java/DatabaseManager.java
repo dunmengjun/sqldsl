@@ -1,9 +1,11 @@
+import com.dmj.sqldsl.driver.ConnectionManager;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DatabaseManager {
+public class DatabaseManager implements ConnectionManager {
 
     static String url = "jdbc:h2:~/test;MODE=MYSQL";
     static String user = "sa";
@@ -20,23 +22,23 @@ public class DatabaseManager {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+
+    @FunctionalInterface
+    interface StatementConsumer {
+        void accept(Statement statement) throws SQLException;
     }
 
     private static void execStmt(StatementConsumer consumer) throws SQLException {
-        try (Connection connection = getConnection()) {
+        try (Connection connection = DriverManager.getConnection(url, user, password)) {
             try (Statement stmt = connection.createStatement()) {
                 consumer.accept(stmt);
             }
         }
     }
 
-    @FunctionalInterface
-    interface StatementConsumer {
-        void accept(Statement statement) throws SQLException;
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
     }
 }

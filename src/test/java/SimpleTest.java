@@ -4,13 +4,12 @@ import com.dmj.sqldsl.driver.MysqlDriver;
 import com.dmj.sqldsl.model.DslQuery;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class SimpleTest {
 
     @Test
-    public void test1() throws SQLException {
+    public void test1() {
         DslQuery query = DslQueryBuilder
                 .selectAll(User.class)
                 .from(User.class)
@@ -18,7 +17,7 @@ public class SimpleTest {
                         .eq(User::getId, 1)
                         .or(x -> x.eq(User::getAge, 23).eq(User::getName, "alice")))
                 .toQuery();
-        MysqlDriver driver = new MysqlDriver(DatabaseManager.getConnection());
+        MysqlDriver driver = new MysqlDriver(new DatabaseManager());
 
         List<User> resultList = driver.execute(query, User.class);
 
@@ -26,12 +25,12 @@ public class SimpleTest {
     }
 
     @Test
-    public void test2() throws SQLException {
+    public void test2() {
         DslQuery query = DslQueryBuilder
                 .selectAll(User.class)
                 .from(User.class)
                 .toQuery();
-        MysqlDriver driver = new MysqlDriver(DatabaseManager.getConnection());
+        MysqlDriver driver = new MysqlDriver(new DatabaseManager());
 
         List<User> resultList = driver.execute(query, User.class);
 
