@@ -1,6 +1,6 @@
 package com.dmj.sqldsl.utils;
 
-import com.dmj.sqldsl.exception.ReflectionException;
+import com.dmj.sqldsl.utils.exception.ReflectionException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

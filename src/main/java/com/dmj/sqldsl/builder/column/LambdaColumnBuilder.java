@@ -1,9 +1,9 @@
 package com.dmj.sqldsl.builder.column;
 
 import com.dmj.sqldsl.builder.config.EntityConfig;
-import com.dmj.sqldsl.exception.NoColumnAnnotationException;
-import com.dmj.sqldsl.exception.NoTableAnnotationException;
-import com.dmj.sqldsl.exception.ReflectionException;
+import com.dmj.sqldsl.builder.exception.NoColumnAnnotationException;
+import com.dmj.sqldsl.builder.exception.NoTableAnnotationException;
+import com.dmj.sqldsl.utils.exception.ReflectionException;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.utils.ReflectionUtils;

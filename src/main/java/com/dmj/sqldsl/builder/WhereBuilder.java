@@ -5,7 +5,7 @@ import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.condition.Conditions;
 
-public class WhereBuilder {
+public class WhereBuilder implements ToDslQuery {
 
     private final FromBuilder fromBuilder;
     private final ConditionsBuilder conditionsBuilder;

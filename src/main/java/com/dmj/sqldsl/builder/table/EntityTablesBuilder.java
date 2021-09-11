@@ -1,7 +1,7 @@
 package com.dmj.sqldsl.builder.table;
 
 import com.dmj.sqldsl.builder.config.EntityConfig;
-import com.dmj.sqldsl.exception.NoTableAnnotationException;
+import com.dmj.sqldsl.builder.exception.NoTableAnnotationException;
 import com.dmj.sqldsl.model.SimpleTable;
 import com.dmj.sqldsl.model.Table;
 import com.dmj.sqldsl.utils.StringUtils;

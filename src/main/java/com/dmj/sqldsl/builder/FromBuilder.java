@@ -7,7 +7,7 @@ import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Select;
 import com.dmj.sqldsl.model.condition.Conditions;
 
-public class FromBuilder {
+public class FromBuilder implements ToDslQuery {
 
     private final SelectBuilder selectBuilder;
     private final TablesBuilder tablesBuilder;

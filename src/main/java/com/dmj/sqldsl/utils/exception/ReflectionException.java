@@ -1,4 +1,4 @@
-package com.dmj.sqldsl.exception;
+package com.dmj.sqldsl.utils.exception;
 
 import lombok.Getter;
 
