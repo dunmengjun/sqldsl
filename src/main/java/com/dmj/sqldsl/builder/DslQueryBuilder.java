@@ -18,7 +18,7 @@ public class DslQueryBuilder {
         return new SelectBuilder(new FunctionColumnsBuilder(Arrays.asList(functions)));
     }
 
-    public <T, R, O, K> SelectBuilder selectAs(ColumnFunction<T, R> column, ColumnFunction<O, K> alias) {
+    public static <T, R, O, K> SelectBuilder selectAs(ColumnFunction<T, R> column, ColumnFunction<O, K> alias) {
         return new SelectBuilder(new FunctionAliasColumnsBuilder(column, alias));
     }
 }

@@ -10,18 +10,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SimpleTest {
+public class SingleTableTest {
 
     private final MysqlDriver driver = new MysqlDriver(new DatabaseManager());
 
     @BeforeAll
     static void beforeAll() {
-        DatabaseManager.executeSqlFile(SimpleTest.class.getSimpleName());
+        DatabaseManager.executeSqlFile(SingleTableTest.class.getSimpleName());
     }
 
     @AfterAll
@@ -57,7 +57,7 @@ public class SimpleTest {
 
         List<User> result = driver.execute(query, User.class);
 
-        List<User> expected = Collections.singletonList(new User(1, "alice", 16));
+        List<User> expected = singletonList(new User(1, "alice", 16));
         assertEquals(expected, result);
     }
 
@@ -72,7 +72,7 @@ public class SimpleTest {
 
         List<User> result = driver.execute(query, User.class);
 
-        List<User> expected = Collections.singletonList(new User(2, "bob", 17));
+        List<User> expected = singletonList(new User(2, "bob", 17));
         assertEquals(expected, result);
     }
 
@@ -111,6 +111,22 @@ public class SimpleTest {
         List<User> expected = Arrays.asList(
                 new User(1, "alice", 16),
                 new User(3, "tom", 17)
+        );
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void should_return_one_user_with_select_fields_when_select_fields() {
+        DslQuery query = DslQueryBuilder
+                .select(User::getId, User::getName)
+                .from(User.class)
+                .where(new ConditionsBuilder().eq(User::getId, 1))
+                .toQuery();
+
+        List<User> result = driver.execute(query, User.class);
+
+        List<User> expected = singletonList(
+                new User(1, "alice", null)
         );
         assertEquals(expected, result);
     }
