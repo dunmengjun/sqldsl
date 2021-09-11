@@ -1,4 +1,4 @@
-import com.dmj.sqldsl.builder.DslBuilder;
+import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.ColumnAnnotation;
 import com.dmj.sqldsl.builder.config.EntityConfig;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class SimpleTest {
@@ -20,13 +20,12 @@ public class SimpleTest {
 
     @Test
     public void test1() throws SQLException {
-        User user = new User();
-        DslQuery query = new DslBuilder()
-                .select(User.class)
+        DslQuery query = DslQueryBuilder
+                .selectAll(User.class)
                 .from(User.class)
                 .where(new ConditionsBuilder()
-                        .eq(user::getId, 1)
-                        .or(x -> x.eq(user::getAge, 23).eq(user::getName, "alice")))
+                        .eq(User::getId, 1)
+                        .or(x -> x.eq(User::getAge, 23).eq(User::getName, "alice")))
                 .toQuery(entityConfig);
         MysqlDriver driver = new MysqlDriver(DatabaseManager.getConnection());
 
@@ -37,9 +36,8 @@ public class SimpleTest {
 
     @Test
     public void test2() throws SQLException {
-        User user = new User();
-        DslQuery query = new DslBuilder()
-                .select(User.class)
+        DslQuery query = DslQueryBuilder
+                .selectAll(User.class)
                 .from(User.class)
                 .toQuery(entityConfig);
         MysqlDriver driver = new MysqlDriver(DatabaseManager.getConnection());

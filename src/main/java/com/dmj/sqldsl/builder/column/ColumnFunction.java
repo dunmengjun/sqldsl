@@ -5,9 +5,9 @@ import java.io.Serializable;
 import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
 
 @FunctionalInterface
-public interface ColumnFunction<T> extends Serializable {
+public interface ColumnFunction<T, R> extends Serializable {
 
-    T get();
+    R apply(T t);
 
     default ColumnBuilder getColumnBuilder() {
         return new LambdaColumnBuilder(invokeMethod("writeReplace", this));

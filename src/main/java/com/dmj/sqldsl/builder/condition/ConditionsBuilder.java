@@ -23,7 +23,7 @@ public class ConditionsBuilder implements ConditionElementBuilder {
         this.elementBuilders = new ArrayList<>();
     }
 
-    public ConditionsBuilder eq(ColumnFunction<?> function, Object object) {
+    public <T,R> ConditionsBuilder eq(ColumnFunction<T,R> function, Object object) {
         this.elementBuilders.add(defaultJunction);
         this.elementBuilders.add(new ConditionBuilder(function.getColumnBuilder(), object));
         return this;
