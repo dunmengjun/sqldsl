@@ -48,8 +48,8 @@ public class DslQueryVisitor extends ModelVisitor {
         return "left join";
       case right:
         return "right join";
-      case outer:
-        return "outer join";
+      case inner:
+        return "inner join";
       default:
         throw new NotSupportedJoinFlagException(flag);
     }

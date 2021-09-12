@@ -40,8 +40,8 @@ public class FromBuilder implements ToDslQuery {
     return this;
   }
 
-  public FromBuilder outerJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
-    this.joinBuilders.add(new JoinBuilder(JoinFlag.outer, entityClass, conditionsBuilder));
+  public FromBuilder innerJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
+    this.joinBuilders.add(new JoinBuilder(JoinFlag.inner, entityClass, conditionsBuilder));
     return this;
   }
 

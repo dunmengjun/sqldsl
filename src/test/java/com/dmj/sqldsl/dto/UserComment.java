@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserComment {
 
-  private int id;
+  private Integer id;
 
   private String name;
 

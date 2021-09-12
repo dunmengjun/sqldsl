@@ -36,6 +36,26 @@ public class JoinTableTest {
         .selectAll(Comment.class, Comment::getUserId)
         .from(User.class)
         .leftJoin(Comment.class, eq(User::getId, Comment::getUserId))
+        .where(eq(User::getAge, 17))
+        .toQuery();
+
+    List<UserComment> result = driver.execute(query, UserComment.class);
+
+    List<UserComment> expected = Arrays.asList(
+        new UserComment(3, "bob", "hello world"),
+        new UserComment(4, "tom", "hi"),
+        new UserComment(null, "weak", null)
+    );
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void should_return_user_comment_when_select_given_left_join_and_special_column() {
+    DslQuery query = DslQueryBuilder
+        .select(User::getName)
+        .select(Comment::getId, Comment::getMessage)
+        .from(User.class)
+        .leftJoin(Comment.class, eq(User::getId, Comment::getUserId))
         .where(eq(User::getId, 1))
         .toQuery();
 
@@ -49,13 +69,33 @@ public class JoinTableTest {
   }
 
   @Test
-  public void should_return_user_alice_with_select_column_when_select_given_left_join_and_special_column() {
+  public void should_return_user_comment_when_select_given_right_join_and_special_column() {
     DslQuery query = DslQueryBuilder
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .from(User.class)
-        .leftJoin(Comment.class, eq(User::getId, Comment::getUserId))
-        .where(eq(User::getId, 1))
+        .rightJoin(Comment.class, eq(User::getId, Comment::getUserId))
+        .where(eq(Comment::getStatus, 1))
+        .toQuery();
+
+    List<UserComment> result = driver.execute(query, UserComment.class);
+
+    List<UserComment> expected = Arrays.asList(
+        new UserComment(1, "alice", "test massage1"),
+        new UserComment(2, "alice", "test massage2"),
+        new UserComment(5, null, "hello")
+    );
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void should_return_user_comment_when_select_given_inner_join_and_special_column() {
+    DslQuery query = DslQueryBuilder
+        .select(User::getName)
+        .select(Comment::getId, Comment::getMessage)
+        .from(User.class)
+        .innerJoin(Comment.class, eq(User::getId, Comment::getUserId))
+        .where(eq(Comment::getStatus, 1))
         .toQuery();
 
     List<UserComment> result = driver.execute(query, UserComment.class);

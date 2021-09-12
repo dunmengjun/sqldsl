@@ -16,4 +16,7 @@ public class Comment {
 
   @Column
   private String message;
+
+  @Column
+  private int status;
 }
