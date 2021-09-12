@@ -43,3 +43,22 @@ VALUES (3, 'hi');
 
 INSERT INTO comment(userId, message, status)
 VALUES (5, 'hello', 1);
+
+DROP TABLE IF EXISTS satisfaction;
+
+CREATE TABLE satisfaction
+(
+    id        int PRIMARY KEY auto_increment,
+    userId    int not null,
+    commentId int not null,
+    rating    int not null default 5
+);
+
+INSERT INTO satisfaction(userId, commentId, rating)
+VALUES (1, 1, 1);
+
+INSERT INTO satisfaction(userId, commentId, rating)
+VALUES (2, 1, 3);
+
+INSERT INTO satisfaction(userId, commentId, rating)
+VALUES (3, 2, 4);

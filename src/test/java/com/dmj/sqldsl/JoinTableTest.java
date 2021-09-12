@@ -7,8 +7,10 @@ import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.WhereBuilder;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
 import com.dmj.sqldsl.driver.MysqlDriver;
+import com.dmj.sqldsl.dto.CommentRating;
 import com.dmj.sqldsl.dto.UserComment;
 import com.dmj.sqldsl.entity.Comment;
+import com.dmj.sqldsl.entity.Satisfaction;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
 import java.util.Arrays;
@@ -125,7 +127,24 @@ public class JoinTableTest {
   }
 
   @Test
-  public void should_supported_multiple_table_join_rather_than_only_two() {
-    // TODO: 2021/9/12 should supported multiple table join rather than only two
+  public void should_return_comment_rating_when_select_given_two_left_join() {
+    DslQuery query = DslQueryBuilder
+        .select(User::getName)
+        .select(Comment::getId, Comment::getMessage)
+        .select(Satisfaction::getRating)
+        .from(User.class)
+        .leftJoin(Comment.class, eq(User::getId, Comment::getUserId))
+        .leftJoin(Satisfaction.class, eq(Comment::getId, Satisfaction::getCommentId))
+        .where(eq(Comment::getStatus, 1))
+        .toQuery();
+
+    List<CommentRating> result = driver.execute(query, CommentRating.class);
+
+    List<CommentRating> expected = Arrays.asList(
+        new CommentRating(1, "alice", "test massage1", 1),
+        new CommentRating(1, "alice", "test massage1", 3),
+        new CommentRating(2, "alice", "test massage2", 4)
+    );
+    assertEquals(expected, result);
   }
 }
