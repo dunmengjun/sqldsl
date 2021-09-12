@@ -1,5 +1,6 @@
 package com.dmj.sqldsl.model.column;
 
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,5 +18,10 @@ public class ValueColumn implements Column {
   @Override
   public String getName() {
     return "";
+  }
+
+  @Override
+  public Optional<String> getAlias() {
+    return Optional.empty();
   }
 }

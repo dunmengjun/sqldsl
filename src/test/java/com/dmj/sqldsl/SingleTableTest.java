@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.driver.MysqlDriver;
+import com.dmj.sqldsl.dto.AliasUser;
 import com.dmj.sqldsl.dto.NameUser;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
@@ -162,6 +163,16 @@ public class SingleTableTest {
 
   @Test
   public void should_return_user_with_alias_when_select_given_column_alias() {
-    // TODO: 2021/9/12  should support alias
+    DslQuery query = DslQueryBuilder
+        .selectAll(User.class)
+        .selectAs(User::getName, AliasUser::getUserName)
+        .from(User.class)
+        .where(eq(User::getId, 1))
+        .toQuery();
+
+    List<AliasUser> result = driver.execute(query, AliasUser.class);
+
+    List<AliasUser> expected = singletonList(new AliasUser(1, "alice", 16));
+    assertEquals(expected, result);
   }
 }

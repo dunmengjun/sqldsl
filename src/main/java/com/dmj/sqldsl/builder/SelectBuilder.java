@@ -3,10 +3,11 @@ package com.dmj.sqldsl.builder;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
+import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.ColumnFunction;
 import com.dmj.sqldsl.builder.column.ColumnsBuilder;
 import com.dmj.sqldsl.builder.column.EntityColumnsBuilder;
-import com.dmj.sqldsl.builder.column.FunctionAliasColumnsBuilder;
+import com.dmj.sqldsl.builder.column.FunctionAliasColumnBuilder;
 import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityTablesBuilder;
@@ -18,10 +19,12 @@ import java.util.stream.Collectors;
 public class SelectBuilder {
 
   private final List<ColumnsBuilder> columnsBuilders;
+  private final List<ColumnBuilder> aliasBuilders;
 
   public SelectBuilder(ColumnsBuilder columnsBuilder) {
     this.columnsBuilders = new ArrayList<>();
     this.columnsBuilders.add(columnsBuilder);
+    this.aliasBuilders = new ArrayList<>();
   }
 
   @SafeVarargs
@@ -39,7 +42,7 @@ public class SelectBuilder {
 
   public <T, R, O, K> SelectBuilder selectAs(ColumnFunction<T, R> column,
       ColumnFunction<O, K> alias) {
-    this.columnsBuilders.add(new FunctionAliasColumnsBuilder(column, alias));
+    this.aliasBuilders.add(new FunctionAliasColumnBuilder(column, alias));
     return this;
   }
 
@@ -48,9 +51,17 @@ public class SelectBuilder {
   }
 
   protected List<Column> build(EntityConfig config) {
-    return this.columnsBuilders.stream()
-        .flatMap(x -> x.build(config).stream())
+    List<Column> columns = this.columnsBuilders.stream()
+        .flatMap(columnsBuilder -> columnsBuilder.build(config).stream())
         .distinct()
         .collect(Collectors.toList());
+    this.aliasBuilders.stream()
+        .map(columnBuilder -> columnBuilder.build(config))
+        .distinct()
+        .forEach(aliasColumn -> {
+          int index = columns.indexOf(aliasColumn);
+          columns.set(index, aliasColumn);
+        });
+    return columns;
   }
 }

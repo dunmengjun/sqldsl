@@ -95,7 +95,9 @@ public class DslQueryVisitor extends ModelVisitor {
 
 
   protected String visit(SimpleColumn column) {
-    return String.format("%s.%s", column.getTableName(), column.getName());
+    return column.getAlias()
+        .map(alias -> String.format("%s.%s as %s", column.getTableName(), column.getName(), alias))
+        .orElse(String.format("%s.%s", column.getTableName(), column.getName()));
   }
 
   @Override

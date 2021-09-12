@@ -54,7 +54,7 @@ public class MysqlDriver implements Driver {
       while (resultSet.next()) {
         T target = newInstance(targetClass);
         for (Column column : columns) {
-          String name = column.getName();
+          String name = column.getAlias().orElse(column.getName());
           if (hasField(targetClass, name)) {
             setValue(name, target, resultSet.getObject(name));
           }
