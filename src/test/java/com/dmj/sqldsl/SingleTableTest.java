@@ -161,11 +161,6 @@ public class SingleTableTest {
   }
 
   @Test
-  public void should_return_map_when_select_given_map_class() {
-    // TODO: 2021/9/12  should support map result
-  }
-
-  @Test
   public void should_return_user_with_alias_when_select_given_column_alias() {
     // TODO: 2021/9/12  should support alias
   }
