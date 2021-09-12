@@ -9,8 +9,6 @@ import com.dmj.sqldsl.model.Join;
 import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.SelectFrom;
 import com.dmj.sqldsl.model.SimpleTable;
-import com.dmj.sqldsl.model.Table;
-import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.model.column.ValueColumn;
 import com.dmj.sqldsl.model.condition.And;
@@ -65,18 +63,16 @@ public class DslQueryVisitor extends ModelVisitor {
   }
 
   private String visit(SelectFrom selectFrom) {
-    List<Column> columns = selectFrom.getColumns();
-    String columnsSqlString = columns.stream()
+    String columnsSqlString = selectFrom.getColumns().stream()
         .map(this::visit)
         .collect(joining(", "));
-    List<Table> tables = selectFrom.getTables();
-    String tablesSqlString = tables.stream()
+    String tablesSqlString = selectFrom.getTables().stream()
         .map(this::visit)
         .collect(joining(","));
-    String joinSqlString = selectFrom.getJoins().stream()
-        .map(this::visit)
-        .collect(joining(" "));
-    return String.format("select %s from %s %s", columnsSqlString, tablesSqlString, joinSqlString);
+    String joinSqlString = selectFrom.getJoins()
+        .map(x -> x.stream().map(this::visit).collect(joining(" ", " ", "")))
+        .orElse("");
+    return String.format("select %s from %s%s", columnsSqlString, tablesSqlString, joinSqlString);
   }
 
   @Override
