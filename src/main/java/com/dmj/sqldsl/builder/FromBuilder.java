@@ -31,8 +31,12 @@ public class FromBuilder implements ToDslQuery {
     return new WhereBuilder(this, conditionsBuilder);
   }
 
-  public LimitBuilder limit(int offset, int size) {
-    return new LimitBuilder(this, offset, size);
+  public FromLimitBuilder limit(int offset, int size) {
+    return new FromLimitBuilder(this, offset, size);
+  }
+
+  public FromLimitBuilder limit(int size) {
+    return new FromLimitBuilder(this, 0, size);
   }
 
   public FromBuilder leftJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {

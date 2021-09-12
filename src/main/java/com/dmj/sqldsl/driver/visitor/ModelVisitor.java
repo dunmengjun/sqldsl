@@ -47,7 +47,7 @@ public abstract class ModelVisitor {
 
   protected abstract String visit(Conditions conditions);
 
-  protected abstract String visit(Condition Condition);
+  protected abstract String visit(Condition condition);
 
   protected abstract String visit(And and);
 

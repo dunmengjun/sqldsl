@@ -34,8 +34,7 @@ public class DslQueryVisitor extends ModelVisitor {
         .map(x -> " where " + visitFirstConditions(x))
         .orElse("");
     String limitSqlString = query.getLimit().map(this::visit).orElse("");
-    String visit = visit(query.getSelectFrom());
-    return visit
+    return visit(query.getSelectFrom())
         + conditionsSqlString
         + limitSqlString;
   }
