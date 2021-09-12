@@ -2,6 +2,7 @@ package com.dmj.sqldsl.driver.visitor;
 
 import static java.util.stream.Collectors.joining;
 
+import com.dmj.sqldsl.builder.Limit;
 import com.dmj.sqldsl.driver.exception.NotSupportedJoinFlagException;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Join;
@@ -19,7 +20,6 @@ import com.dmj.sqldsl.model.condition.Conditions;
 import com.dmj.sqldsl.model.condition.Or;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.Getter;
 
 @Getter
@@ -32,9 +32,18 @@ public class DslQueryVisitor extends ModelVisitor {
   }
 
   public String visit(DslQuery query) {
-    String selectSqlString = visit(query.getSelectFrom());
-    String conditionsSqlString = visitWhere(query.getConditions());
-    return String.format("%s %s", selectSqlString, conditionsSqlString);
+    String conditionsSqlString = query.getConditions()
+        .map(x -> " where " + visitFirstConditions(x))
+        .orElse("");
+    String limitSqlString = query.getLimit().map(this::visit).orElse("");
+    String visit = visit(query.getSelectFrom());
+    return visit
+        + conditionsSqlString
+        + limitSqlString;
+  }
+
+  private String visit(Limit limit) {
+    return String.format(" limit %s,%s", limit.getOffset(), limit.getSize());
   }
 
   private String visit(Join join) {
@@ -109,13 +118,6 @@ public class DslQueryVisitor extends ModelVisitor {
   @Override
   protected String visit(SimpleTable table) {
     return table.getTableName();
-  }
-
-  private String visitWhere(Conditions conditions) {
-    return Optional.of(visitFirstConditions(conditions))
-        .filter(x -> !x.isEmpty())
-        .map(x -> "where " + x)
-        .orElse("");
   }
 
   private String visitFirstConditions(Conditions conditions) {

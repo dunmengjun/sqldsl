@@ -11,7 +11,6 @@ import com.dmj.sqldsl.builder.table.TablesBuilder;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.SelectFrom;
-import com.dmj.sqldsl.model.condition.Conditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +29,10 @@ public class FromBuilder implements ToDslQuery {
 
   public WhereBuilder where(ConditionsBuilder conditionsBuilder) {
     return new WhereBuilder(this, conditionsBuilder);
+  }
+
+  public LimitBuilder limit(int offset, int size) {
+    return new LimitBuilder(this, offset, size);
   }
 
   public FromBuilder leftJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
@@ -68,7 +71,6 @@ public class FromBuilder implements ToDslQuery {
   public DslQuery toQuery(EntityConfig config) {
     return DslQuery.builder()
         .selectFrom(this.build(config))
-        .conditions(Conditions.empty())
         .build();
   }
 }
