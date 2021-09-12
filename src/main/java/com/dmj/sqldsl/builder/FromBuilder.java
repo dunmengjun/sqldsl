@@ -1,10 +1,12 @@
 package com.dmj.sqldsl.builder;
 
+import static com.dmj.sqldsl.utils.CollectionUtils.hasDuplicateIn;
 import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.column.ColumnFunction;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
+import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
 import com.dmj.sqldsl.builder.table.TablesBuilder;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.JoinFlag;
@@ -51,6 +53,9 @@ public class FromBuilder implements ToDslQuery {
   }
 
   protected SelectFrom build(EntityConfig config) {
+    if (hasDuplicateIn(joinBuilders, JoinBuilder::getEntityClass)) {
+      throw new JoinTableRepeatedlyException();
+    }
     return SelectFrom.builder()
         .columns(selectBuilder.build(config))
         .tables(tablesBuilder.build(config))

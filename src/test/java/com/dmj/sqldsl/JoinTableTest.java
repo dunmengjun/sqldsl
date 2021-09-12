@@ -4,6 +4,8 @@ import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
+import com.dmj.sqldsl.builder.WhereBuilder;
+import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
 import com.dmj.sqldsl.driver.MysqlDriver;
 import com.dmj.sqldsl.dto.UserComment;
 import com.dmj.sqldsl.entity.Comment;
@@ -12,6 +14,7 @@ import com.dmj.sqldsl.model.DslQuery;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -105,6 +108,20 @@ public class JoinTableTest {
         new UserComment(2, "alice", "test massage2")
     );
     assertEquals(expected, result);
+  }
+
+
+  @Test
+  public void should_throw_exception_when_select_given_join_the_same_table_twice() {
+    WhereBuilder where = DslQueryBuilder
+        .select(User::getName)
+        .select(Comment::getId, Comment::getMessage)
+        .from(User.class)
+        .leftJoin(Comment.class, eq(User::getId, Comment::getUserId))
+        .innerJoin(Comment.class, eq(User::getId, Comment::getUserId))
+        .where(eq(Comment::getStatus, 1));
+
+    Assertions.assertThrows(JoinTableRepeatedlyException.class, where::toQuery);
   }
 
   @Test
