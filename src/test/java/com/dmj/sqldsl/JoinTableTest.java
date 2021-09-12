@@ -106,4 +106,9 @@ public class JoinTableTest {
     );
     assertEquals(expected, result);
   }
+
+  @Test
+  public void should_supported_multiple_table_join_rather_than_only_two() {
+    // TODO: 2021/9/12 should supported multiple table join rather than only two
+  }
 }
