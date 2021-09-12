@@ -1,39 +1,33 @@
 package com.dmj.sqldsl.builder.column;
 
+import static com.dmj.sqldsl.utils.EntityClassUtils.getTableName;
 import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
+import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.NoColumnAnnotationException;
-import com.dmj.sqldsl.builder.exception.NoTableAnnotationException;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.utils.StringUtils;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EntityColumnsBuilder implements ColumnsBuilder {
 
   private final Class<?> entityClass;
+  private final List<ColumnFunction<?, ?>> excludeColumnFunctions;
 
-  public EntityColumnsBuilder(Class<?> entityClass) {
+  public EntityColumnsBuilder(Class<?> entityClass,
+      List<ColumnFunction<?, ?>> excludeColumnFunctions) {
     this.entityClass = entityClass;
+    this.excludeColumnFunctions = excludeColumnFunctions;
   }
 
   @Override
   public List<Column> build(EntityConfig config) {
-    Class<? extends Annotation> tableClass = config.getTableAnnotation().getAnnotationClass();
     Class<? extends Annotation> columnClass = config.getColumnAnnotation().getAnnotationClass();
-    if (!entityClass.isAnnotationPresent(tableClass)) {
-      throw new NoTableAnnotationException(entityClass, tableClass);
-    }
-    String tableNameAttribute = config.getTableAnnotation().getTableNameAttribute();
-    String tableName = invokeMethod(tableNameAttribute, entityClass.getAnnotation(tableClass));
-    if (StringUtils.isBlank(tableName)) {
-      tableName = entityClass.getSimpleName();
-    }
-    String finalTableName = tableName;
+    String finalTableName = getTableName(config.getTableAnnotation(), entityClass);
     String attribute = config.getColumnAnnotation().getColumnNameAttribute();
     List<Column> columns = Arrays.stream(entityClass.getDeclaredFields())
         .filter(field -> field.isAnnotationPresent(columnClass))
@@ -44,10 +38,14 @@ public class EntityColumnsBuilder implements ColumnsBuilder {
           }
           return new SimpleColumn(finalTableName, columnName);
         })
-        .collect(Collectors.toList());
+        .collect(toList());
     if (columns.isEmpty()) {
       throw new NoColumnAnnotationException(entityClass, columnClass);
     }
+    List<Column> excludeColumns = excludeColumnFunctions.stream()
+        .map(columnFunction -> columnFunction.getColumnBuilder().build(config))
+        .collect(toList());
+    columns.removeAll(excludeColumns);
     return columns;
   }
 }

@@ -1,10 +1,10 @@
 package com.dmj.sqldsl;
 
+import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
-import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.driver.MysqlDriver;
 import com.dmj.sqldsl.dto.NameUser;
 import com.dmj.sqldsl.entity.User;
@@ -51,8 +51,7 @@ public class SingleTableTest {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class)
         .from(User.class)
-        .where(new ConditionsBuilder()
-            .eq(User::getId, 1))
+        .where(eq(User::getId, 1))
         .toQuery();
 
     List<User> result = driver.execute(query, User.class);
@@ -66,8 +65,7 @@ public class SingleTableTest {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class)
         .from(User.class)
-        .where(new ConditionsBuilder()
-            .eq(User::getName, "bob"))
+        .where(eq(User::getName, "bob"))
         .toQuery();
 
     List<User> result = driver.execute(query, User.class);
@@ -81,10 +79,7 @@ public class SingleTableTest {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class)
         .from(User.class)
-        .where(new ConditionsBuilder()
-            .eq(User::getId, 1)
-            .or()
-            .eq(User::getId, 2))
+        .where(eq(User::getId, 1).or().eq(User::getId, 2))
         .toQuery();
 
     List<User> result = driver.execute(query, User.class);
@@ -101,8 +96,7 @@ public class SingleTableTest {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class)
         .from(User.class)
-        .where(new ConditionsBuilder()
-            .eq(User::getId, 1)
+        .where(eq(User::getId, 1)
             .or(x -> x.eq(User::getAge, 17).eq(User::getName, "tom")))
         .toQuery();
 
@@ -120,7 +114,7 @@ public class SingleTableTest {
     DslQuery query = DslQueryBuilder
         .select(User::getId, User::getName)
         .from(User.class)
-        .where(new ConditionsBuilder().eq(User::getId, 1))
+        .where(eq(User::getId, 1))
         .toQuery();
 
     List<User> result = driver.execute(query, User.class);
@@ -136,7 +130,7 @@ public class SingleTableTest {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class)
         .from(User.class)
-        .where(new ConditionsBuilder().eq(User::getId, 1))
+        .where(eq(User::getId, 1))
         .toQuery();
 
     List<NameUser> result = driver.execute(query, NameUser.class);
@@ -155,7 +149,7 @@ public class SingleTableTest {
         .selectAll(User.class)
         .select(User::getAge)
         .from(User.class)
-        .where(new ConditionsBuilder().eq(User::getId, 1))
+        .where(eq(User::getId, 1))
         .toQuery();
 
     List<User> result = driver.execute(query, User.class);

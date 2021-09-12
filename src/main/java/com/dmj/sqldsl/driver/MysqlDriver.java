@@ -49,7 +49,7 @@ public class MysqlDriver implements Driver {
       DslQuery query,
       Class<T> targetClass) throws SQLException {
     try (ResultSet resultSet = statement.executeQuery()) {
-      List<Column> columns = query.getSelect().getColumns();
+      List<Column> columns = query.getSelectFrom().getColumns();
       List<T> list = new ArrayList<>();
       while (resultSet.next()) {
         T target = newInstance(targetClass);

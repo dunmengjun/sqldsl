@@ -7,8 +7,9 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class Select {
+public class SelectFrom {
 
   private List<Column> columns;
   private List<Table> tables;
+  private List<Join> joins;
 }

@@ -1,10 +1,10 @@
 package com.dmj.sqldsl.builder.column;
 
+import static com.dmj.sqldsl.utils.EntityClassUtils.getTableName;
 import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
 
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.NoColumnAnnotationException;
-import com.dmj.sqldsl.builder.exception.NoTableAnnotationException;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.utils.ReflectionUtils;
@@ -35,16 +35,8 @@ public class LambdaColumnBuilder implements ColumnBuilder {
     }
   }
 
-  private SimpleColumn getColumn(Class<?> entityClass, String fieldName, EntityConfig config) {
-    Class<? extends Annotation> tableClass = config.getTableAnnotation().getAnnotationClass();
-    if (!entityClass.isAnnotationPresent(tableClass)) {
-      throw new NoTableAnnotationException(entityClass, tableClass);
-    }
-    String tableNameAttribute = config.getTableAnnotation().getTableNameAttribute();
-    String tableName = invokeMethod(tableNameAttribute, entityClass.getAnnotation(tableClass));
-    if (StringUtils.isBlank(tableName)) {
-      tableName = entityClass.getSimpleName();
-    }
+  private Column getColumn(Class<?> entityClass, String fieldName, EntityConfig config) {
+    String tableName = getTableName(config.getTableAnnotation(), entityClass);
     Field field = ReflectionUtils.getField(entityClass, fieldName);
     Class<? extends Annotation> columnClass = config.getColumnAnnotation().getAnnotationClass();
     if (!field.isAnnotationPresent(columnClass)) {

@@ -1,13 +1,14 @@
 package com.dmj.sqldsl.model;
 
 import com.dmj.sqldsl.model.condition.Conditions;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Builder
+@AllArgsConstructor
 @Getter
-public class DslQuery {
+public class Join {
 
-  private SelectFrom selectFrom;
+  private JoinFlag flag;
+  private Table table;
   private Conditions conditions;
 }
