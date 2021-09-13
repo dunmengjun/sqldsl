@@ -16,11 +16,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MysqlDriver implements Driver {
+public class SqlDslExecutor implements Executor {
 
   private final ConnectionManager manager;
+  private final SqlDialect dialect;
 
-  public MysqlDriver(ConnectionManager manager) {
+  public SqlDslExecutor(SqlDialect dialect, ConnectionManager manager) {
+    this.dialect = dialect;
     this.manager = manager;
   }
 

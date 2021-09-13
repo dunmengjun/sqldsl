@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.WhereBuilder;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
-import com.dmj.sqldsl.driver.MysqlDriver;
+import com.dmj.sqldsl.driver.SqlDialect;
+import com.dmj.sqldsl.driver.SqlDslExecutor;
 import com.dmj.sqldsl.dto.CommentRating;
 import com.dmj.sqldsl.dto.UserComment;
 import com.dmj.sqldsl.entity.Comment;
@@ -20,12 +21,13 @@ import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 
 @Database
 public class JoinTableTest {
 
-  private final MysqlDriver driver = new MysqlDriver(new DatabaseManager());
+  private SqlDslExecutor executor;
 
   @BeforeAll
   static void beforeAll() {
@@ -35,6 +37,11 @@ public class JoinTableTest {
   @AfterAll
   static void afterAll() {
     DatabaseManager.cleanDatabase();
+  }
+
+  @BeforeEach
+  void beforeEach(SqlDialect dialect) {
+    executor = new SqlDslExecutor(dialect, new DatabaseManager());
   }
 
   @TestTemplate
@@ -47,7 +54,7 @@ public class JoinTableTest {
         .where(eq(User::getAge, 17))
         .toQuery();
 
-    List<UserComment> result = driver.execute(query, UserComment.class);
+    List<UserComment> result = executor.execute(query, UserComment.class);
 
     List<UserComment> expected = Arrays.asList(
         new UserComment(3, "bob", "hello world"),
@@ -67,7 +74,7 @@ public class JoinTableTest {
         .where(eq(User::getId, 1))
         .toQuery();
 
-    List<UserComment> result = driver.execute(query, UserComment.class);
+    List<UserComment> result = executor.execute(query, UserComment.class);
 
     List<UserComment> expected = Arrays.asList(
         new UserComment(1, "alice", "test massage1"),
@@ -86,7 +93,7 @@ public class JoinTableTest {
         .where(eq(Comment::getStatus, 1))
         .toQuery();
 
-    List<UserComment> result = driver.execute(query, UserComment.class);
+    List<UserComment> result = executor.execute(query, UserComment.class);
 
     List<UserComment> expected = Arrays.asList(
         new UserComment(1, "alice", "test massage1"),
@@ -106,7 +113,7 @@ public class JoinTableTest {
         .where(eq(Comment::getStatus, 1))
         .toQuery();
 
-    List<UserComment> result = driver.execute(query, UserComment.class);
+    List<UserComment> result = executor.execute(query, UserComment.class);
 
     List<UserComment> expected = Arrays.asList(
         new UserComment(1, "alice", "test massage1"),
@@ -141,7 +148,7 @@ public class JoinTableTest {
         .where(eq(Comment::getStatus, 1))
         .toQuery();
 
-    List<CommentRating> result = driver.execute(query, CommentRating.class);
+    List<CommentRating> result = executor.execute(query, CommentRating.class);
 
     List<CommentRating> expected = Arrays.asList(
         new CommentRating(1, "alice", "test massage1", 1),

@@ -2,7 +2,6 @@ package com.dmj.sqldsl.platform;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -36,22 +35,23 @@ public class DatabaseContextProvider implements TestTemplateInvocationContextPro
   @Override
   public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(
       ExtensionContext context) {
-    SQLDialect[] sqlDialects = getStore(context).get(METHOD_CONTEXT_KEY, SQLDialect[].class);
+    H2Mode[] sqlDialects = getStore(context).get(METHOD_CONTEXT_KEY, H2Mode[].class);
     return Arrays.stream(sqlDialects).map(this::sqlDialectContext);
   }
 
-  private TestTemplateInvocationContext sqlDialectContext(SQLDialect dialect) {
+  private TestTemplateInvocationContext sqlDialectContext(H2Mode h2Mode) {
     return new TestTemplateInvocationContext() {
       @Override
       public String getDisplayName(int invocationIndex) {
-        return dialect.toString();
+        return h2Mode.toString();
       }
 
       @Override
       public List<Extension> getAdditionalExtensions() {
-        return Collections.singletonList(
+        return Arrays.asList(
+            new SqlDialectParameterResolver(h2Mode.toSqlDialect()),
             (BeforeEachCallback) context1 -> DatabaseManager.url =
-                DatabaseManager.baseUrl + dialect.getDialect()
+                DatabaseManager.baseUrl + h2Mode.getDialect()
         );
       }
     };

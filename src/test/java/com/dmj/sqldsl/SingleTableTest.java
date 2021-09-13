@@ -5,7 +5,8 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
-import com.dmj.sqldsl.driver.MysqlDriver;
+import com.dmj.sqldsl.driver.SqlDialect;
+import com.dmj.sqldsl.driver.SqlDslExecutor;
 import com.dmj.sqldsl.dto.AliasUser;
 import com.dmj.sqldsl.dto.NameUser;
 import com.dmj.sqldsl.entity.User;
@@ -16,12 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 
 @Database
 public class SingleTableTest {
 
-  private final MysqlDriver driver = new MysqlDriver(new DatabaseManager());
+  private SqlDslExecutor executor;
 
   @BeforeAll
   static void beforeAll() {
@@ -33,6 +35,11 @@ public class SingleTableTest {
     DatabaseManager.cleanDatabase();
   }
 
+  @BeforeEach
+  void beforeEach(SqlDialect dialect) {
+    executor = new SqlDslExecutor(dialect, new DatabaseManager());
+  }
+
   @TestTemplate
   public void should_return_all_user_when_select_all_given_no_condition() {
     DslQuery query = DslQueryBuilder
@@ -40,7 +47,7 @@ public class SingleTableTest {
         .from(User.class)
         .toQuery();
 
-    List<User> result = driver.execute(query, User.class);
+    List<User> result = executor.execute(query, User.class);
 
     List<User> expected = Arrays.asList(
         new User(1, "alice", 16),
@@ -58,7 +65,7 @@ public class SingleTableTest {
         .where(eq(User::getId, 1))
         .toQuery();
 
-    List<User> result = driver.execute(query, User.class);
+    List<User> result = executor.execute(query, User.class);
 
     List<User> expected = singletonList(new User(1, "alice", 16));
     assertEquals(expected, result);
@@ -72,7 +79,7 @@ public class SingleTableTest {
         .where(eq(User::getName, "bob"))
         .toQuery();
 
-    List<User> result = driver.execute(query, User.class);
+    List<User> result = executor.execute(query, User.class);
 
     List<User> expected = singletonList(new User(2, "bob", 17));
     assertEquals(expected, result);
@@ -86,7 +93,7 @@ public class SingleTableTest {
         .where(eq(User::getId, 1).or().eq(User::getId, 2))
         .toQuery();
 
-    List<User> result = driver.execute(query, User.class);
+    List<User> result = executor.execute(query, User.class);
 
     List<User> expected = Arrays.asList(
         new User(1, "alice", 16),
@@ -104,7 +111,7 @@ public class SingleTableTest {
             .or(x -> x.eq(User::getAge, 17).eq(User::getName, "tom")))
         .toQuery();
 
-    List<User> result = driver.execute(query, User.class);
+    List<User> result = executor.execute(query, User.class);
 
     List<User> expected = Arrays.asList(
         new User(1, "alice", 16),
@@ -121,7 +128,7 @@ public class SingleTableTest {
         .where(eq(User::getId, 1))
         .toQuery();
 
-    List<User> result = driver.execute(query, User.class);
+    List<User> result = executor.execute(query, User.class);
 
     List<User> expected = singletonList(
         new User(1, "alice", null)
@@ -137,7 +144,7 @@ public class SingleTableTest {
         .where(eq(User::getId, 1))
         .toQuery();
 
-    List<NameUser> result = driver.execute(query, NameUser.class);
+    List<NameUser> result = executor.execute(query, NameUser.class);
 
     List<NameUser> expected = singletonList(
         new NameUser("alice")
@@ -156,7 +163,7 @@ public class SingleTableTest {
         .where(eq(User::getId, 1))
         .toQuery();
 
-    List<User> result = driver.execute(query, User.class);
+    List<User> result = executor.execute(query, User.class);
 
     List<User> expected = singletonList(
         new User(1, "alice", 16)
@@ -173,7 +180,7 @@ public class SingleTableTest {
         .where(eq(User::getId, 1))
         .toQuery();
 
-    List<AliasUser> result = driver.execute(query, AliasUser.class);
+    List<AliasUser> result = executor.execute(query, AliasUser.class);
 
     List<AliasUser> expected = singletonList(new AliasUser(1, "alice", 16));
     assertEquals(expected, result);

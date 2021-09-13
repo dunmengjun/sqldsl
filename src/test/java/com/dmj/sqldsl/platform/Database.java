@@ -1,11 +1,11 @@
 package com.dmj.sqldsl.platform;
 
 
-import static com.dmj.sqldsl.platform.SQLDialect.h2;
-import static com.dmj.sqldsl.platform.SQLDialect.mysql;
-import static com.dmj.sqldsl.platform.SQLDialect.oracle;
-import static com.dmj.sqldsl.platform.SQLDialect.postgresql;
-import static com.dmj.sqldsl.platform.SQLDialect.sqlserver;
+import static com.dmj.sqldsl.platform.H2Mode.h2;
+import static com.dmj.sqldsl.platform.H2Mode.mysql;
+import static com.dmj.sqldsl.platform.H2Mode.oracle;
+import static com.dmj.sqldsl.platform.H2Mode.postgresql;
+import static com.dmj.sqldsl.platform.H2Mode.sqlserver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,5 +18,5 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(DatabaseContextProvider.class)
 public @interface Database {
 
-  SQLDialect[] value() default {h2, mysql, postgresql, oracle, sqlserver};
+  H2Mode[] value() default {h2, mysql, postgresql, oracle, sqlserver};
 }
