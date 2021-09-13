@@ -13,13 +13,16 @@ import com.dmj.sqldsl.entity.Comment;
 import com.dmj.sqldsl.entity.Satisfaction;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
+import com.dmj.sqldsl.platform.Database;
+import com.dmj.sqldsl.platform.DatabaseManager;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 
+@Database
 public class JoinTableTest {
 
   private final MysqlDriver driver = new MysqlDriver(new DatabaseManager());
@@ -34,7 +37,7 @@ public class JoinTableTest {
     DatabaseManager.cleanDatabase();
   }
 
-  @Test
+  @TestTemplate
   public void should_return_user_alice_with_comment_when_select_all_given_left_join() {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class, User::getId, User::getAge)
@@ -54,7 +57,7 @@ public class JoinTableTest {
     assertEquals(expected, result);
   }
 
-  @Test
+  @TestTemplate
   public void should_return_user_comment_when_select_given_left_join_and_special_column() {
     DslQuery query = DslQueryBuilder
         .select(User::getName)
@@ -73,7 +76,7 @@ public class JoinTableTest {
     assertEquals(expected, result);
   }
 
-  @Test
+  @TestTemplate
   public void should_return_user_comment_when_select_given_right_join_and_special_column() {
     DslQuery query = DslQueryBuilder
         .select(User::getName)
@@ -93,7 +96,7 @@ public class JoinTableTest {
     assertEquals(expected, result);
   }
 
-  @Test
+  @TestTemplate
   public void should_return_user_comment_when_select_given_inner_join_and_special_column() {
     DslQuery query = DslQueryBuilder
         .select(User::getName)
@@ -113,7 +116,7 @@ public class JoinTableTest {
   }
 
 
-  @Test
+  @TestTemplate
   public void should_throw_exception_when_select_given_join_the_same_table_twice() {
     WhereBuilder where = DslQueryBuilder
         .select(User::getName)
@@ -126,7 +129,7 @@ public class JoinTableTest {
     Assertions.assertThrows(JoinTableRepeatedlyException.class, where::toQuery);
   }
 
-  @Test
+  @TestTemplate
   public void should_return_comment_rating_when_select_given_two_left_join() {
     DslQuery query = DslQueryBuilder
         .select(User::getName)

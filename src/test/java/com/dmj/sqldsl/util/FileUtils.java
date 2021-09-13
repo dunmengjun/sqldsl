@@ -1,6 +1,6 @@
 package com.dmj.sqldsl.util;
 
-import com.dmj.sqldsl.DatabaseManager;
+import com.dmj.sqldsl.platform.DatabaseManager;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

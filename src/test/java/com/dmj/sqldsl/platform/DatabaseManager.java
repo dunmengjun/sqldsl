@@ -1,4 +1,4 @@
-package com.dmj.sqldsl;
+package com.dmj.sqldsl.platform;
 
 import static com.dmj.sqldsl.util.FileUtils.getUri;
 
@@ -13,7 +13,8 @@ import java.util.function.Consumer;
 
 public class DatabaseManager implements ConnectionManager {
 
-  static String url = "jdbc:h2:~/test;MODE=MYSQL";
+  static String baseUrl = "jdbc:h2:~/test";
+  public static String url = baseUrl;
   static String user = "sa";
   static String password = "";
 

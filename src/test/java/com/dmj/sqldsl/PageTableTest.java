@@ -10,12 +10,15 @@ import com.dmj.sqldsl.dto.UserComment;
 import com.dmj.sqldsl.entity.Comment;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
+import com.dmj.sqldsl.platform.Database;
+import com.dmj.sqldsl.platform.DatabaseManager;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 
+@Database
 public class PageTableTest {
 
   private final MysqlDriver driver = new MysqlDriver(new DatabaseManager());
@@ -30,14 +33,13 @@ public class PageTableTest {
     DatabaseManager.cleanDatabase();
   }
 
-  @Test
+  @TestTemplate
   public void should_return_page_user_when_select_all_given_paged() {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class)
         .from(User.class)
         .limit(0, 2)
         .toQuery();
-
     List<User> result = driver.execute(query, User.class);
 
     List<User> expected = Arrays.asList(
@@ -47,7 +49,7 @@ public class PageTableTest {
     assertEquals(expected, result);
   }
 
-  @Test
+  @TestTemplate
   public void should_return_page_user_when_select_all_given_limit() {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class)
@@ -63,7 +65,7 @@ public class PageTableTest {
     assertEquals(expected, result);
   }
 
-  @Test
+  @TestTemplate
   public void should_return_page_user_when_select_all_given_joined_and_paged() {
     DslQuery query = DslQueryBuilder
         .select(User::getName)
@@ -81,7 +83,7 @@ public class PageTableTest {
     assertEquals(expected, result);
   }
 
-  @Test
+  @TestTemplate
   public void should_return_page_user_when_select_all_given_joined_and_has_conditions_and_paged() {
     DslQuery query = DslQueryBuilder
         .select(User::getName)
@@ -100,7 +102,7 @@ public class PageTableTest {
     assertEquals(expected, result);
   }
 
-  @Test
+  @TestTemplate
   public void should_return_page_user_when_select_all_given_joined_and_has_conditions_and_limit() {
     DslQuery query = DslQueryBuilder
         .select(User::getName)
