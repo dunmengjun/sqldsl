@@ -1,6 +1,6 @@
 package com.dmj.sqldsl.platform;
 
-import com.dmj.sqldsl.driver.SqlDialect;
+import com.dmj.sqldsl.executor.SqlDialect;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;

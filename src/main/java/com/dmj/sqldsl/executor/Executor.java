@@ -1,4 +1,4 @@
-package com.dmj.sqldsl.driver;
+package com.dmj.sqldsl.executor;
 
 import com.dmj.sqldsl.model.DslQuery;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.dmj.sqldsl.driver.exception;
+package com.dmj.sqldsl.executor.exception;
 
 import com.dmj.sqldsl.model.Table;
 import lombok.Getter;

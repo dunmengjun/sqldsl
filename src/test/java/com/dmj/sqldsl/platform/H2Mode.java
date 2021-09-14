@@ -1,6 +1,6 @@
 package com.dmj.sqldsl.platform;
 
-import com.dmj.sqldsl.driver.SqlDialect;
+import com.dmj.sqldsl.executor.SqlDialect;
 
 public enum H2Mode {
   h2(""),

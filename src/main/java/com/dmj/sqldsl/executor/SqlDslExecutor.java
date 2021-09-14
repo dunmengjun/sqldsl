@@ -1,12 +1,12 @@
-package com.dmj.sqldsl.driver;
+package com.dmj.sqldsl.executor;
 
 import static com.dmj.sqldsl.utils.ReflectionUtils.hasField;
 import static com.dmj.sqldsl.utils.ReflectionUtils.newInstance;
 import static com.dmj.sqldsl.utils.ReflectionUtils.setValue;
 
-import com.dmj.sqldsl.driver.exception.ExecutionException;
-import com.dmj.sqldsl.driver.visitor.DslQueryVisitor;
-import com.dmj.sqldsl.driver.visitor.Parameter;
+import com.dmj.sqldsl.executor.exception.ExecutionException;
+import com.dmj.sqldsl.executor.visitor.DslQueryVisitor;
+import com.dmj.sqldsl.executor.visitor.Parameter;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.column.Column;
 import java.sql.Connection;

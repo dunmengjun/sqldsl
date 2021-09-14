@@ -5,11 +5,11 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
-import com.dmj.sqldsl.driver.SqlDialect;
-import com.dmj.sqldsl.driver.SqlDslExecutor;
 import com.dmj.sqldsl.dto.UserComment;
 import com.dmj.sqldsl.entity.Comment;
 import com.dmj.sqldsl.entity.User;
+import com.dmj.sqldsl.executor.SqlDialect;
+import com.dmj.sqldsl.executor.SqlDslExecutor;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
 import com.dmj.sqldsl.platform.DatabaseManager;

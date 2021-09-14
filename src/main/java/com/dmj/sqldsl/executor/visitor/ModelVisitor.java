@@ -1,8 +1,8 @@
-package com.dmj.sqldsl.driver.visitor;
+package com.dmj.sqldsl.executor.visitor;
 
-import com.dmj.sqldsl.driver.exception.NotSupportedColumnException;
-import com.dmj.sqldsl.driver.exception.NotSupportedConditionException;
-import com.dmj.sqldsl.driver.exception.NotSupportedTableException;
+import com.dmj.sqldsl.executor.exception.NotSupportedColumnException;
+import com.dmj.sqldsl.executor.exception.NotSupportedConditionException;
+import com.dmj.sqldsl.executor.exception.NotSupportedTableException;
 import com.dmj.sqldsl.model.SimpleTable;
 import com.dmj.sqldsl.model.Table;
 import com.dmj.sqldsl.model.column.Column;

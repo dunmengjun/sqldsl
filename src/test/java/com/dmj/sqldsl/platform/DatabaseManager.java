@@ -2,7 +2,7 @@ package com.dmj.sqldsl.platform;
 
 import static com.dmj.sqldsl.util.FileUtils.getUri;
 
-import com.dmj.sqldsl.driver.ConnectionManager;
+import com.dmj.sqldsl.executor.ConnectionManager;
 import com.dmj.sqldsl.util.FileUtils;
 import java.sql.Connection;
 import java.sql.DriverManager;

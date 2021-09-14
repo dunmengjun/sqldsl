@@ -1,9 +1,9 @@
-package com.dmj.sqldsl.driver.visitor;
+package com.dmj.sqldsl.executor.visitor;
 
 import static java.util.stream.Collectors.joining;
 
 import com.dmj.sqldsl.builder.Limit;
-import com.dmj.sqldsl.driver.exception.NotSupportedJoinFlagException;
+import com.dmj.sqldsl.executor.exception.NotSupportedJoinFlagException;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Join;
 import com.dmj.sqldsl.model.JoinFlag;

@@ -1,4 +1,4 @@
-package com.dmj.sqldsl.driver.exception;
+package com.dmj.sqldsl.executor.exception;
 
 public class ExecutionException extends RuntimeException {
 
