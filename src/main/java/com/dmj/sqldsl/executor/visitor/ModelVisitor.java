@@ -47,9 +47,8 @@ public abstract class ModelVisitor {
     throw new UnsupportedConditionException(element);
   }
 
-  public abstract String visit(DslQuery query);
 
-  public abstract List<Parameter> getParams();
+  public abstract String visit(DslQuery query);
 
   protected abstract String visit(Conditions conditions);
 
@@ -64,4 +63,6 @@ public abstract class ModelVisitor {
   protected abstract String visit(ValueColumn column);
 
   protected abstract String visit(SimpleTable table);
+
+  public abstract List<Parameter> getParams();
 }
