@@ -11,8 +11,8 @@ public class ValueColumn implements Column {
   private Object value;
 
   @Override
-  public String getTableName() {
-    return "";
+  public Optional<String> getTableName() {
+    return Optional.empty();
   }
 
   @Override

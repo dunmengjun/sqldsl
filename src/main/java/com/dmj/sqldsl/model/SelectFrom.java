@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Builder
 public class SelectFrom {
 
   @Getter
+  @Setter
   private List<Column> columns;
   @Getter
   private List<Table> tables;

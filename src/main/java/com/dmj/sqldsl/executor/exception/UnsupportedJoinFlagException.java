@@ -4,12 +4,12 @@ import com.dmj.sqldsl.model.JoinFlag;
 import lombok.Getter;
 
 @Getter
-public class NotSupportedJoinFlagException extends RuntimeException {
+public class UnsupportedJoinFlagException extends RuntimeException {
 
   private final JoinFlag flag;
 
-  public NotSupportedJoinFlagException(JoinFlag flag) {
-    super("Not supported join flag: " + flag);
+  public UnsupportedJoinFlagException(JoinFlag flag) {
+    super("Unsupported join flag: " + flag);
     this.flag = flag;
   }
 }

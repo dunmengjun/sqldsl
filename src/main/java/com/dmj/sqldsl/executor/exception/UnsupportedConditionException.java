@@ -4,12 +4,12 @@ import com.dmj.sqldsl.model.condition.ConditionElement;
 import lombok.Getter;
 
 @Getter
-public class NotSupportedConditionException extends RuntimeException {
+public class UnsupportedConditionException extends RuntimeException {
 
   private final ConditionElement element;
 
-  public NotSupportedConditionException(ConditionElement element) {
-    super("Not supported condition: " + element);
+  public UnsupportedConditionException(ConditionElement element) {
+    super("Unsupported condition: " + element);
     this.element = element;
   }
 }

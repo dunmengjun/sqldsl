@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface Column {
 
-  String getTableName();
+  Optional<String> getTableName();
 
   String getName();
 

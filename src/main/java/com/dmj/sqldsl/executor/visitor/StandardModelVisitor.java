@@ -3,7 +3,7 @@ package com.dmj.sqldsl.executor.visitor;
 import static java.util.stream.Collectors.joining;
 
 import com.dmj.sqldsl.builder.Limit;
-import com.dmj.sqldsl.executor.exception.NotSupportedJoinFlagException;
+import com.dmj.sqldsl.executor.exception.UnsupportedJoinFlagException;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Join;
 import com.dmj.sqldsl.model.JoinFlag;
@@ -21,34 +21,31 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class DslQueryVisitor extends ModelVisitor {
+public class StandardModelVisitor extends ModelVisitor {
 
   private final List<Parameter> params;
 
-  public DslQueryVisitor() {
+  public StandardModelVisitor() {
     this.params = new ArrayList<>();
   }
 
   public String visit(DslQuery query) {
-    String conditionsSqlString = query.getConditions()
-        .map(x -> " where " + visitFirstConditions(x))
-        .orElse("");
-    String limitSqlString = query.getLimit().map(this::visit).orElse("");
-    return visit(query.getSelectFrom())
-        + conditionsSqlString
-        + limitSqlString;
+    String selectFromWhere = visitSelectFromWhere(query);
+    return query.getLimit()
+        .map(limit -> visitLimit(selectFromWhere, limit))
+        .orElse(selectFromWhere);
   }
 
-  private String visit(Limit limit) {
+  protected String visit(Limit limit) {
     return String.format(" limit %s,%s", limit.getOffset(), limit.getSize());
   }
 
-  private String visit(Join join) {
+  protected String visit(Join join) {
     return String.format("%s %s on %s", visit(join.getFlag()),
         visit(join.getTable()), visitFirstConditions(join.getConditions()));
   }
 
-  private String visit(JoinFlag flag) {
+  protected String visit(JoinFlag flag) {
     switch (flag) {
       case left:
         return "left join";
@@ -57,11 +54,11 @@ public class DslQueryVisitor extends ModelVisitor {
       case inner:
         return "inner join";
       default:
-        throw new NotSupportedJoinFlagException(flag);
+        throw new UnsupportedJoinFlagException(flag);
     }
   }
 
-  private String visit(SelectFrom selectFrom) {
+  protected String visit(SelectFrom selectFrom) {
     String columnsSqlString = selectFrom.getColumns().stream()
         .map(this::visit)
         .collect(joining(", "));
@@ -99,9 +96,12 @@ public class DslQueryVisitor extends ModelVisitor {
 
 
   protected String visit(SimpleColumn column) {
+    String name = column.getTableName()
+        .map(tableName -> String.format("%s.%s", tableName, column.getName()))
+        .orElse(column.getName());
     return column.getAlias()
-        .map(alias -> String.format("%s.%s as %s", column.getTableName(), column.getName(), alias))
-        .orElse(String.format("%s.%s", column.getTableName(), column.getName()));
+        .map(alias -> String.format("%s as %s", name, alias))
+        .orElse(name);
   }
 
   @Override
@@ -115,7 +115,19 @@ public class DslQueryVisitor extends ModelVisitor {
     return table.getTableName();
   }
 
-  private String visitFirstConditions(Conditions conditions) {
+  protected String visitSelectFromWhere(DslQuery query) {
+    String conditionsSqlString = query.getConditions()
+        .map(x -> " where " + visitFirstConditions(x))
+        .orElse("");
+    return visit(query.getSelectFrom())
+        + conditionsSqlString;
+  }
+
+  protected String visitLimit(String allSqlWithoutLimit, Limit limit) {
+    return allSqlWithoutLimit + visit(limit);
+  }
+
+  protected String visitFirstConditions(Conditions conditions) {
     return conditions.getConditionElements().stream()
         .map(this::visit)
         .collect(joining(" "));

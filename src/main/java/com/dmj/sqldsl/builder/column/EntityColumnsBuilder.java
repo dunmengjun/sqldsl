@@ -36,7 +36,10 @@ public class EntityColumnsBuilder implements ColumnsBuilder {
           if (StringUtils.isBlank(columnName)) {
             columnName = field.getName();
           }
-          return new SimpleColumn(finalTableName, columnName);
+          return SimpleColumn.builder()
+              .tableName(finalTableName)
+              .name(columnName)
+              .build();
         })
         .collect(toList());
     if (columns.isEmpty()) {

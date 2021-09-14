@@ -17,6 +17,18 @@ public class FunctionAliasColumnBuilder implements ColumnBuilder {
     ColumnBuilder columnBuilder = function.getColumnBuilder();
     Column build = columnBuilder.build(config);
     String aliasName = config.getTranslator().translate(alias.getMethodName());
-    return new SimpleColumn(build.getTableName(), build.getName(), aliasName);
+    return build.getTableName()
+        .map(tableName ->
+            SimpleColumn.builder()
+                .tableName(tableName)
+                .name(build.getName())
+                .alias(aliasName)
+                .build())
+        .orElse(
+            SimpleColumn.builder()
+                .name(build.getName())
+                .alias(aliasName)
+                .build()
+        );
   }
 }

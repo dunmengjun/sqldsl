@@ -1,11 +1,12 @@
 package com.dmj.sqldsl.executor;
 
+import static com.dmj.sqldsl.executor.visitor.ModelVisitorFactory.getModeVisitor;
 import static com.dmj.sqldsl.utils.ReflectionUtils.hasField;
 import static com.dmj.sqldsl.utils.ReflectionUtils.newInstance;
 import static com.dmj.sqldsl.utils.ReflectionUtils.setValue;
 
 import com.dmj.sqldsl.executor.exception.ExecutionException;
-import com.dmj.sqldsl.executor.visitor.DslQueryVisitor;
+import com.dmj.sqldsl.executor.visitor.ModelVisitor;
 import com.dmj.sqldsl.executor.visitor.Parameter;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.column.Column;
@@ -36,7 +37,7 @@ public class SqlDslExecutor implements Executor {
   }
 
   private <T> List<T> executeQuery(DslQuery query, Class<T> targetClass) throws SQLException {
-    DslQueryVisitor visitor = new DslQueryVisitor();
+    ModelVisitor visitor = getModeVisitor(dialect);
     String sql = visitor.visit(query);
     System.out.println(sql);
     try (Connection connection = manager.getConnection()) {

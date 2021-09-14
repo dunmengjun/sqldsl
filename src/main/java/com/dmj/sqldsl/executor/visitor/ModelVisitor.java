@@ -1,8 +1,9 @@
 package com.dmj.sqldsl.executor.visitor;
 
-import com.dmj.sqldsl.executor.exception.NotSupportedColumnException;
-import com.dmj.sqldsl.executor.exception.NotSupportedConditionException;
-import com.dmj.sqldsl.executor.exception.NotSupportedTableException;
+import com.dmj.sqldsl.executor.exception.UnsupportedColumnException;
+import com.dmj.sqldsl.executor.exception.UnsupportedConditionException;
+import com.dmj.sqldsl.executor.exception.UnsupportedTableException;
+import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.SimpleTable;
 import com.dmj.sqldsl.model.Table;
 import com.dmj.sqldsl.model.column.Column;
@@ -13,6 +14,7 @@ import com.dmj.sqldsl.model.condition.Condition;
 import com.dmj.sqldsl.model.condition.ConditionElement;
 import com.dmj.sqldsl.model.condition.Conditions;
 import com.dmj.sqldsl.model.condition.Or;
+import java.util.List;
 
 public abstract class ModelVisitor {
 
@@ -22,14 +24,14 @@ public abstract class ModelVisitor {
     } else if (column instanceof ValueColumn) {
       return visit((ValueColumn) column);
     }
-    throw new NotSupportedColumnException(column);
+    throw new UnsupportedColumnException(column);
   }
 
   protected String visit(Table table) {
     if (table instanceof SimpleTable) {
       return visit((SimpleTable) table);
     }
-    throw new NotSupportedTableException(table);
+    throw new UnsupportedTableException(table);
   }
 
   protected String visit(ConditionElement element) {
@@ -42,8 +44,12 @@ public abstract class ModelVisitor {
     } else if (element instanceof And) {
       return visit((And) element);
     }
-    throw new NotSupportedConditionException(element);
+    throw new UnsupportedConditionException(element);
   }
+
+  public abstract String visit(DslQuery query);
+
+  public abstract List<Parameter> getParams();
 
   protected abstract String visit(Conditions conditions);
 

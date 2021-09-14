@@ -4,12 +4,12 @@ import com.dmj.sqldsl.model.column.Column;
 import lombok.Getter;
 
 @Getter
-public class NotSupportedColumnException extends RuntimeException {
+public class UnsupportedColumnException extends RuntimeException {
 
   private final Column column;
 
-  public NotSupportedColumnException(Column column) {
-    super("Not supported column: " + column);
+  public UnsupportedColumnException(Column column) {
+    super("Unsupported column: " + column);
     this.column = column;
   }
 }
