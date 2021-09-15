@@ -11,38 +11,15 @@ import com.dmj.sqldsl.dto.UserComment;
 import com.dmj.sqldsl.entity.Comment;
 import com.dmj.sqldsl.entity.Satisfaction;
 import com.dmj.sqldsl.entity.User;
-import com.dmj.sqldsl.executor.SqlDialect;
-import com.dmj.sqldsl.executor.SqlDslExecutor;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
-import com.dmj.sqldsl.platform.DatabaseManager;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 
 @Database
-public class JoinTableTest {
-
-  private SqlDslExecutor executor;
-
-  @BeforeAll
-  static void beforeAll() {
-    DatabaseManager.executeSqlFile(JoinTableTest.class.getSimpleName());
-  }
-
-  @AfterAll
-  static void afterAll() {
-    DatabaseManager.cleanDatabase();
-  }
-
-  @BeforeEach
-  void beforeEach(SqlDialect dialect) {
-    executor = new SqlDslExecutor(dialect, new DatabaseManager());
-  }
+public class JoinTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_alice_with_comment_when_select_all_given_left_join() {
