@@ -1,5 +1,7 @@
 package com.dmj.sqldsl.builder.column;
 
+import static com.dmj.sqldsl.utils.ReflectionUtils.forName;
+import static com.dmj.sqldsl.utils.ReflectionUtils.getMethodReturnType;
 import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
 
 import java.io.Serializable;
@@ -17,5 +19,11 @@ public interface ColumnFunction<T, R> extends Serializable {
   default String getMethodName() {
     SerializedLambda lambda = invokeMethod("writeReplace", this);
     return lambda.getImplMethodName();
+  }
+
+  default Class<?> getReturnType() {
+    SerializedLambda lambda = invokeMethod("writeReplace", this);
+    String classPath = lambda.getImplClass().replace("/", ".");
+    return getMethodReturnType(forName(classPath), lambda.getImplMethodName());
   }
 }

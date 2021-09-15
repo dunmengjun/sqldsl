@@ -47,6 +47,18 @@ public class ReflectionUtils {
     }
   }
 
+  public static Class<?> getMethodReturnType(Class<?> targetClass, String methodName) {
+    return getMethod(targetClass, methodName).getReturnType();
+  }
+
+  public static Class<?> forName(String classPath) {
+    try {
+      return Class.forName(classPath);
+    } catch (ClassNotFoundException e) {
+      throw new ReflectionException(e);
+    }
+  }
+
   public static <T> T newInstance(Class<T> targetClass) {
     try {
       return targetClass.newInstance();
