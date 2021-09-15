@@ -1,29 +1,39 @@
 package com.dmj.sqldsl.builder;
 
-import com.dmj.sqldsl.builder.column.ColumnFunction;
+import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
+import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
-import java.util.Arrays;
+import com.dmj.sqldsl.model.GroupBy;
+import com.dmj.sqldsl.model.column.Column;
 import java.util.List;
+import java.util.Optional;
 
 public class GroupByBuilder implements ToDslQuery {
 
   private final FromBuilder fromBuilder;
-  private final List<ColumnFunction<?, ?>> functions;
+  private final FunctionColumnsBuilder columnsBuilder;
+  private ConditionsBuilder havingConditions;
 
-  public GroupByBuilder(FromBuilder fromBuilder, List<ColumnFunction<?, ?>> functions) {
+  public GroupByBuilder(FromBuilder fromBuilder, FunctionColumnsBuilder columnsBuilder) {
     this.fromBuilder = fromBuilder;
-    this.functions = functions;
+    this.columnsBuilder = columnsBuilder;
   }
 
-  @SafeVarargs
-  public final <T, R> GroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
-    this.functions.addAll(Arrays.asList(functions));
+  public final GroupByBuilder having(ConditionsBuilder havingConditions) {
+    this.havingConditions = havingConditions;
     return this;
   }
 
   @Override
   public DslQuery toQuery(EntityConfig config) {
-    return null;
+    List<Column> columns = columnsBuilder.build(config);
+    GroupBy groupBy = Optional.ofNullable(havingConditions)
+        .map(conditions -> new GroupBy(columns, conditions.build(config)))
+        .orElse(new GroupBy(columns));
+    return DslQuery.builder()
+        .selectFrom(fromBuilder.build(config))
+        .groupBy(groupBy)
+        .build();
   }
 }

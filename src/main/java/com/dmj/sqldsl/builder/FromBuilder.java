@@ -4,6 +4,7 @@ import static com.dmj.sqldsl.utils.CollectionUtils.hasDuplicateIn;
 import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.column.ColumnFunction;
+import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
@@ -56,7 +57,7 @@ public class FromBuilder implements ToDslQuery {
 
   @SafeVarargs
   public final <T, R> GroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
-    return new GroupByBuilder(this, Arrays.asList(functions));
+    return new GroupByBuilder(this, new FunctionColumnsBuilder(Arrays.asList(functions)));
   }
 
   protected SelectFrom build(EntityConfig config) {

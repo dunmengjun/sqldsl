@@ -3,8 +3,10 @@ package com.dmj.sqldsl.executor.visitor;
 import static java.util.stream.Collectors.joining;
 
 import com.dmj.sqldsl.builder.Limit;
+import com.dmj.sqldsl.executor.exception.UnsupportedConditionMethodException;
 import com.dmj.sqldsl.executor.exception.UnsupportedJoinFlagException;
 import com.dmj.sqldsl.model.DslQuery;
+import com.dmj.sqldsl.model.GroupBy;
 import com.dmj.sqldsl.model.Join;
 import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.SelectFrom;
@@ -14,6 +16,7 @@ import com.dmj.sqldsl.model.column.ValueColumn;
 import com.dmj.sqldsl.model.condition.And;
 import com.dmj.sqldsl.model.condition.Condition;
 import com.dmj.sqldsl.model.condition.ConditionElement;
+import com.dmj.sqldsl.model.condition.ConditionMethod;
 import com.dmj.sqldsl.model.condition.Conditions;
 import com.dmj.sqldsl.model.condition.Or;
 import java.util.ArrayList;
@@ -81,7 +84,33 @@ public class StandardModelVisitor extends ModelVisitor {
 
   @Override
   protected String visit(Condition condition) {
-    return String.format("%s = %s", visit(condition.getLeft()), visit(condition.getRight()));
+    return String.format("%s %s %s",
+        visit(condition.getLeft()),
+        visit(condition.getMethod()),
+        visit(condition.getRight()));
+  }
+
+  private String visit(ConditionMethod method) {
+    switch (method) {
+      case eq:
+        return "=";
+      case ge:
+        return ">=";
+      case gt:
+        return ">";
+      case in:
+        return "in";
+      case le:
+        return "<=";
+      case lt:
+        return "<";
+      case ne:
+        return "!=";
+      case like:
+        return "like";
+      default:
+        throw new UnsupportedConditionMethodException(method);
+    }
   }
 
   @Override
@@ -115,12 +144,23 @@ public class StandardModelVisitor extends ModelVisitor {
     return table.getTableName();
   }
 
+  private String visit(GroupBy groupBy) {
+    String columnsSql = groupBy.getColumns().stream()
+        .map(this::visit)
+        .collect(joining(","));
+    String havingSql = groupBy.getConditions()
+        .map(conditions -> String.format(" having %s", visitFirstConditions(conditions)))
+        .orElse("");
+    return String.format(" group by %s%s", columnsSql, havingSql);
+  }
+
   protected String visitSelectFromWhere(DslQuery query) {
     String conditionsSqlString = query.getConditions()
         .map(x -> " where " + visitFirstConditions(x))
         .orElse("");
+    String groupBySql = query.getGroupBy().map(this::visit).orElse("");
     return visit(query.getSelectFrom())
-        + conditionsSqlString;
+        + conditionsSqlString + groupBySql;
   }
 
   protected String visitLimit(String allSqlWithoutLimit, Limit limit) {

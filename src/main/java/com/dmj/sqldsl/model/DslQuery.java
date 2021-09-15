@@ -13,6 +13,7 @@ public class DslQuery {
   private SelectFrom selectFrom;
   private Conditions conditions;
   private Limit limit;
+  private GroupBy groupBy;
 
   public Optional<Limit> getLimit() {
     return Optional.ofNullable(limit);
@@ -20,5 +21,9 @@ public class DslQuery {
 
   public Optional<Conditions> getConditions() {
     return Optional.ofNullable(conditions);
+  }
+
+  public Optional<GroupBy> getGroupBy() {
+    return Optional.ofNullable(groupBy);
   }
 }

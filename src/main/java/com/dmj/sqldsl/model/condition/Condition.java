@@ -9,5 +9,6 @@ import lombok.Getter;
 public class Condition implements ConditionElement {
 
   private Column left;
+  private ConditionMethod method;
   private Column right;
 }
