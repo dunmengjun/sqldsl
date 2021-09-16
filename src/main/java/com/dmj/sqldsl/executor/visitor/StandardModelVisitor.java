@@ -2,13 +2,13 @@ package com.dmj.sqldsl.executor.visitor;
 
 import static java.util.stream.Collectors.joining;
 
-import com.dmj.sqldsl.builder.Limit;
 import com.dmj.sqldsl.executor.exception.UnsupportedConditionMethodException;
 import com.dmj.sqldsl.executor.exception.UnsupportedJoinFlagException;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.GroupBy;
 import com.dmj.sqldsl.model.Join;
 import com.dmj.sqldsl.model.JoinFlag;
+import com.dmj.sqldsl.model.Limit;
 import com.dmj.sqldsl.model.SelectFrom;
 import com.dmj.sqldsl.model.SimpleTable;
 import com.dmj.sqldsl.model.column.ListValueColumn;

@@ -1,6 +1,6 @@
 package com.dmj.sqldsl.executor.visitor;
 
-import com.dmj.sqldsl.builder.Limit;
+import com.dmj.sqldsl.model.Limit;
 
 public class PostgresqlModelVisitor extends StandardModelVisitor {
 

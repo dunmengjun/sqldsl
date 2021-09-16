@@ -1,4 +1,4 @@
-package com.dmj.sqldsl.builder;
+package com.dmj.sqldsl.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

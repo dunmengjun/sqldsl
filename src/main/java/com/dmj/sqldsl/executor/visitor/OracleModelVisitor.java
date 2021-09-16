@@ -1,7 +1,7 @@
 package com.dmj.sqldsl.executor.visitor;
 
-import com.dmj.sqldsl.builder.Limit;
 import com.dmj.sqldsl.model.DslQuery;
+import com.dmj.sqldsl.model.Limit;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import java.util.ArrayList;

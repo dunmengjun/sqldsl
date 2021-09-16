@@ -1,6 +1,5 @@
 package com.dmj.sqldsl.model;
 
-import com.dmj.sqldsl.builder.Limit;
 import com.dmj.sqldsl.model.condition.Conditions;
 import java.util.Optional;
 import lombok.Builder;
