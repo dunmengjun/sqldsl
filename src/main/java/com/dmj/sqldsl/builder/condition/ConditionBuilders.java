@@ -5,6 +5,7 @@ import com.dmj.sqldsl.builder.column.type.BooleanFunction;
 import com.dmj.sqldsl.builder.column.type.NumberFunction;
 import com.dmj.sqldsl.builder.column.type.StringFunction;
 import com.dmj.sqldsl.model.condition.ConditionMethod;
+import java.util.List;
 
 public class ConditionBuilders {
 
@@ -259,5 +260,23 @@ public class ConditionBuilders {
             left.getColumnBuilder(),
             ConditionMethod.le,
             right.getColumnBuilder()));
+  }
+
+  public static <T> ConditionalExpression in(NumberFunction<T> function, List<Number> valueList) {
+    return new ConditionalExpression(
+        new ConditionBuilder(
+            function.getColumnBuilder(),
+            ConditionMethod.in,
+            new ValueColumnBuilder(valueList))
+    );
+  }
+
+  public static <T> ConditionalExpression in(StringFunction<T> function, List<String> valueList) {
+    return new ConditionalExpression(
+        new ConditionBuilder(
+            function.getColumnBuilder(),
+            ConditionMethod.in,
+            new ValueColumnBuilder(valueList))
+    );
   }
 }

@@ -11,6 +11,7 @@ import com.dmj.sqldsl.model.Join;
 import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.SelectFrom;
 import com.dmj.sqldsl.model.SimpleTable;
+import com.dmj.sqldsl.model.column.ListValueColumn;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.model.column.ValueColumn;
 import com.dmj.sqldsl.model.condition.And;
@@ -21,6 +22,7 @@ import com.dmj.sqldsl.model.condition.Conditions;
 import com.dmj.sqldsl.model.condition.Or;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
@@ -137,6 +139,14 @@ public class StandardModelVisitor extends ModelVisitor {
   protected String visit(ValueColumn column) {
     params.add(new Parameter(column.getValue()));
     return "?";
+  }
+
+  @Override
+  protected String visit(ListValueColumn column) {
+    return column.getList().stream().map(x -> {
+      params.add(new Parameter(x));
+      return "?";
+    }).collect(Collectors.joining(",", "(", ")"));
   }
 
   @Override
