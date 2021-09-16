@@ -1,11 +1,12 @@
 package com.dmj.sqldsl.builder;
 
+import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
+import com.dmj.sqldsl.builder.column.type.ColumnFunction;
 import com.dmj.sqldsl.builder.condition.ConditionalExpression;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
-import lombok.Getter;
+import java.util.Arrays;
 
-@Getter
 public class WhereBuilder implements ToDslQuery {
 
   private final FromBuilder fromBuilder;
@@ -24,10 +25,16 @@ public class WhereBuilder implements ToDslQuery {
     return new WhereLimitBuilder(this, 0, size);
   }
 
+  @SafeVarargs
+  public final <T, R> WhereGroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
+    return new WhereGroupByBuilder(this, new FunctionColumnsBuilder(Arrays.asList(functions)));
+  }
+
+  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
+    return fromBuilder.build(config).conditions(conditionalExpression.build(config));
+  }
+
   public DslQuery toQuery(EntityConfig config) {
-    return DslQuery.builder()
-        .selectFrom(fromBuilder.build(config))
-        .conditions(conditionalExpression.build(config))
-        .build();
+    return this.build(config).build();
   }
 }

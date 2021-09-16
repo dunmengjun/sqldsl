@@ -56,26 +56,25 @@ public class FromBuilder implements ToDslQuery {
   }
 
   @SafeVarargs
-  public final <T, R> GroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
-    return new GroupByBuilder(this, new FunctionColumnsBuilder(Arrays.asList(functions)));
+  public final <T, R> FromGroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
+    return new FromGroupByBuilder(this, new FunctionColumnsBuilder(Arrays.asList(functions)));
   }
 
-  protected SelectFrom build(EntityConfig config) {
+  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
     if (hasDuplicateIn(joinBuilders, JoinBuilder::getEntityClass)) {
       throw new JoinTableRepeatedlyException();
     }
-    return SelectFrom.builder()
+    SelectFrom selectFrom = SelectFrom.builder()
         .columns(selectBuilder.build(config))
         .tables(tablesBuilder.build(config))
         .joins(joinBuilders.stream()
             .map(joinBuilder -> joinBuilder.build(config))
             .collect(toList()))
         .build();
+    return DslQuery.builder().selectFrom(selectFrom);
   }
 
   public DslQuery toQuery(EntityConfig config) {
-    return DslQuery.builder()
-        .selectFrom(this.build(config))
-        .build();
+    return this.build(config).build();
   }
 }

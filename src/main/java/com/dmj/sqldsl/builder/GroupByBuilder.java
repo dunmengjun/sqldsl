@@ -9,31 +9,31 @@ import com.dmj.sqldsl.model.column.Column;
 import java.util.List;
 import java.util.Optional;
 
-public class GroupByBuilder implements ToDslQuery {
+public abstract class GroupByBuilder implements ToDslQuery {
 
-  private final FromBuilder fromBuilder;
-  private final FunctionColumnsBuilder columnsBuilder;
-  private ConditionalExpression havingConditions;
+  protected ConditionalExpression havingConditions;
+  protected FunctionColumnsBuilder columnsBuilder;
 
-  public GroupByBuilder(FromBuilder fromBuilder, FunctionColumnsBuilder columnsBuilder) {
-    this.fromBuilder = fromBuilder;
-    this.columnsBuilder = columnsBuilder;
-  }
 
   public final GroupByBuilder having(ConditionalExpression havingConditions) {
     this.havingConditions = havingConditions;
     return this;
   }
 
-  @Override
-  public DslQuery toQuery(EntityConfig config) {
+  public GroupByLimitBuilder limit(int offset, int size) {
+    return new GroupByLimitBuilder(this, offset, size);
+  }
+
+  public GroupByLimitBuilder limit(int size) {
+    return new GroupByLimitBuilder(this, 0, size);
+  }
+
+  protected GroupBy buildGroupBy(EntityConfig config) {
     List<Column> columns = columnsBuilder.build(config);
-    GroupBy groupBy = Optional.ofNullable(havingConditions)
+    return Optional.ofNullable(havingConditions)
         .map(conditions -> new GroupBy(columns, conditions.build(config)))
         .orElse(new GroupBy(columns));
-    return DslQuery.builder()
-        .selectFrom(fromBuilder.build(config))
-        .groupBy(groupBy)
-        .build();
   }
+
+  protected abstract DslQuery.DslQueryBuilder build(EntityConfig config);
 }

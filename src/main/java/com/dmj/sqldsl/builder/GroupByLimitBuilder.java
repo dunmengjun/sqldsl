@@ -5,14 +5,14 @@ import com.dmj.sqldsl.model.DslQuery;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class FromLimitBuilder implements LimitBuilder {
+public class GroupByLimitBuilder implements LimitBuilder {
 
-  private FromBuilder fromBuilder;
+  private GroupByBuilder groupByBuilder;
   private int offset;
   private int size;
 
   protected DslQuery.DslQueryBuilder build(EntityConfig config) {
-    return fromBuilder.build(config).limit(new Limit(offset, size));
+    return groupByBuilder.build(config).limit(new Limit(offset, size));
   }
 
   @Override

@@ -11,12 +11,12 @@ public class WhereLimitBuilder implements LimitBuilder {
   private int offset;
   private int size;
 
+  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
+    return whereBuilder.build(config).limit(new Limit(offset, size));
+  }
+
   @Override
   public DslQuery toQuery(EntityConfig config) {
-    return DslQuery.builder()
-        .selectFrom(whereBuilder.getFromBuilder().build(config))
-        .conditions(whereBuilder.getConditionalExpression().build(config))
-        .limit(new Limit(offset, size))
-        .build();
+    return this.build(config).build();
   }
 }
