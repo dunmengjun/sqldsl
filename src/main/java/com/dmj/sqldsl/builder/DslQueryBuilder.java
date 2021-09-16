@@ -2,9 +2,9 @@ package com.dmj.sqldsl.builder;
 
 import static java.util.Arrays.asList;
 
-import com.dmj.sqldsl.builder.column.ColumnFunction;
 import com.dmj.sqldsl.builder.column.EntityColumnsBuilder;
 import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
+import com.dmj.sqldsl.builder.column.type.ColumnFunction;
 
 public class DslQueryBuilder {
 

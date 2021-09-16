@@ -4,6 +4,7 @@ import static com.dmj.sqldsl.utils.EntityClassUtils.getTableName;
 import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
 import static java.util.stream.Collectors.toList;
 
+import com.dmj.sqldsl.builder.column.type.ColumnFunction;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.NoColumnAnnotationException;
 import com.dmj.sqldsl.model.column.Column;

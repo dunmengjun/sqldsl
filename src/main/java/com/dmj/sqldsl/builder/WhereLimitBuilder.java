@@ -15,7 +15,7 @@ public class WhereLimitBuilder implements LimitBuilder {
   public DslQuery toQuery(EntityConfig config) {
     return DslQuery.builder()
         .selectFrom(whereBuilder.getFromBuilder().build(config))
-        .conditions(whereBuilder.getConditionsBuilder().build(config))
+        .conditions(whereBuilder.getConditionalExpression().build(config))
         .limit(new Limit(offset, size))
         .build();
   }

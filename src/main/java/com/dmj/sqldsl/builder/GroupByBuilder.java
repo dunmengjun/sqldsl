@@ -1,7 +1,7 @@
 package com.dmj.sqldsl.builder;
 
 import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
-import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
+import com.dmj.sqldsl.builder.condition.ConditionalExpression;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.GroupBy;
@@ -13,14 +13,14 @@ public class GroupByBuilder implements ToDslQuery {
 
   private final FromBuilder fromBuilder;
   private final FunctionColumnsBuilder columnsBuilder;
-  private ConditionsBuilder havingConditions;
+  private ConditionalExpression havingConditions;
 
   public GroupByBuilder(FromBuilder fromBuilder, FunctionColumnsBuilder columnsBuilder) {
     this.fromBuilder = fromBuilder;
     this.columnsBuilder = columnsBuilder;
   }
 
-  public final GroupByBuilder having(ConditionsBuilder havingConditions) {
+  public final GroupByBuilder having(ConditionalExpression havingConditions) {
     this.havingConditions = havingConditions;
     return this;
   }

@@ -2,8 +2,8 @@ package com.dmj.sqldsl.builder.condition;
 
 import static java.util.stream.Collectors.toList;
 
-import com.dmj.sqldsl.builder.column.ColumnFunction;
 import com.dmj.sqldsl.builder.column.ValueColumnBuilder;
+import com.dmj.sqldsl.builder.column.type.ColumnFunction;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.condition.ConditionElement;
 import com.dmj.sqldsl.model.condition.Conditions;
@@ -12,25 +12,25 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class ConditionsBuilder implements ConditionElementBuilder {
+public class ConditionalExpression implements ConditionElementBuilder {
 
   private JunctionBuilder defaultJunction;
 
   private final List<ConditionElementBuilder> elementBuilders;
 
-  public ConditionsBuilder() {
+  public ConditionalExpression() {
     this.defaultJunction = new AndBuilder();
     this.elementBuilders = new ArrayList<>();
   }
 
-  protected ConditionsBuilder(ConditionBuilder conditionBuilder) {
+  protected ConditionalExpression(ConditionBuilder conditionBuilder) {
     this.defaultJunction = new AndBuilder();
     this.elementBuilders = new ArrayList<>();
     this.elementBuilders.add(this.defaultJunction);
     this.elementBuilders.add(conditionBuilder);
   }
 
-  public <T, R> ConditionsBuilder eq(ColumnFunction<T, R> function, Object object) {
+  public <T, R> ConditionalExpression eq(ColumnFunction<T, R> function, Object object) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(
         new ConditionBuilder(function.getColumnBuilder(),
@@ -39,7 +39,7 @@ public class ConditionsBuilder implements ConditionElementBuilder {
     return this;
   }
 
-  public <T, R, O, K> ConditionsBuilder eq(ColumnFunction<T, R> left,
+  public <T, R, O, K> ConditionalExpression eq(ColumnFunction<T, R> left,
       ColumnFunction<O, K> right) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(left.getColumnBuilder(),
@@ -47,26 +47,26 @@ public class ConditionsBuilder implements ConditionElementBuilder {
     return this;
   }
 
-  public ConditionsBuilder and() {
+  public ConditionalExpression and() {
     this.defaultJunction = new AndBuilder();
     return this;
   }
 
-  public ConditionsBuilder and(Consumer<ConditionsBuilder> consumer) {
-    ConditionsBuilder builder = new ConditionsBuilder();
+  public ConditionalExpression and(Consumer<ConditionalExpression> consumer) {
+    ConditionalExpression builder = new ConditionalExpression();
     consumer.accept(builder);
     this.elementBuilders.add(new AndBuilder());
     this.elementBuilders.add(builder);
     return this;
   }
 
-  public ConditionsBuilder or() {
+  public ConditionalExpression or() {
     this.defaultJunction = new OrBuilder();
     return this;
   }
 
-  public ConditionsBuilder or(Consumer<ConditionsBuilder> consumer) {
-    ConditionsBuilder builder = new ConditionsBuilder();
+  public ConditionalExpression or(Consumer<ConditionalExpression> consumer) {
+    ConditionalExpression builder = new ConditionalExpression();
     consumer.accept(builder);
     this.elementBuilders.add(new OrBuilder());
     this.elementBuilders.add(builder);
@@ -89,10 +89,10 @@ public class ConditionsBuilder implements ConditionElementBuilder {
     this.elementBuilders.remove(0);
     List<ConditionElement> elements = this.elementBuilders.stream()
         .flatMap(elementBuilder -> {
-          if (elementBuilder instanceof ConditionsBuilder) {
-            ConditionsBuilder conditionsBuilder = (ConditionsBuilder) elementBuilder;
-            if (conditionsBuilder.isSimpleCondition()) {
-              return conditionsBuilder.elementBuilders.stream();
+          if (elementBuilder instanceof ConditionalExpression) {
+            ConditionalExpression conditionalExpression = (ConditionalExpression) elementBuilder;
+            if (conditionalExpression.isSimpleCondition()) {
+              return conditionalExpression.elementBuilders.stream();
             }
           }
           return Stream.of(elementBuilder);

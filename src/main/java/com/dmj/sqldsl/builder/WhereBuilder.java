@@ -1,6 +1,6 @@
 package com.dmj.sqldsl.builder;
 
-import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
+import com.dmj.sqldsl.builder.condition.ConditionalExpression;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
 import lombok.Getter;
@@ -9,11 +9,11 @@ import lombok.Getter;
 public class WhereBuilder implements ToDslQuery {
 
   private final FromBuilder fromBuilder;
-  private final ConditionsBuilder conditionsBuilder;
+  private final ConditionalExpression conditionalExpression;
 
-  public WhereBuilder(FromBuilder fromBuilder, ConditionsBuilder conditionsBuilder) {
+  public WhereBuilder(FromBuilder fromBuilder, ConditionalExpression conditionalExpression) {
     this.fromBuilder = fromBuilder;
-    this.conditionsBuilder = conditionsBuilder;
+    this.conditionalExpression = conditionalExpression;
   }
 
   public WhereLimitBuilder limit(int offset, int size) {
@@ -27,7 +27,7 @@ public class WhereBuilder implements ToDslQuery {
   public DslQuery toQuery(EntityConfig config) {
     return DslQuery.builder()
         .selectFrom(fromBuilder.build(config))
-        .conditions(conditionsBuilder.build(config))
+        .conditions(conditionalExpression.build(config))
         .build();
   }
 }

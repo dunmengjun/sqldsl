@@ -4,11 +4,11 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
-import com.dmj.sqldsl.builder.column.ColumnFunction;
 import com.dmj.sqldsl.builder.column.ColumnsBuilder;
 import com.dmj.sqldsl.builder.column.EntityColumnsBuilder;
 import com.dmj.sqldsl.builder.column.FunctionAliasColumnBuilder;
 import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
+import com.dmj.sqldsl.builder.column.type.ColumnFunction;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityTablesBuilder;
 import com.dmj.sqldsl.model.column.Column;
