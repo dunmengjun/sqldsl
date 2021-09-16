@@ -2,13 +2,14 @@ package com.dmj.sqldsl.builder;
 
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
+import java.util.List;
 
-public class GroupByLimitBuilder extends LimitBuilder {
+public class GroupOrderByBuilder extends OrderByBuilder {
 
   private final GroupByBuilder groupByBuilder;
 
-  public GroupByLimitBuilder(GroupByBuilder groupByBuilder, int offset, int size) {
-    super(offset, size);
+  public GroupOrderByBuilder(GroupByBuilder groupByBuilder, List<OrderBuilder> orderBuilders) {
+    super(orderBuilders);
     this.groupByBuilder = groupByBuilder;
   }
 

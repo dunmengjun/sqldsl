@@ -1,6 +1,9 @@
 package com.dmj.sqldsl.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 
 public class CollectionUtils {
@@ -11,5 +14,10 @@ public class CollectionUtils {
 
   public static <T> boolean hasDuplicateIn(Collection<T> collection) {
     return hasDuplicateIn(collection, x -> x);
+  }
+
+  @SafeVarargs
+  public static <T> List<T> asModifiableList(T... objects) {
+    return new ArrayList<>(Arrays.asList(objects));
   }
 }

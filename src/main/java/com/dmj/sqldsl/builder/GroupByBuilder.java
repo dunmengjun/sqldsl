@@ -1,6 +1,9 @@
 package com.dmj.sqldsl.builder;
 
+import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
+
 import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
+import com.dmj.sqldsl.builder.column.type.ColumnFunction;
 import com.dmj.sqldsl.builder.condition.ConditionalExpression;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
@@ -20,12 +23,17 @@ public abstract class GroupByBuilder implements ToDslQuery {
     return this;
   }
 
-  public GroupByLimitBuilder limit(int offset, int size) {
+  public LimitBuilder limit(int offset, int size) {
     return new GroupByLimitBuilder(this, offset, size);
   }
 
-  public GroupByLimitBuilder limit(int size) {
+  public LimitBuilder limit(int size) {
     return new GroupByLimitBuilder(this, 0, size);
+  }
+
+  public <T, R> OrderByBuilder orderBy(ColumnFunction<T, R> function, boolean isAsc) {
+    return new GroupOrderByBuilder(this,
+        asModifiableList(new OrderBuilder(function, isAsc)));
   }
 
   protected GroupBy buildGroupBy(EntityConfig config) {
@@ -35,5 +43,14 @@ public abstract class GroupByBuilder implements ToDslQuery {
         .orElse(new GroupBy(columns));
   }
 
-  protected abstract DslQuery.DslQueryBuilder build(EntityConfig config);
+  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
+    return buildDslQueryBuilder(config).groupBy(this.buildGroupBy(config));
+  }
+
+  @Override
+  public DslQuery toQuery(EntityConfig config) {
+    return this.build(config).build();
+  }
+
+  protected abstract DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config);
 }

@@ -17,16 +17,16 @@ public class WhereBuilder implements ToDslQuery {
     this.conditionalExpression = conditionalExpression;
   }
 
-  public WhereLimitBuilder limit(int offset, int size) {
+  public LimitBuilder limit(int offset, int size) {
     return new WhereLimitBuilder(this, offset, size);
   }
 
-  public WhereLimitBuilder limit(int size) {
+  public LimitBuilder limit(int size) {
     return new WhereLimitBuilder(this, 0, size);
   }
 
   @SafeVarargs
-  public final <T, R> WhereGroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
+  public final <T, R> GroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
     return new WhereGroupByBuilder(this, new FunctionColumnsBuilder(Arrays.asList(functions)));
   }
 

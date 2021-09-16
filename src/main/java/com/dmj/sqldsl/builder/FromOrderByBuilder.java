@@ -1,16 +1,16 @@
 package com.dmj.sqldsl.builder;
 
-import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
+import java.util.List;
 
-public class FromGroupByBuilder extends GroupByBuilder {
+public class FromOrderByBuilder extends OrderByBuilder {
 
   private final FromBuilder fromBuilder;
 
-  public FromGroupByBuilder(FromBuilder fromBuilder, FunctionColumnsBuilder columnsBuilder) {
+  public FromOrderByBuilder(FromBuilder fromBuilder, List<OrderBuilder> orderBuilders) {
+    super(orderBuilders);
     this.fromBuilder = fromBuilder;
-    this.columnsBuilder = columnsBuilder;
   }
 
   @Override

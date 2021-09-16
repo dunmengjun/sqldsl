@@ -15,12 +15,7 @@ public class WhereGroupByBuilder extends GroupByBuilder {
   }
 
   @Override
-  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
-    return whereBuilder.build(config).groupBy(this.buildGroupBy(config));
-  }
-
-  @Override
-  public DslQuery toQuery(EntityConfig config) {
-    return this.build(config).build();
+  protected DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config) {
+    return whereBuilder.build(config);
   }
 }

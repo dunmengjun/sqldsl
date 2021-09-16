@@ -2,17 +2,19 @@ package com.dmj.sqldsl.builder;
 
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public class FromLimitBuilder implements LimitBuilder {
+public class FromLimitBuilder extends LimitBuilder {
 
-  private FromBuilder fromBuilder;
-  private int offset;
-  private int size;
+  private final FromBuilder fromBuilder;
 
-  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
-    return fromBuilder.build(config).limit(new Limit(offset, size));
+  public FromLimitBuilder(FromBuilder fromBuilder, int offset, int size) {
+    super(offset, size);
+    this.fromBuilder = fromBuilder;
+  }
+
+  @Override
+  protected DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config) {
+    return fromBuilder.build(config);
   }
 
   @Override

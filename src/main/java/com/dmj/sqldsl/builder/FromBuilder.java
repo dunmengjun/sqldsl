@@ -1,5 +1,6 @@
 package com.dmj.sqldsl.builder;
 
+import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
 import static com.dmj.sqldsl.utils.CollectionUtils.hasDuplicateIn;
 import static java.util.stream.Collectors.toList;
 
@@ -32,11 +33,11 @@ public class FromBuilder implements ToDslQuery {
     return new WhereBuilder(this, conditionalExpression);
   }
 
-  public FromLimitBuilder limit(int offset, int size) {
+  public LimitBuilder limit(int offset, int size) {
     return new FromLimitBuilder(this, offset, size);
   }
 
-  public FromLimitBuilder limit(int size) {
+  public LimitBuilder limit(int size) {
     return new FromLimitBuilder(this, 0, size);
   }
 
@@ -56,8 +57,12 @@ public class FromBuilder implements ToDslQuery {
   }
 
   @SafeVarargs
-  public final <T, R> FromGroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
+  public final <T, R> GroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
     return new FromGroupByBuilder(this, new FunctionColumnsBuilder(Arrays.asList(functions)));
+  }
+
+  public <T, R> OrderByBuilder orderBy(ColumnFunction<T, R> function, boolean isAsc) {
+    return new FromOrderByBuilder(this, asModifiableList(new OrderBuilder(function, isAsc)));
   }
 
   protected DslQuery.DslQueryBuilder build(EntityConfig config) {
