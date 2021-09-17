@@ -20,7 +20,7 @@ public class GroupByTableTest extends DatabaseTest {
         .selectAll(User.class)
         .from(User.class)
         .groupBy(User::getAge, User::getId)
-        .having(gt(User::getAge, 16))
+        .having(gt(User::getAge, 16.7))
         .toQuery();
 
     List<User> actual = executor.execute(query, User.class);

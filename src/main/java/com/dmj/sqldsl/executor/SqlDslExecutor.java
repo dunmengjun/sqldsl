@@ -16,8 +16,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SqlDslExecutor implements Executor {
+
+  private final Logger logger = LoggerFactory.getLogger(SqlDslExecutor.class);
 
   private final ConnectionManager manager;
   private final SqlDialect dialect;
@@ -39,7 +43,10 @@ public class SqlDslExecutor implements Executor {
   private <T> List<T> executeQuery(DslQuery query, Class<T> targetClass) throws SQLException {
     ModelVisitor visitor = getModeVisitor(dialect);
     String sql = visitor.visit(query);
-    System.out.println(sql);
+    logger.debug("=========================");
+    logger.debug(sql);
+    logger.debug(visitor.getParams().toString());
+    logger.debug("=========================");
     try (Connection connection = manager.getConnection()) {
       try (PreparedStatement statement = connection.prepareStatement(sql)) {
         setParameter(statement, visitor.getParams());

@@ -13,15 +13,23 @@ repositories {
 
 dependencies {
     implementation 'javax.persistence:persistence-api:1.0.2'
-    implementation 'mysql:mysql-connector-java:8.0.26'
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
+
+    testImplementation 'ch.qos.logback:logback-core:1.2.6'
+    testImplementation 'ch.qos.logback:logback-classic:1.2.6'
+
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testImplementation 'com.h2database:h2:1.4.200'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+
+    testImplementation 'mysql:mysql-connector-java:8.0.26'
+    testImplementation 'com.h2database:h2:1.4.200'
 }
 
 test {
