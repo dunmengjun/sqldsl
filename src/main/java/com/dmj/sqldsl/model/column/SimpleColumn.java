@@ -32,4 +32,20 @@ public class SimpleColumn implements Column {
     }
     return Optional.of(tableName);
   }
+
+  public static SimpleColumn of(Column column, String alias) {
+    return column.getTableName()
+        .map(tableName ->
+            SimpleColumn.builder()
+                .tableName(tableName)
+                .name(column.getName())
+                .alias(alias)
+                .build())
+        .orElse(
+            SimpleColumn.builder()
+                .name(column.getName())
+                .alias(alias)
+                .build()
+        );
+  }
 }

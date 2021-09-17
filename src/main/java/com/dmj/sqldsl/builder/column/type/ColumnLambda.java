@@ -8,9 +8,9 @@ import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 
 @FunctionalInterface
-public interface BooleanFunction<T> extends Serializable {
+public interface ColumnLambda<T, R> extends Serializable {
 
-  Boolean apply(T t);
+  R apply(T t);
 
   default ColumnBuilder getColumnBuilder() {
     return new LambdaColumnBuilder(invokeMethod("writeReplace", this));

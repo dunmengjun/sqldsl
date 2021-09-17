@@ -3,7 +3,7 @@ package com.dmj.sqldsl.builder.condition;
 import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.column.ValueColumnBuilder;
-import com.dmj.sqldsl.builder.column.type.ColumnFunction;
+import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.condition.ConditionElement;
 import com.dmj.sqldsl.model.condition.Conditions;
@@ -30,7 +30,7 @@ public class ConditionalExpression implements ConditionElementBuilder {
     this.elementBuilders.add(conditionBuilder);
   }
 
-  public <T, R> ConditionalExpression eq(ColumnFunction<T, R> function, Object object) {
+  public <T, R> ConditionalExpression eq(ColumnLambda<T, R> function, Object object) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(
         new ConditionBuilder(function.getColumnBuilder(),
@@ -39,8 +39,8 @@ public class ConditionalExpression implements ConditionElementBuilder {
     return this;
   }
 
-  public <T, R, O, K> ConditionalExpression eq(ColumnFunction<T, R> left,
-      ColumnFunction<O, K> right) {
+  public <T, R, O, K> ConditionalExpression eq(ColumnLambda<T, R> left,
+      ColumnLambda<O, K> right) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(left.getColumnBuilder(),
         right.getColumnBuilder()));

@@ -2,8 +2,8 @@ package com.dmj.sqldsl.builder;
 
 import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
 
-import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
-import com.dmj.sqldsl.builder.column.type.ColumnFunction;
+import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
+import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.condition.ConditionalExpression;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public abstract class GroupByBuilder implements ToDslQuery {
 
   protected ConditionalExpression havingConditions;
-  protected FunctionColumnsBuilder columnsBuilder;
+  protected NormalColumnsBuilder columnsBuilder;
 
 
   public final GroupByBuilder having(ConditionalExpression havingConditions) {
@@ -31,7 +31,7 @@ public abstract class GroupByBuilder implements ToDslQuery {
     return new GroupByLimitBuilder(this, 0, size);
   }
 
-  public <T, R> OrderByBuilder orderBy(ColumnFunction<T, R> function, boolean isAsc) {
+  public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
     return new GroupOrderByBuilder(this,
         asModifiableList(new OrderBuilder(function, isAsc)));
   }

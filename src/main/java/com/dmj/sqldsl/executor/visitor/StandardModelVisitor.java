@@ -3,6 +3,7 @@ package com.dmj.sqldsl.executor.visitor;
 import static java.util.stream.Collectors.joining;
 
 import com.dmj.sqldsl.executor.exception.UnsupportedConditionMethodException;
+import com.dmj.sqldsl.executor.exception.UnsupportedFunctionException;
 import com.dmj.sqldsl.executor.exception.UnsupportedJoinFlagException;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.GroupBy;
@@ -11,6 +12,8 @@ import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.Limit;
 import com.dmj.sqldsl.model.SelectFrom;
 import com.dmj.sqldsl.model.SimpleTable;
+import com.dmj.sqldsl.model.column.Function;
+import com.dmj.sqldsl.model.column.FunctionColumn;
 import com.dmj.sqldsl.model.column.ListValueColumn;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.model.column.ValueColumn;
@@ -39,6 +42,27 @@ public class StandardModelVisitor extends ModelVisitor {
     return query.getLimit()
         .map(limit -> visitLimit(selectFromWhere, limit))
         .orElse(selectFromWhere);
+  }
+
+  @Override
+  protected String visit(FunctionColumn column) {
+    String name = column.getTableName()
+        .map(tableName -> String.format("%s.%s", tableName, column.getName()))
+        .orElse(column.getName());
+    return column.getAlias()
+        .map(alias -> String.format("%s(%s) as %s", visit(column.getFunction()), name, alias))
+        .orElse(String.format("%s(%s)", visit(column.getFunction()), name));
+  }
+
+  private String visit(Function function) {
+    switch (function) {
+      case count:
+        return "count";
+      case sum:
+        return "sum";
+      default:
+        throw new UnsupportedFunctionException(function);
+    }
   }
 
   protected String visit(Limit limit) {

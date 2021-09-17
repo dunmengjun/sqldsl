@@ -8,9 +8,9 @@ import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 
 @FunctionalInterface
-public interface StringFunction<T> extends Serializable {
+public interface NumberLambda<T> extends Serializable {
 
-  String apply(T t);
+  Number apply(T t);
 
   default ColumnBuilder getColumnBuilder() {
     return new LambdaColumnBuilder(invokeMethod("writeReplace", this));

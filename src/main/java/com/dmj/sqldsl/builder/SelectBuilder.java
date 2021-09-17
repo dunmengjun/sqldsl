@@ -6,9 +6,11 @@ import static java.util.Collections.singletonList;
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.ColumnsBuilder;
 import com.dmj.sqldsl.builder.column.EntityColumnsBuilder;
-import com.dmj.sqldsl.builder.column.FunctionAliasColumnBuilder;
-import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
-import com.dmj.sqldsl.builder.column.type.ColumnFunction;
+import com.dmj.sqldsl.builder.column.FunctionColumnBuilder;
+import com.dmj.sqldsl.builder.column.LambdaAliasColumnBuilder;
+import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
+import com.dmj.sqldsl.builder.column.type.ColumnLambda;
+import com.dmj.sqldsl.builder.column.type.FunctionType;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityTablesBuilder;
 import com.dmj.sqldsl.model.column.Column;
@@ -27,22 +29,34 @@ public class SelectBuilder {
     this.aliasBuilders = new ArrayList<>();
   }
 
+  public SelectBuilder(ColumnBuilder aliasBuilder) {
+    this.columnsBuilders = new ArrayList<>();
+    this.aliasBuilders = new ArrayList<>();
+    this.aliasBuilders.add(aliasBuilder);
+  }
+
   @SafeVarargs
   public final <T, R> SelectBuilder selectAll(Class<T> entityClass,
-      ColumnFunction<T, R>... excludeColumns) {
+      ColumnLambda<T, R>... excludeColumns) {
     this.columnsBuilders.add(new EntityColumnsBuilder(entityClass, asList(excludeColumns)));
     return this;
   }
 
   @SafeVarargs
-  public final <T, R> SelectBuilder select(ColumnFunction<T, R>... functions) {
-    this.columnsBuilders.add(new FunctionColumnsBuilder(asList(functions)));
+  public final <T, R> SelectBuilder select(ColumnLambda<T, R>... functions) {
+    this.columnsBuilders.add(new NormalColumnsBuilder(asList(functions)));
     return this;
   }
 
-  public <T, R, O, K> SelectBuilder selectAs(ColumnFunction<T, R> column,
-      ColumnFunction<O, K> alias) {
-    this.aliasBuilders.add(new FunctionAliasColumnBuilder(column, alias));
+  public <T, R, O, K> SelectBuilder selectAs(ColumnLambda<T, R> column,
+      ColumnLambda<O, K> alias) {
+    this.aliasBuilders.add(new LambdaAliasColumnBuilder(column, alias));
+    return this;
+  }
+
+  public <T, R, O> SelectBuilder selectAs(FunctionType<T, R> columnBuilder,
+      ColumnLambda<O, R> alias) {
+    this.aliasBuilders.add(new FunctionColumnBuilder(columnBuilder, alias));
     return this;
   }
 
@@ -60,7 +74,11 @@ public class SelectBuilder {
         .distinct()
         .forEach(aliasColumn -> {
           int index = columns.indexOf(aliasColumn);
-          columns.set(index, aliasColumn);
+          if (index >= 0) {
+            columns.set(index, aliasColumn);
+          } else {
+            columns.add(aliasColumn);
+          }
         });
     return columns;
   }

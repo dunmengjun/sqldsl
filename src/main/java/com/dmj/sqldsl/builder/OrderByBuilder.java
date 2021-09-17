@@ -2,7 +2,7 @@ package com.dmj.sqldsl.builder;
 
 import static java.util.stream.Collectors.toList;
 
-import com.dmj.sqldsl.builder.column.type.ColumnFunction;
+import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Order;
@@ -26,7 +26,7 @@ public abstract class OrderByBuilder implements ToDslQuery {
     return buildDslQueryBuilder(config).orderBy(new OrderBy(orders));
   }
 
-  public <T, R> OrderByBuilder orderBy(ColumnFunction<T, R> function, boolean isAsc) {
+  public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
     this.orderBuilders.add(new OrderBuilder(function, isAsc));
     return this;
   }

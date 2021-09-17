@@ -1,23 +1,44 @@
 package com.dmj.sqldsl.utils;
 
+import static com.dmj.sqldsl.utils.ReflectionUtils.getFieldsFromSelfAndSupper;
 import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
 
+import com.dmj.sqldsl.builder.config.ColumnAnnotation;
 import com.dmj.sqldsl.builder.config.TableAnnotation;
 import com.dmj.sqldsl.builder.exception.NoTableAnnotationException;
 import java.lang.annotation.Annotation;
+import java.util.stream.Stream;
 
 public class EntityClassUtils {
 
-  public static String getTableName(TableAnnotation annotation, Class<?> entityClass) {
-    Class<? extends Annotation> tableClass = annotation.getAnnotationClass();
-    if (!entityClass.isAnnotationPresent(tableClass)) {
-      throw new NoTableAnnotationException(entityClass, tableClass);
+  public static String getTableName(TableAnnotation tableConfig, Class<?> entityClass) {
+    Class<? extends Annotation> annotationClass = tableConfig.getAnnotationClass();
+    if (entityClass.isAnnotationPresent(annotationClass)) {
+      Annotation annotation = entityClass.getAnnotation(annotationClass);
+      String tableName = invokeMethod(tableConfig.getTableNameAttribute(), annotation);
+      if (StringUtils.isBlank(tableName)) {
+        tableName = entityClass.getSimpleName();
+      }
+      return tableName;
     }
-    String tableNameAttribute = annotation.getTableNameAttribute();
-    String tableName = invokeMethod(tableNameAttribute, entityClass.getAnnotation(tableClass));
-    if (StringUtils.isBlank(tableName)) {
-      tableName = entityClass.getSimpleName();
+    Class<?> superclass = entityClass.getSuperclass();
+    if (superclass == null) {
+      throw new NoTableAnnotationException(entityClass, annotationClass);
     }
-    return tableName;
+    return getTableName(tableConfig, superclass);
+  }
+
+  public static Stream<String> getColumnNames(ColumnAnnotation columnConfig, Class<?> entityClass) {
+    Class<? extends Annotation> annotationClass = columnConfig.getAnnotationClass();
+    String attribute = columnConfig.getColumnNameAttribute();
+    return getFieldsFromSelfAndSupper(entityClass, annotationClass)
+        .map(field -> {
+          Annotation annotation = field.getAnnotation(annotationClass);
+          String columnName = invokeMethod(attribute, annotation);
+          if (StringUtils.isBlank(columnName)) {
+            columnName = field.getName();
+          }
+          return columnName;
+        });
   }
 }

@@ -1,11 +1,15 @@
 package com.dmj.sqldsl.utils;
 
+import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
+
 import com.dmj.sqldsl.utils.exception.ReflectionException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class ReflectionUtils {
 
@@ -37,6 +41,20 @@ public class ReflectionUtils {
     } catch (NoSuchFieldException e) {
       throw new ReflectionException(e);
     }
+  }
+
+  public static Stream<Field> getFieldsFromSelfAndSupper(Class<?> targetClass,
+      Class<? extends Annotation> annotationClass) {
+    Stream<Field> fieldStream = asModifiableList(targetClass.getDeclaredFields()).stream()
+        .filter(field -> field.isAnnotationPresent(annotationClass));
+    Class<?> superclass = targetClass.getSuperclass();
+    while (superclass != null) {
+      Stream<Field> superClassFieldStream = Arrays.stream(superclass.getDeclaredFields())
+          .filter(field -> field.isAnnotationPresent(annotationClass));
+      fieldStream = Stream.concat(fieldStream, superClassFieldStream);
+      superclass = superclass.getSuperclass();
+    }
+    return fieldStream;
   }
 
   public static Method getMethod(Class<?> targetClass, String methodName) {
@@ -71,7 +89,7 @@ public class ReflectionUtils {
     accessField(getField(instance.getClass(), fieldName), f -> {
       try {
         f.set(instance, value);
-      } catch (IllegalAccessException e) {
+      } catch (IllegalAccessException | IllegalArgumentException e) {
         throw new ReflectionException(e);
       }
       return null;

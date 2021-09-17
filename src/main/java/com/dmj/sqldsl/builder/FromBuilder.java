@@ -4,8 +4,8 @@ import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
 import static com.dmj.sqldsl.utils.CollectionUtils.hasDuplicateIn;
 import static java.util.stream.Collectors.toList;
 
-import com.dmj.sqldsl.builder.column.FunctionColumnsBuilder;
-import com.dmj.sqldsl.builder.column.type.ColumnFunction;
+import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
+import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.condition.ConditionalExpression;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
@@ -57,11 +57,11 @@ public class FromBuilder implements ToDslQuery {
   }
 
   @SafeVarargs
-  public final <T, R> GroupByBuilder groupBy(ColumnFunction<T, R>... functions) {
-    return new FromGroupByBuilder(this, new FunctionColumnsBuilder(Arrays.asList(functions)));
+  public final <T, R> GroupByBuilder groupBy(ColumnLambda<T, R>... functions) {
+    return new FromGroupByBuilder(this, new NormalColumnsBuilder(Arrays.asList(functions)));
   }
 
-  public <T, R> OrderByBuilder orderBy(ColumnFunction<T, R> function, boolean isAsc) {
+  public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
     return new FromOrderByBuilder(this, asModifiableList(new OrderBuilder(function, isAsc)));
   }
 

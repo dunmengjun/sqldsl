@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public class ReflectionException extends RuntimeException {
 
-  private final ReflectiveOperationException exception;
+  private final Exception exception;
 
-  public ReflectionException(ReflectiveOperationException exception) {
+  public ReflectionException(Exception exception) {
     super(exception);
     this.exception = exception;
   }
