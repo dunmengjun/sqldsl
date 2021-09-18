@@ -16,6 +16,7 @@ import com.dmj.sqldsl.model.column.Function;
 import com.dmj.sqldsl.model.column.FunctionColumn;
 import com.dmj.sqldsl.model.column.ListValueColumn;
 import com.dmj.sqldsl.model.column.SimpleColumn;
+import com.dmj.sqldsl.model.column.SubQueryValueColumn;
 import com.dmj.sqldsl.model.column.ValueColumn;
 import com.dmj.sqldsl.model.condition.And;
 import com.dmj.sqldsl.model.condition.Condition;
@@ -42,6 +43,11 @@ public class StandardModelVisitor extends ModelVisitor {
     return query.getLimit()
         .map(limit -> visitLimit(selectFromWhere, limit))
         .orElse(selectFromWhere);
+  }
+
+  @Override
+  protected String visit(SubQueryValueColumn column) {
+    return String.format("(%s)", visit(column.getQuery()));
   }
 
   @Override
@@ -134,6 +140,10 @@ public class StandardModelVisitor extends ModelVisitor {
         return "!=";
       case like:
         return "like";
+      case notLike:
+        return "not like";
+      case notIn:
+        return "not in";
       default:
         throw new UnsupportedConditionMethodException(method);
     }

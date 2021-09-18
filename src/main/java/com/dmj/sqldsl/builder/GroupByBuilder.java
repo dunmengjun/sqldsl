@@ -4,7 +4,7 @@ import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
 
 import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.condition.ConditionalExpression;
+import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.GroupBy;
@@ -12,13 +12,13 @@ import com.dmj.sqldsl.model.column.Column;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class GroupByBuilder implements ToDslQuery {
+public abstract class GroupByBuilder implements DslQueryBuilder {
 
-  protected ConditionalExpression havingConditions;
+  protected ConditionsBuilder havingConditions;
   protected NormalColumnsBuilder columnsBuilder;
 
 
-  public final GroupByBuilder having(ConditionalExpression havingConditions) {
+  public final GroupByBuilder having(ConditionsBuilder havingConditions) {
     this.havingConditions = havingConditions;
     return this;
   }

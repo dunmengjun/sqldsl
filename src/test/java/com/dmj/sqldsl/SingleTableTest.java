@@ -1,12 +1,23 @@
 package com.dmj.sqldsl;
 
+import static com.dmj.sqldsl.builder.column.LikeValue.contains;
+import static com.dmj.sqldsl.builder.condition.ConditionBuilders.between;
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
+import static com.dmj.sqldsl.builder.condition.ConditionBuilders.in;
+import static com.dmj.sqldsl.builder.condition.ConditionBuilders.like;
+import static com.dmj.sqldsl.builder.condition.ConditionBuilders.notIn;
+import static com.dmj.sqldsl.builder.condition.ConditionBuilders.notLike;
+import static com.dmj.sqldsl.platform.H2Mode.h2;
+import static com.dmj.sqldsl.util.DateUtils.parseDate;
+import static com.dmj.sqldsl.util.DateUtils.parseRange;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
+import com.dmj.sqldsl.builder.column.DateRange;
 import com.dmj.sqldsl.dto.AliasUser;
 import com.dmj.sqldsl.dto.NameUser;
+import com.dmj.sqldsl.entity.Book;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
@@ -15,7 +26,7 @@ import java.util.List;
 import org.junit.jupiter.api.TestTemplate;
 
 
-@Database
+@Database({h2})
 public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
@@ -162,5 +173,85 @@ public class SingleTableTest extends DatabaseTest {
 
     List<AliasUser> expected = singletonList(new AliasUser(1, "alice", 16));
     assertEquals(expected, result);
+  }
+
+  @TestTemplate
+  public void should_return_user_name_contains_o_when_select_given_name_like() {
+    DslQuery query = DslQueryBuilder
+        .selectAll(User.class)
+        .from(User.class)
+        .where(like(User::getName, contains("o")))
+        .toQuery();
+
+    List<User> result = executor.execute(query, User.class);
+
+    List<User> expected = Arrays.asList(
+        new User(2, "bob", 17),
+        new User(3, "tom", 17)
+    );
+    assertEquals(expected, result);
+  }
+
+  @TestTemplate
+  public void should_return_user_name_not_contains_o_when_select_given_name_not_like() {
+    DslQuery query = DslQueryBuilder
+        .selectAll(User.class)
+        .from(User.class)
+        .where(notLike(User::getName, contains("o")))
+        .toQuery();
+
+    List<User> result = executor.execute(query, User.class);
+
+    List<User> expected = singletonList(new User(1, "alice", 16));
+    assertEquals(expected, result);
+  }
+
+  @TestTemplate
+  public void should_return_user_in_special_ids_when_select_given_id_in() {
+    DslQuery query = DslQueryBuilder
+        .selectAll(User.class)
+        .from(User.class)
+        .where(in(User::getId, 1, 2))
+        .toQuery();
+
+    List<User> result = executor.execute(query, User.class);
+
+    List<User> expected = Arrays.asList(
+        new User(1, "alice", 16),
+        new User(2, "bob", 17)
+    );
+    assertEquals(expected, result);
+  }
+
+  @TestTemplate
+  public void should_return_user_not_in_special_ids_when_select_given_id_not_in() {
+    DslQuery query = DslQueryBuilder
+        .selectAll(User.class)
+        .from(User.class)
+        .where(notIn(User::getId, 1, 2))
+        .toQuery();
+
+    List<User> result = executor.execute(query, User.class);
+
+    List<User> expected = singletonList(
+        new User(3, "tom", 17)
+    );
+    assertEquals(expected, result);
+  }
+
+  @TestTemplate
+  public void should_return_user_between_special_time_range_when_select_given_between_time_range() {
+    DateRange dateRange = parseRange("2021-09-29 19:23:11,2021-09-29 20:23:11");
+    DslQuery query = DslQueryBuilder
+        .selectAll(Book.class)
+        .from(Book.class)
+        .where(between(Book::getCreateTime, dateRange))
+        .toQuery();
+
+    List<Book> actual = executor.execute(query, Book.class);
+
+    List<Book> expected = singletonList(
+        new Book(1, "book1", parseDate("2021-09-29 19:23:11")));
+    assertEquals(expected, actual);
   }
 }

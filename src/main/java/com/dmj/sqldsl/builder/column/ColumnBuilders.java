@@ -1,7 +1,9 @@
 package com.dmj.sqldsl.builder.column;
 
+import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.column.type.FunctionType;
+import com.dmj.sqldsl.builder.column.type.SubQueryType;
 import com.dmj.sqldsl.model.column.Function;
 
 public class ColumnBuilders {
@@ -12,5 +14,9 @@ public class ColumnBuilders {
 
   public static <T, R> FunctionType<T, Long> sum(ColumnLambda<T, R> column) {
     return new FunctionType<>(Function.sum, column);
+  }
+
+  public static SubQueryType query(DslQueryBuilder queryBuilder) {
+    return new SubQueryType(queryBuilder);
   }
 }

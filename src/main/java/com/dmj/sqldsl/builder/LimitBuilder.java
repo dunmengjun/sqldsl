@@ -4,7 +4,7 @@ import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Limit;
 
-public abstract class LimitBuilder implements ToDslQuery {
+public abstract class LimitBuilder implements DslQueryBuilder {
 
   private final int offset;
   private final int size;

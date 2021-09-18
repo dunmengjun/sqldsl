@@ -13,4 +13,10 @@ public class StringUtils {
       return Character.toLowerCase(s.charAt(0)) + s.substring(1);
     }
   }
+
+  public static void assertNotEmpty(String value, String message) {
+    if (isBlank(value)) {
+      throw new IllegalArgumentException(message);
+    }
+  }
 }

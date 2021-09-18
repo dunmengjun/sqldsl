@@ -2,19 +2,19 @@ package com.dmj.sqldsl.builder;
 
 import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.condition.ConditionalExpression;
+import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
 import java.util.Arrays;
 
-public class WhereBuilder implements ToDslQuery {
+public class WhereBuilder implements DslQueryBuilder {
 
   private final FromBuilder fromBuilder;
-  private final ConditionalExpression conditionalExpression;
+  private final ConditionsBuilder conditionsBuilder;
 
-  public WhereBuilder(FromBuilder fromBuilder, ConditionalExpression conditionalExpression) {
+  public WhereBuilder(FromBuilder fromBuilder, ConditionsBuilder conditionsBuilder) {
     this.fromBuilder = fromBuilder;
-    this.conditionalExpression = conditionalExpression;
+    this.conditionsBuilder = conditionsBuilder;
   }
 
   public LimitBuilder limit(int offset, int size) {
@@ -31,7 +31,7 @@ public class WhereBuilder implements ToDslQuery {
   }
 
   protected DslQuery.DslQueryBuilder build(EntityConfig config) {
-    return fromBuilder.build(config).conditions(conditionalExpression.build(config));
+    return fromBuilder.build(config).conditions(conditionsBuilder.build(config));
   }
 
   public DslQuery toQuery(EntityConfig config) {

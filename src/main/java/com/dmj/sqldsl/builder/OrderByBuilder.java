@@ -9,7 +9,7 @@ import com.dmj.sqldsl.model.Order;
 import com.dmj.sqldsl.model.OrderBy;
 import java.util.List;
 
-public abstract class OrderByBuilder implements ToDslQuery {
+public abstract class OrderByBuilder implements DslQueryBuilder {
 
   private final List<OrderBuilder> orderBuilders;
 

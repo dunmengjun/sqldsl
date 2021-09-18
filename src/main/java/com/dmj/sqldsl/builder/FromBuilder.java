@@ -6,7 +6,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.condition.ConditionalExpression;
+import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
 import com.dmj.sqldsl.builder.table.TablesBuilder;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FromBuilder implements ToDslQuery {
+public class FromBuilder implements DslQueryBuilder {
 
   private final SelectBuilder selectBuilder;
   private final TablesBuilder tablesBuilder;
@@ -29,8 +29,8 @@ public class FromBuilder implements ToDslQuery {
     this.joinBuilders = new ArrayList<>();
   }
 
-  public WhereBuilder where(ConditionalExpression conditionalExpression) {
-    return new WhereBuilder(this, conditionalExpression);
+  public WhereBuilder where(ConditionsBuilder conditionsBuilder) {
+    return new WhereBuilder(this, conditionsBuilder);
   }
 
   public LimitBuilder limit(int offset, int size) {
@@ -41,18 +41,18 @@ public class FromBuilder implements ToDslQuery {
     return new FromLimitBuilder(this, 0, size);
   }
 
-  public FromBuilder leftJoin(Class<?> entityClass, ConditionalExpression conditionalExpression) {
-    this.joinBuilders.add(new JoinBuilder(JoinFlag.left, entityClass, conditionalExpression));
+  public FromBuilder leftJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
+    this.joinBuilders.add(new JoinBuilder(JoinFlag.left, entityClass, conditionsBuilder));
     return this;
   }
 
-  public FromBuilder rightJoin(Class<?> entityClass, ConditionalExpression conditionalExpression) {
-    this.joinBuilders.add(new JoinBuilder(JoinFlag.right, entityClass, conditionalExpression));
+  public FromBuilder rightJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
+    this.joinBuilders.add(new JoinBuilder(JoinFlag.right, entityClass, conditionsBuilder));
     return this;
   }
 
-  public FromBuilder innerJoin(Class<?> entityClass, ConditionalExpression conditionalExpression) {
-    this.joinBuilders.add(new JoinBuilder(JoinFlag.inner, entityClass, conditionalExpression));
+  public FromBuilder innerJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
+    this.joinBuilders.add(new JoinBuilder(JoinFlag.inner, entityClass, conditionsBuilder));
     return this;
   }
 

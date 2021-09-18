@@ -54,9 +54,9 @@ public class SelectBuilder {
     return this;
   }
 
-  public <T, R, O> SelectBuilder selectAs(FunctionType<T, R> columnBuilder,
+  public <T, R, O> SelectBuilder selectAs(FunctionType<T, R> functionType,
       ColumnLambda<O, R> alias) {
-    this.aliasBuilders.add(new FunctionColumnBuilder(columnBuilder, alias));
+    this.aliasBuilders.add(new FunctionColumnBuilder(functionType, alias));
     return this;
   }
 

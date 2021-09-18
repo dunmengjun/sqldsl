@@ -10,6 +10,7 @@ import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.FunctionColumn;
 import com.dmj.sqldsl.model.column.ListValueColumn;
 import com.dmj.sqldsl.model.column.SimpleColumn;
+import com.dmj.sqldsl.model.column.SubQueryValueColumn;
 import com.dmj.sqldsl.model.column.ValueColumn;
 import com.dmj.sqldsl.model.condition.And;
 import com.dmj.sqldsl.model.condition.Condition;
@@ -29,6 +30,8 @@ public abstract class ModelVisitor {
       return visit((ListValueColumn) column);
     } else if (column instanceof FunctionColumn) {
       return visit((FunctionColumn) column);
+    } else if (column instanceof SubQueryValueColumn) {
+      return visit((SubQueryValueColumn) column);
     }
     throw new UnsupportedColumnException(column);
   }
@@ -55,6 +58,8 @@ public abstract class ModelVisitor {
 
 
   public abstract String visit(DslQuery query);
+
+  protected abstract String visit(SubQueryValueColumn column);
 
   protected abstract String visit(FunctionColumn column);
 

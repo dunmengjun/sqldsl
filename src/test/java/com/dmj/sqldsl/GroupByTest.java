@@ -2,21 +2,21 @@ package com.dmj.sqldsl;
 
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.count;
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.sum;
+import static com.dmj.sqldsl.platform.H2Mode.h2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.dto.AgeCount;
 import com.dmj.sqldsl.dto.AgeSum;
 import com.dmj.sqldsl.entity.TypeUser;
-import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.TestTemplate;
 
-@Database
-public class GroupByTableTest extends DatabaseTest {
+@Database({h2})
+public class GroupByTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_the_count_for_age_when_select_count_age_given_group_by_age() {
@@ -37,10 +37,10 @@ public class GroupByTableTest extends DatabaseTest {
   }
 
   @TestTemplate
-  public void should_return_the_sum_for_age_when_select_count_age_given_group_by_age() {
+  public void should_return_the_sum_for_age_when_select_sum_age_given_group_by_age() {
     DslQuery query = DslQueryBuilder
         .select(TypeUser::getType)
-        .selectAs(sum(User::getAge), AgeSum::getCount)
+        .selectAs(sum(TypeUser::getAge), AgeSum::getCount)
         .from(TypeUser.class)
         .groupBy(TypeUser::getType)
         .toQuery();

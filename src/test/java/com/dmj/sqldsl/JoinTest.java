@@ -1,6 +1,7 @@
 package com.dmj.sqldsl;
 
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
+import static com.dmj.sqldsl.platform.H2Mode.h2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
@@ -18,8 +19,8 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.TestTemplate;
 
-@Database
-public class JoinTableTest extends DatabaseTest {
+@Database({h2})
+public class JoinTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_alice_with_comment_when_select_all_given_left_join() {

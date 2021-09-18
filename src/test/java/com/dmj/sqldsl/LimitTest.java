@@ -15,7 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.TestTemplate;
 
 @Database
-public class PageTableTest extends DatabaseTest {
+public class LimitTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_page_user_when_select_all_given_paged() {
