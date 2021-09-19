@@ -1,7 +1,6 @@
 package com.dmj.sqldsl.builder;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.ColumnsBuilder;
@@ -12,7 +11,7 @@ import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.column.type.FunctionType;
 import com.dmj.sqldsl.builder.config.EntityConfig;
-import com.dmj.sqldsl.builder.table.EntityTablesBuilder;
+import com.dmj.sqldsl.builder.table.EntityTableBuilder;
 import com.dmj.sqldsl.model.column.Column;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +59,8 @@ public class SelectBuilder {
     return this;
   }
 
-  public FromBuilder from(Class<?> entityClasses) {
-    return new FromBuilder(this, new EntityTablesBuilder(singletonList(entityClasses)));
+  public FromBuilder from(Class<?> entityClass) {
+    return new FromBuilder(this, new EntityTableBuilder(entityClass));
   }
 
   protected List<Column> build(EntityConfig config) {

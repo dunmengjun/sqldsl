@@ -9,7 +9,7 @@ import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
-import com.dmj.sqldsl.builder.table.TablesBuilder;
+import com.dmj.sqldsl.builder.table.TableBuilder;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.SelectFrom;
@@ -20,12 +20,12 @@ import java.util.List;
 public class FromBuilder implements DslQueryBuilder {
 
   private final SelectBuilder selectBuilder;
-  private final TablesBuilder tablesBuilder;
+  private final TableBuilder tableBuilder;
   private final List<JoinBuilder> joinBuilders;
 
-  public FromBuilder(SelectBuilder selectBuilder, TablesBuilder tablesBuilder) {
+  public FromBuilder(SelectBuilder selectBuilder, TableBuilder tableBuilder) {
     this.selectBuilder = selectBuilder;
-    this.tablesBuilder = tablesBuilder;
+    this.tableBuilder = tableBuilder;
     this.joinBuilders = new ArrayList<>();
   }
 
@@ -71,7 +71,7 @@ public class FromBuilder implements DslQueryBuilder {
     }
     SelectFrom selectFrom = SelectFrom.builder()
         .columns(selectBuilder.build(config))
-        .tables(tablesBuilder.build(config))
+        .table(tableBuilder.build(config))
         .joins(joinBuilders.stream()
             .map(joinBuilder -> joinBuilder.build(config))
             .collect(toList()))

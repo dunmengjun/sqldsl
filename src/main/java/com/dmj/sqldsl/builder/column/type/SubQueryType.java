@@ -10,7 +10,6 @@ public class SubQueryType implements ColumnBuilderFactory {
 
   private DslQueryBuilder queryBuilder;
 
-
   @Override
   public ColumnBuilder getColumnBuilder() {
     return new SubQueryColumnBuilder(queryBuilder);

@@ -14,7 +14,7 @@ public class SelectFrom {
   @Setter
   private List<Column> columns;
   @Getter
-  private List<Table> tables;
+  private Table table;
   private List<Join> joins;
 
   public Optional<List<Join>> getJoins() {

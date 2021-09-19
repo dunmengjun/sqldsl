@@ -1,6 +1,6 @@
 package com.dmj.sqldsl;
 
-import static com.dmj.sqldsl.builder.column.ColumnBuilders.query;
+import static com.dmj.sqldsl.builder.column.ColumnBuilders.subQuery;
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.ge;
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.in;
 import static com.dmj.sqldsl.platform.H2Mode.h2;
@@ -26,7 +26,7 @@ public class SubQueryTest extends DatabaseTest {
     DslQuery query = DslQueryBuilder
         .selectAll(User.class)
         .from(User.class)
-        .where(in(User::getName, query(queryBuilder)))
+        .where(in(User::getName, subQuery(queryBuilder)))
         .toQuery();
 
     List<User> actual = executor.execute(query, User.class);

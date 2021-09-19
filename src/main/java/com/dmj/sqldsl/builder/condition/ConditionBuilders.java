@@ -190,8 +190,8 @@ public class ConditionBuilders {
     return create(lambda, in, asList(valueList));
   }
 
-  public static <T, R> ConditionsBuilder in(ColumnLambda<T, R> lambda, SubQueryType selectType) {
-    return create(lambda, in, selectType.getColumnBuilder());
+  public static <T, R> ConditionsBuilder in(ColumnLambda<T, R> lambda, SubQueryType subQuery) {
+    return create(lambda, in, subQuery.getColumnBuilder());
   }
 
   public static <T> ConditionsBuilder notIn(
@@ -214,6 +214,10 @@ public class ConditionBuilders {
 
   public static <T> ConditionsBuilder notIn(LongLambda<T> lambda, Long... valueList) {
     return create(lambda, notIn, asList(valueList));
+  }
+
+  public static <T, R> ConditionsBuilder notIn(ColumnLambda<T, R> lambda, SubQueryType subQuery) {
+    return create(lambda, notIn, subQuery.getColumnBuilder());
   }
 
   public static <T> ConditionsBuilder like(StringLambda<T> lambda, LikeValue likeValue) {

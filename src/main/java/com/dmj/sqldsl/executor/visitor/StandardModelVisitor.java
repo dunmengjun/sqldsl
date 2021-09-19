@@ -97,9 +97,7 @@ public class StandardModelVisitor extends ModelVisitor {
     String columnsSqlString = selectFrom.getColumns().stream()
         .map(this::visit)
         .collect(joining(", "));
-    String tablesSqlString = selectFrom.getTables().stream()
-        .map(this::visit)
-        .collect(joining(","));
+    String tablesSqlString = visit(selectFrom.getTable());
     String joinSqlString = selectFrom.getJoins()
         .map(x -> x.stream().map(this::visit).collect(joining(" ", " ", "")))
         .orElse("");
