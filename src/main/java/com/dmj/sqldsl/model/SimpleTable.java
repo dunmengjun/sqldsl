@@ -1,11 +1,25 @@
 package com.dmj.sqldsl.model;
 
-import lombok.AllArgsConstructor;
+import java.util.Optional;
 import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
 public class SimpleTable implements Table {
 
+  private String alias;
+
+  @Getter
   private final String tableName;
+
+  public SimpleTable(String tableName) {
+    this.tableName = tableName;
+  }
+
+  public SimpleTable(String tableName, String alias) {
+    this.alias = alias;
+    this.tableName = tableName;
+  }
+
+  public Optional<String> getAlias() {
+    return Optional.ofNullable(alias);
+  }
 }

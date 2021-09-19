@@ -1,5 +1,6 @@
 package com.dmj.sqldsl.builder.column;
 
+import static com.dmj.sqldsl.utils.EntityClassUtils.getAlias;
 import static com.dmj.sqldsl.utils.EntityClassUtils.getColumnNames;
 import static com.dmj.sqldsl.utils.EntityClassUtils.getTableName;
 import static java.util.stream.Collectors.toList;
@@ -25,8 +26,9 @@ public class EntityColumnsBuilder implements ColumnsBuilder {
 
   @Override
   public List<Column> build(EntityConfig config) {
+    String finalTableName = getAlias(entityClass)
+        .orElse(getTableName(config.getTableAnnotation(), entityClass));
     Class<? extends Annotation> columnClass = config.getColumnAnnotation().getAnnotationClass();
-    String finalTableName = getTableName(config.getTableAnnotation(), entityClass);
     List<Column> columns = getColumnNames(config.getColumnAnnotation(), entityClass)
         .map(columnName ->
             SimpleColumn.builder()

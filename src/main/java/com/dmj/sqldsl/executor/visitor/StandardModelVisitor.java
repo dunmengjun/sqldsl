@@ -183,7 +183,9 @@ public class StandardModelVisitor extends ModelVisitor {
 
   @Override
   protected String visit(SimpleTable table) {
-    return table.getTableName();
+    return table.getAlias()
+        .map(alias -> String.format("%s as %s", table.getTableName(), alias))
+        .orElse(table.getTableName());
   }
 
   private String visit(GroupBy groupBy) {

@@ -18,12 +18,6 @@ public class ConditionBuilder implements ConditionElementBuilder {
     this.right = right;
   }
 
-  public ConditionBuilder(ColumnBuilder left, ColumnBuilder right) {
-    this.left = left;
-    this.method = ConditionMethod.eq;
-    this.right = right;
-  }
-
   @Override
   public ConditionElement build(EntityConfig config) {
     return new Condition(left.build(config), method, right.build(config));

@@ -1,9 +1,8 @@
 package com.dmj.sqldsl.executor;
 
 import static com.dmj.sqldsl.executor.visitor.ModelVisitorFactory.getModeVisitor;
-import static com.dmj.sqldsl.utils.ReflectionUtils.hasField;
 import static com.dmj.sqldsl.utils.ReflectionUtils.newInstance;
-import static com.dmj.sqldsl.utils.ReflectionUtils.setValue;
+import static com.dmj.sqldsl.utils.ReflectionUtils.recursiveSetValue;
 
 import com.dmj.sqldsl.executor.exception.ExecutionException;
 import com.dmj.sqldsl.executor.visitor.ModelVisitor;
@@ -65,9 +64,7 @@ public class SqlDslExecutor implements Executor {
         T target = newInstance(targetClass);
         for (Column column : columns) {
           String name = column.getAlias().orElse(column.getName());
-          if (hasField(targetClass, name)) {
-            setValue(name, target, resultSet.getObject(name));
-          }
+          recursiveSetValue(name, target, resultSet.getObject(name));
         }
         list.add(target);
       }
