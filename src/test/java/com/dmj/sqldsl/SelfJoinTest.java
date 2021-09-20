@@ -5,7 +5,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
-import com.dmj.sqldsl.builder.table.EntityTableBuilder;
+import com.dmj.sqldsl.builder.table.EntityBuilder;
 import com.dmj.sqldsl.entity.Dept;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
@@ -17,7 +17,7 @@ public class SelfJoinTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_up_dept_when_select_given_other_alias_method() {
-    EntityTableBuilder selfDept = EntityTableBuilder.ref(Dept.class);
+    EntityBuilder selfDept = EntityBuilder.alias(Dept.class);
     DslQuery query = DslQueryBuilder
         .selectAll(selfDept)
         .from(Dept.class)

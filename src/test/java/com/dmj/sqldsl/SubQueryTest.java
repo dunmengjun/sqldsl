@@ -9,7 +9,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
-import com.dmj.sqldsl.builder.table.SubQueryTableBuilder;
+import com.dmj.sqldsl.builder.table.SubQueryBuilder;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
@@ -47,7 +47,7 @@ public class SubQueryTest extends DatabaseTest {
         .selectAll(User.class)
         .from(User.class)
         .where(lt(User::getAge, 17));
-    SubQueryTableBuilder subQuery = SubQueryTableBuilder.ref(queryBuilder);
+    SubQueryBuilder subQuery = SubQueryBuilder.alias(queryBuilder);
     DslQuery query = DslQueryBuilder
         .selectAll(subQuery)
         .from(subQuery)
@@ -68,7 +68,7 @@ public class SubQueryTest extends DatabaseTest {
         .selectAll(User.class)
         .from(User.class)
         .where(lt(User::getAge, 17));
-    SubQueryTableBuilder subQuery = SubQueryTableBuilder.ref(queryBuilder);
+    SubQueryBuilder subQuery = SubQueryBuilder.alias(queryBuilder);
     DslQuery query = DslQueryBuilder
         .selectAll(subQuery)
         .from(User.class)

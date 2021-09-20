@@ -19,22 +19,22 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-public class EntityTableBuilder implements TableBuilder {
+public class EntityBuilder implements TableBuilder {
 
   private final Class<?> entityClass;
 
   private String alias;
 
-  public static EntityTableBuilder ref(Class<?> entityClass) {
+  public static EntityBuilder alias(Class<?> entityClass) {
     String simpleName = entityClass.getSimpleName();
-    return new EntityTableBuilder(entityClass, TableBuilder.getAlias(simpleName));
+    return new EntityBuilder(entityClass, TableBuilder.getAlias(simpleName));
   }
 
-  public EntityTableBuilder(Class<?> entityClass) {
+  public EntityBuilder(Class<?> entityClass) {
     this.entityClass = entityClass;
   }
 
-  public EntityTableBuilder(Class<?> entityClass, String alias) {
+  public EntityBuilder(Class<?> entityClass, String alias) {
     this.entityClass = entityClass;
     this.alias = alias;
   }

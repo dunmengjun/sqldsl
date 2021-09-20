@@ -27,7 +27,7 @@ public abstract class OrderByBuilder implements DslQueryBuilder {
   }
 
   public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
-    this.orderBuilders.add(new OrderBuilder(function, isAsc));
+    this.orderBuilders.add(new OrderBuilder(function.getColumnBuilder(), isAsc));
     return this;
   }
 

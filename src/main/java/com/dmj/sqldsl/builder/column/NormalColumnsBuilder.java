@@ -1,6 +1,5 @@
 package com.dmj.sqldsl.builder.column;
 
-import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.column.Column;
 import java.util.List;
@@ -10,12 +9,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class NormalColumnsBuilder implements ColumnsBuilder {
 
-  private final List<ColumnLambda<?, ?>> functions;
+  private final List<ColumnBuilder<?, ?>> columnBuilders;
 
   @Override
   public List<Column> build(EntityConfig config) {
-    return functions.stream()
-        .map(x -> x.getColumnBuilder().build(config))
+    return columnBuilders.stream()
+        .map(x -> x.build(config))
         .collect(Collectors.toList());
   }
 }

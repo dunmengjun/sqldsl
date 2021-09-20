@@ -2,14 +2,17 @@ package com.dmj.sqldsl.builder;
 
 import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
 import static com.dmj.sqldsl.utils.CollectionUtils.hasDuplicateIn;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
+import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
-import com.dmj.sqldsl.builder.table.EntityTableBuilder;
+import com.dmj.sqldsl.builder.table.EntityBuilder;
 import com.dmj.sqldsl.builder.table.TableBuilder;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.JoinFlag;
@@ -17,6 +20,7 @@ import com.dmj.sqldsl.model.SelectFrom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FromBuilder implements DslQueryBuilder {
 
@@ -44,7 +48,7 @@ public class FromBuilder implements DslQueryBuilder {
 
   public FromBuilder leftJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
     this.joinBuilders.add(new JoinBuilder(
-        JoinFlag.left, new EntityTableBuilder(entityClass), conditionsBuilder));
+        JoinFlag.left, new EntityBuilder(entityClass), conditionsBuilder));
     return this;
   }
 
@@ -55,7 +59,7 @@ public class FromBuilder implements DslQueryBuilder {
 
   public FromBuilder rightJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
     this.joinBuilders.add(new JoinBuilder(
-        JoinFlag.right, new EntityTableBuilder(entityClass), conditionsBuilder));
+        JoinFlag.right, new EntityBuilder(entityClass), conditionsBuilder));
     return this;
   }
 
@@ -68,7 +72,7 @@ public class FromBuilder implements DslQueryBuilder {
 
   public FromBuilder innerJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
     this.joinBuilders.add(new JoinBuilder(
-        JoinFlag.inner, new EntityTableBuilder(entityClass), conditionsBuilder));
+        JoinFlag.inner, new EntityBuilder(entityClass), conditionsBuilder));
     return this;
   }
 
@@ -80,11 +84,26 @@ public class FromBuilder implements DslQueryBuilder {
 
   @SafeVarargs
   public final <T, R> GroupByBuilder groupBy(ColumnLambda<T, R>... functions) {
-    return new FromGroupByBuilder(this, new NormalColumnsBuilder(Arrays.asList(functions)));
+    List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(functions)
+        .map(SerializableLambda::getColumnBuilder)
+        .collect(Collectors.toList());
+    return new FromGroupByBuilder(this, new NormalColumnsBuilder(columnBuilders));
+  }
+
+  @SafeVarargs
+  public final <T, R> GroupByBuilder groupBy(ColumnBuilder<T, R>... columnBuilders) {
+    return new FromGroupByBuilder(this,
+        new NormalColumnsBuilder(asList(columnBuilders)));
   }
 
   public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
-    return new FromOrderByBuilder(this, asModifiableList(new OrderBuilder(function, isAsc)));
+    return new FromOrderByBuilder(this,
+        asModifiableList(new OrderBuilder(function.getColumnBuilder(), isAsc)));
+  }
+
+  public <T, R> OrderByBuilder orderBy(ColumnBuilder<T, R> columnBuilder, boolean isAsc) {
+    return new FromOrderByBuilder(this,
+        asModifiableList(new OrderBuilder(columnBuilder, isAsc)));
   }
 
   protected DslQuery.DslQueryBuilder build(EntityConfig config) {

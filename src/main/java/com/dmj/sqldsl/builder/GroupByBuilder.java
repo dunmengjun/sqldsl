@@ -2,6 +2,7 @@ package com.dmj.sqldsl.builder;
 
 import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
 
+import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
@@ -33,7 +34,12 @@ public abstract class GroupByBuilder implements DslQueryBuilder {
 
   public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
     return new GroupOrderByBuilder(this,
-        asModifiableList(new OrderBuilder(function, isAsc)));
+        asModifiableList(new OrderBuilder(function.getColumnBuilder(), isAsc)));
+  }
+
+  public <T, R> OrderByBuilder orderBy(ColumnBuilder<T, R> columnBuilder, boolean isAsc) {
+    return new GroupOrderByBuilder(this,
+        asModifiableList(new OrderBuilder(columnBuilder, isAsc)));
   }
 
   protected GroupBy buildGroupBy(EntityConfig config) {

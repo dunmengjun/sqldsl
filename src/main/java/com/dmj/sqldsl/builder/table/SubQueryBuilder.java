@@ -13,7 +13,7 @@ import com.dmj.sqldsl.model.table.Table;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SubQueryTableBuilder implements TableBuilder {
+public class SubQueryBuilder implements TableBuilder {
 
   private final DslQueryBuilder queryBuilder;
 
@@ -21,13 +21,13 @@ public class SubQueryTableBuilder implements TableBuilder {
 
   private DslQuery query;
 
-  private SubQueryTableBuilder(DslQueryBuilder queryBuilder, String alias) {
+  private SubQueryBuilder(DslQueryBuilder queryBuilder, String alias) {
     this.queryBuilder = queryBuilder;
     this.alias = alias;
   }
 
-  public static SubQueryTableBuilder ref(DslQueryBuilder queryBuilder) {
-    return new SubQueryTableBuilder(queryBuilder, TableBuilder.getAlias("subQuery"));
+  public static SubQueryBuilder alias(DslQueryBuilder queryBuilder) {
+    return new SubQueryBuilder(queryBuilder, TableBuilder.getAlias("subQuery"));
   }
 
   public <T, R> ColumnBuilder<T, R> col(ColumnLambda<T, R> lambda) {
