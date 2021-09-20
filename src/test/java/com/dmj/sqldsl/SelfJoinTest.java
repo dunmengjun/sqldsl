@@ -22,15 +22,14 @@ public class SelfJoinTest extends DatabaseTest {
         .selectAll(selfDept)
         .from(Dept.class)
         .leftJoin(selfDept, eq(Dept::getParent, selfDept.col(Dept::getId)))
-        .where(eq(Dept::getName, "开发部"))
+        .where(eq(Dept::getName, "Development Department"))
         .toQuery();
 
     List<Dept> actual = executor.execute(query, Dept.class);
 
     List<Dept> expected = singletonList(
-        new Dept(1, "集团总部", null)
+        new Dept(1, "Group headquarters", null)
     );
     assertEquals(expected, actual);
   }
-
 }

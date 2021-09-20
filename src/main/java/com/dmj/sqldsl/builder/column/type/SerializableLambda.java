@@ -10,12 +10,12 @@ import java.lang.invoke.SerializedLambda;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface SerializableLambda extends Serializable, ColumnBuilderFactory {
+public interface SerializableLambda<T, R> extends Serializable, ColumnBuilderFactory<T, R> {
 
   Pattern regex = Pattern.compile("\\(L(.*?);\\)");
 
-  default ColumnBuilder getColumnBuilder() {
-    return new LambdaColumnBuilder(this);
+  default ColumnBuilder<T, R> getColumnBuilder() {
+    return new LambdaColumnBuilder<>(this);
   }
 
   default String getMethodName() {

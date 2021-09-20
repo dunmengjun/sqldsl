@@ -32,15 +32,16 @@ public interface DslQueryBuilder {
   @SafeVarargs
   static <T, R> SelectBuilder selectAll(Class<T> entityClass,
       ColumnLambda<T, R>... excludeColumns) {
-    List<ColumnBuilder> columnBuilders = Arrays.stream(excludeColumns)
+    List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(excludeColumns)
         .map(SerializableLambda::getColumnBuilder)
         .collect(Collectors.toList());
     return new SelectBuilder(
         new EntityColumnsBuilder(new EntityTableBuilder(entityClass), columnBuilders));
   }
 
-  static SelectBuilder selectAll(EntityTableBuilder tableBuilder,
-      ColumnBuilder... columnBuilders) {
+  @SafeVarargs
+  static <T, R> SelectBuilder selectAll(EntityTableBuilder tableBuilder,
+      ColumnBuilder<T, R>... columnBuilders) {
     return new SelectBuilder(new EntityColumnsBuilder(tableBuilder, asList(columnBuilders)));
   }
 
@@ -51,6 +52,6 @@ public interface DslQueryBuilder {
 
   static <T, R, O> SelectBuilder selectAs(FunctionType<T, R> columnBuilder,
       ColumnLambda<O, R> alias) {
-    return new SelectBuilder(new FunctionColumnBuilder(columnBuilder, alias));
+    return new SelectBuilder(new FunctionColumnBuilder<T, R>(columnBuilder, alias));
   }
 }

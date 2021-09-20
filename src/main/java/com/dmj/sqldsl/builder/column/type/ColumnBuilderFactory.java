@@ -2,7 +2,7 @@ package com.dmj.sqldsl.builder.column.type;
 
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 
-public interface ColumnBuilderFactory {
+public interface ColumnBuilderFactory<T, R> {
 
-  ColumnBuilder getColumnBuilder();
+  ColumnBuilder<T, R> getColumnBuilder();
 }

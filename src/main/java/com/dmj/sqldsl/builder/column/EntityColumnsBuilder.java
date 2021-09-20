@@ -11,9 +11,10 @@ import java.util.List;
 public class EntityColumnsBuilder implements ColumnsBuilder {
 
   private final TableBuilder tableBuilder;
-  private final List<ColumnBuilder> columnBuilders;
+  private final List<ColumnBuilder<?, ?>> columnBuilders;
 
-  public EntityColumnsBuilder(TableBuilder tableBuilder, List<ColumnBuilder> columnBuilders) {
+  public EntityColumnsBuilder(TableBuilder tableBuilder,
+      List<ColumnBuilder<?, ?>> columnBuilders) {
     this.tableBuilder = tableBuilder;
     this.columnBuilders = columnBuilders;
   }

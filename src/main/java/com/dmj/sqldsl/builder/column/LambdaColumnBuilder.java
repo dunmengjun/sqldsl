@@ -15,17 +15,17 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-public class LambdaColumnBuilder implements ColumnBuilder {
+public class LambdaColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
-  private final SerializableLambda lambda;
+  private final SerializableLambda<T, R> lambda;
 
   private String alias;
 
-  public LambdaColumnBuilder(SerializableLambda lambda) {
+  public LambdaColumnBuilder(SerializableLambda<T, R> lambda) {
     this.lambda = lambda;
   }
 
-  public LambdaColumnBuilder(SerializableLambda lambda, String alias) {
+  public LambdaColumnBuilder(SerializableLambda<T, R> lambda, String alias) {
     this.lambda = lambda;
     this.alias = alias;
   }

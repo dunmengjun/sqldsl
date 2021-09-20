@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class SelectBuilder {
 
   private final List<ColumnsBuilder> columnsBuilders;
-  private final List<ColumnBuilder> aliasBuilders;
+  private final List<ColumnBuilder<?, ?>> aliasBuilders;
 
   public SelectBuilder(ColumnsBuilder columnsBuilder) {
     this.columnsBuilders = new ArrayList<>();
@@ -30,7 +30,7 @@ public class SelectBuilder {
     this.aliasBuilders = new ArrayList<>();
   }
 
-  public SelectBuilder(ColumnBuilder aliasBuilder) {
+  public SelectBuilder(ColumnBuilder<?, ?> aliasBuilder) {
     this.columnsBuilders = new ArrayList<>();
     this.aliasBuilders = new ArrayList<>();
     this.aliasBuilders.add(aliasBuilder);
@@ -39,7 +39,7 @@ public class SelectBuilder {
   @SafeVarargs
   public final <T, R> SelectBuilder selectAll(Class<T> entityClass,
       ColumnLambda<T, R>... excludeColumns) {
-    List<ColumnBuilder> columnBuilders = Arrays.stream(excludeColumns)
+    List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(excludeColumns)
         .map(SerializableLambda::getColumnBuilder)
         .collect(Collectors.toList());
     this.columnsBuilders.add(
@@ -47,8 +47,9 @@ public class SelectBuilder {
     return this;
   }
 
-  public SelectBuilder selectAll(EntityTableBuilder tableBuilder,
-      ColumnBuilder... columnBuilders) {
+  @SafeVarargs
+  public final <T, R> SelectBuilder selectAll(EntityTableBuilder tableBuilder,
+      ColumnBuilder<T, R>... columnBuilders) {
     this.columnsBuilders.add(new EntityColumnsBuilder(tableBuilder, asList(columnBuilders)));
     return this;
   }
@@ -61,13 +62,13 @@ public class SelectBuilder {
 
   public <T, R, O, K> SelectBuilder selectAs(ColumnLambda<T, R> column,
       ColumnLambda<O, K> alias) {
-    this.aliasBuilders.add(new LambdaAliasColumnBuilder(column, alias));
+    this.aliasBuilders.add(new LambdaAliasColumnBuilder<>(column, alias));
     return this;
   }
 
   public <T, R, O> SelectBuilder selectAs(FunctionType<T, R> functionType,
       ColumnLambda<O, R> alias) {
-    this.aliasBuilders.add(new FunctionColumnBuilder(functionType, alias));
+    this.aliasBuilders.add(new FunctionColumnBuilder<T, R>(functionType, alias));
     return this;
   }
 

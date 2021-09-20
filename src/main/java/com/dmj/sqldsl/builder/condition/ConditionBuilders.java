@@ -41,6 +41,18 @@ public class ConditionBuilders {
     return create(lambda, eq, value);
   }
 
+  public static <T> ConditionsBuilder eq(ColumnBuilder<T, String> left, String value) {
+    return create(left, eq, value);
+  }
+
+  public static <T> ConditionsBuilder eq(ColumnBuilder<T, Number> left, Number value) {
+    return create(left, eq, value);
+  }
+
+  public static <T> ConditionsBuilder eq(ColumnBuilder<T, Boolean> left, Boolean value) {
+    return create(left, eq, value);
+  }
+
   public static <T, O> ConditionsBuilder eq(NumberLambda<T> left, NumberLambda<O> right) {
     return create(left, eq, right);
   }
@@ -53,7 +65,34 @@ public class ConditionBuilders {
     return create(left, eq, right);
   }
 
-  public static <T, R> ConditionsBuilder eq(ColumnLambda<T, R> left, ColumnBuilder right) {
+  public static <T, O> ConditionsBuilder eq(StringLambda<T> left, ColumnBuilder<O, String> right) {
+    return create(left, eq, right);
+  }
+
+  public static <T, O> ConditionsBuilder eq(NumberLambda<T> left, ColumnBuilder<O, Number> right) {
+    return create(left, eq, right);
+  }
+
+  public static <T, O> ConditionsBuilder eq(BooleanLambda<T> left,
+      ColumnBuilder<O, Boolean> right) {
+    return create(left, eq, right);
+  }
+
+  public static <T, O> ConditionsBuilder eq(ColumnBuilder<T, String> left, StringLambda<O> right) {
+    return create(left, eq, right);
+  }
+
+  public static <T, O> ConditionsBuilder eq(ColumnBuilder<T, Number> left, NumberLambda<O> right) {
+    return create(left, eq, right);
+  }
+
+  public static <T, O> ConditionsBuilder eq(ColumnBuilder<T, Boolean> left,
+      BooleanLambda<O> right) {
+    return create(left, eq, right);
+  }
+
+  public static <T, O, R> ConditionsBuilder eq(ColumnBuilder<T, R> left,
+      ColumnBuilder<O, R> right) {
     return create(left, eq, right);
   }
 
@@ -69,6 +108,18 @@ public class ConditionBuilders {
     return create(lambda, ne, value);
   }
 
+  public static <T> ConditionsBuilder ne(ColumnBuilder<T, String> left, String value) {
+    return create(left, ne, value);
+  }
+
+  public static <T> ConditionsBuilder ne(ColumnBuilder<T, Number> left, Number value) {
+    return create(left, ne, value);
+  }
+
+  public static <T> ConditionsBuilder ne(ColumnBuilder<T, Boolean> left, Boolean value) {
+    return create(left, ne, value);
+  }
+
   public static <T, O> ConditionsBuilder ne(NumberLambda<T> left, NumberLambda<O> right) {
     return create(left, ne, right);
   }
@@ -78,6 +129,37 @@ public class ConditionBuilders {
   }
 
   public static <T, O> ConditionsBuilder ne(BooleanLambda<T> left, BooleanLambda<O> right) {
+    return create(left, ne, right);
+  }
+
+  public static <T, O> ConditionsBuilder ne(StringLambda<T> left, ColumnBuilder<O, String> right) {
+    return create(left, ne, right);
+  }
+
+  public static <T, O> ConditionsBuilder ne(NumberLambda<T> left, ColumnBuilder<O, Number> right) {
+    return create(left, ne, right);
+  }
+
+  public static <T, O> ConditionsBuilder ne(BooleanLambda<T> left,
+      ColumnBuilder<O, Boolean> right) {
+    return create(left, ne, right);
+  }
+
+  public static <T, O> ConditionsBuilder ne(ColumnBuilder<T, String> left, StringLambda<O> right) {
+    return create(left, ne, right);
+  }
+
+  public static <T, O> ConditionsBuilder ne(ColumnBuilder<T, Number> left, NumberLambda<O> right) {
+    return create(left, ne, right);
+  }
+
+  public static <T, O> ConditionsBuilder ne(ColumnBuilder<T, Boolean> left,
+      BooleanLambda<O> right) {
+    return create(left, ne, right);
+  }
+
+  public static <T, O, R> ConditionsBuilder ne(ColumnBuilder<T, R> left,
+      ColumnBuilder<O, R> right) {
     return create(left, ne, right);
   }
 
@@ -93,6 +175,18 @@ public class ConditionBuilders {
     return create(lambda, gt, value);
   }
 
+  public static <T> ConditionsBuilder gt(ColumnBuilder<T, String> left, String value) {
+    return create(left, gt, value);
+  }
+
+  public static <T> ConditionsBuilder gt(ColumnBuilder<T, Number> left, Number value) {
+    return create(left, gt, value);
+  }
+
+  public static <T> ConditionsBuilder gt(ColumnBuilder<T, Boolean> left, Boolean value) {
+    return create(left, gt, value);
+  }
+
   public static <T, O> ConditionsBuilder gt(NumberLambda<T> left, NumberLambda<O> right) {
     return create(left, gt, right);
   }
@@ -102,6 +196,37 @@ public class ConditionBuilders {
   }
 
   public static <T, O> ConditionsBuilder gt(BooleanLambda<T> left, BooleanLambda<O> right) {
+    return create(left, gt, right);
+  }
+
+  public static <T, O> ConditionsBuilder gt(StringLambda<T> left, ColumnBuilder<O, String> right) {
+    return create(left, gt, right);
+  }
+
+  public static <T, O> ConditionsBuilder gt(NumberLambda<T> left, ColumnBuilder<O, Number> right) {
+    return create(left, gt, right);
+  }
+
+  public static <T, O> ConditionsBuilder gt(BooleanLambda<T> left,
+      ColumnBuilder<O, Boolean> right) {
+    return create(left, gt, right);
+  }
+
+  public static <T, O> ConditionsBuilder gt(ColumnBuilder<T, String> left, StringLambda<O> right) {
+    return create(left, gt, right);
+  }
+
+  public static <T, O> ConditionsBuilder gt(ColumnBuilder<T, Number> left, NumberLambda<O> right) {
+    return create(left, gt, right);
+  }
+
+  public static <T, O> ConditionsBuilder gt(ColumnBuilder<T, Boolean> left,
+      BooleanLambda<O> right) {
+    return create(left, gt, right);
+  }
+
+  public static <T, O, R> ConditionsBuilder gt(ColumnBuilder<T, R> left,
+      ColumnBuilder<O, R> right) {
     return create(left, gt, right);
   }
 
@@ -118,6 +243,18 @@ public class ConditionBuilders {
     return create(lambda, ge, value);
   }
 
+  public static <T> ConditionsBuilder ge(ColumnBuilder<T, String> left, String value) {
+    return create(left, ge, value);
+  }
+
+  public static <T> ConditionsBuilder ge(ColumnBuilder<T, Number> left, Number value) {
+    return create(left, ge, value);
+  }
+
+  public static <T> ConditionsBuilder ge(ColumnBuilder<T, Boolean> left, Boolean value) {
+    return create(left, ge, value);
+  }
+
   public static <T, O> ConditionsBuilder ge(NumberLambda<T> left, NumberLambda<O> right) {
     return create(left, ge, right);
   }
@@ -127,6 +264,37 @@ public class ConditionBuilders {
   }
 
   public static <T, O> ConditionsBuilder ge(BooleanLambda<T> left, BooleanLambda<O> right) {
+    return create(left, ge, right);
+  }
+
+  public static <T, O> ConditionsBuilder ge(StringLambda<T> left, ColumnBuilder<O, String> right) {
+    return create(left, ge, right);
+  }
+
+  public static <T, O> ConditionsBuilder ge(NumberLambda<T> left, ColumnBuilder<O, Number> right) {
+    return create(left, ge, right);
+  }
+
+  public static <T, O> ConditionsBuilder ge(BooleanLambda<T> left,
+      ColumnBuilder<O, Boolean> right) {
+    return create(left, ge, right);
+  }
+
+  public static <T, O> ConditionsBuilder ge(ColumnBuilder<T, String> left, StringLambda<O> right) {
+    return create(left, ge, right);
+  }
+
+  public static <T, O> ConditionsBuilder ge(ColumnBuilder<T, Number> left, NumberLambda<O> right) {
+    return create(left, ge, right);
+  }
+
+  public static <T, O> ConditionsBuilder ge(ColumnBuilder<T, Boolean> left,
+      BooleanLambda<O> right) {
+    return create(left, ge, right);
+  }
+
+  public static <T, O, R> ConditionsBuilder ge(ColumnBuilder<T, R> left,
+      ColumnBuilder<O, R> right) {
     return create(left, ge, right);
   }
 
@@ -142,6 +310,18 @@ public class ConditionBuilders {
     return create(lambda, lt, value);
   }
 
+  public static <T> ConditionsBuilder lt(ColumnBuilder<T, String> left, String value) {
+    return create(left, ge, value);
+  }
+
+  public static <T> ConditionsBuilder lt(ColumnBuilder<T, Number> left, Number value) {
+    return create(left, ge, value);
+  }
+
+  public static <T> ConditionsBuilder lt(ColumnBuilder<T, Boolean> left, Boolean value) {
+    return create(left, ge, value);
+  }
+
   public static <T, O> ConditionsBuilder lt(NumberLambda<T> left, NumberLambda<O> right) {
     return create(left, lt, right);
   }
@@ -151,6 +331,37 @@ public class ConditionBuilders {
   }
 
   public static <T, O> ConditionsBuilder lt(BooleanLambda<T> left, BooleanLambda<O> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O> ConditionsBuilder lt(StringLambda<T> left, ColumnBuilder<O, String> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O> ConditionsBuilder lt(NumberLambda<T> left, ColumnBuilder<O, Number> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O> ConditionsBuilder lt(BooleanLambda<T> left,
+      ColumnBuilder<O, Boolean> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O> ConditionsBuilder lt(ColumnBuilder<T, String> left, StringLambda<O> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O> ConditionsBuilder lt(ColumnBuilder<T, Number> left, NumberLambda<O> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O> ConditionsBuilder lt(ColumnBuilder<T, Boolean> left,
+      BooleanLambda<O> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O, R> ConditionsBuilder lt(ColumnBuilder<T, R> left,
+      ColumnBuilder<O, R> right) {
     return create(left, lt, right);
   }
 
@@ -166,6 +377,18 @@ public class ConditionBuilders {
     return create(lambda, le, value);
   }
 
+  public static <T> ConditionsBuilder le(ColumnBuilder<T, String> left, String value) {
+    return create(left, le, value);
+  }
+
+  public static <T> ConditionsBuilder le(ColumnBuilder<T, Number> left, Number value) {
+    return create(left, le, value);
+  }
+
+  public static <T> ConditionsBuilder le(ColumnBuilder<T, Boolean> left, Boolean value) {
+    return create(left, le, value);
+  }
+
   public static <T, O> ConditionsBuilder le(NumberLambda<T> left, NumberLambda<O> right) {
     return create(left, le, right);
   }
@@ -175,6 +398,37 @@ public class ConditionBuilders {
   }
 
   public static <T, O> ConditionsBuilder le(BooleanLambda<T> left, BooleanLambda<O> right) {
+    return create(left, le, right);
+  }
+
+  public static <T, O> ConditionsBuilder le(StringLambda<T> left, ColumnBuilder<O, String> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O> ConditionsBuilder le(NumberLambda<T> left, ColumnBuilder<O, Number> right) {
+    return create(left, lt, right);
+  }
+
+  public static <T, O> ConditionsBuilder le(BooleanLambda<T> left,
+      ColumnBuilder<O, Boolean> right) {
+    return create(left, le, right);
+  }
+
+  public static <T, O> ConditionsBuilder le(ColumnBuilder<T, String> left, StringLambda<O> right) {
+    return create(left, le, right);
+  }
+
+  public static <T, O> ConditionsBuilder le(ColumnBuilder<T, Number> left, NumberLambda<O> right) {
+    return create(left, le, right);
+  }
+
+  public static <T, O> ConditionsBuilder le(ColumnBuilder<T, Boolean> left,
+      BooleanLambda<O> right) {
+    return create(left, le, right);
+  }
+
+  public static <T, O, R> ConditionsBuilder le(ColumnBuilder<T, R> left,
+      ColumnBuilder<O, R> right) {
     return create(left, le, right);
   }
 
@@ -194,7 +448,21 @@ public class ConditionBuilders {
     return create(lambda, in, asList(valueList));
   }
 
-  public static <T, R> ConditionsBuilder in(ColumnLambda<T, R> lambda, SubQueryType subQuery) {
+  public static <T, R> ConditionsBuilder in(ColumnBuilder<T, R> left,
+      Collection<R> valueList) {
+    return create(left, in, valueList);
+  }
+
+  public static <T> ConditionsBuilder in(ColumnBuilder<T, Number> left, Number... valueList) {
+    return create(left, in, asList(valueList));
+  }
+
+  public static <T> ConditionsBuilder in(ColumnBuilder<T, String> left, String... valueList) {
+    return create(left, in, asList(valueList));
+  }
+
+  public static <T, R> ConditionsBuilder in(ColumnLambda<T, R> lambda,
+      SubQueryType<T, R> subQuery) {
     return create(lambda, in, subQuery.getColumnBuilder());
   }
 
@@ -216,11 +484,25 @@ public class ConditionBuilders {
     return create(lambda, notIn, asList(valueList));
   }
 
+  public static <T, R> ConditionsBuilder notIn(ColumnBuilder<T, R> left,
+      Collection<R> valueList) {
+    return create(left, notIn, valueList);
+  }
+
+  public static <T> ConditionsBuilder notIn(ColumnBuilder<T, Number> left, Number... valueList) {
+    return create(left, notIn, asList(valueList));
+  }
+
+  public static <T> ConditionsBuilder notIn(ColumnBuilder<T, String> left, String... valueList) {
+    return create(left, notIn, asList(valueList));
+  }
+
   public static <T> ConditionsBuilder notIn(LongLambda<T> lambda, Long... valueList) {
     return create(lambda, notIn, asList(valueList));
   }
 
-  public static <T, R> ConditionsBuilder notIn(ColumnLambda<T, R> lambda, SubQueryType subQuery) {
+  public static <T, R> ConditionsBuilder notIn(ColumnLambda<T, R> lambda,
+      SubQueryType<T, R> subQuery) {
     return create(lambda, notIn, subQuery.getColumnBuilder());
   }
 
@@ -228,8 +510,16 @@ public class ConditionBuilders {
     return create(lambda, like, likeValue.build());
   }
 
+  public static <T> ConditionsBuilder like(ColumnBuilder<T, String> left, LikeValue likeValue) {
+    return create(left, like, likeValue.build());
+  }
+
   public static <T> ConditionsBuilder notLike(StringLambda<T> lambda, LikeValue likeValue) {
     return create(lambda, notLike, likeValue.build());
+  }
+
+  public static <T> ConditionsBuilder notLike(ColumnBuilder<T, String> left, LikeValue likeValue) {
+    return create(left, notLike, likeValue.build());
   }
 
   public static <T> ConditionsBuilder between(DateLambda<T> lambda, DateRange range) {
@@ -240,19 +530,53 @@ public class ConditionBuilders {
     return new ConditionsBuilder();
   }
 
-  private static ConditionsBuilder create(
-      SerializableLambda lambda, ConditionMethod method, Object value) {
+  private static <T, R> ConditionsBuilder create(
+      SerializableLambda<T, R> lambda, ConditionMethod method, R value) {
     return new ConditionsBuilder(
         new ConditionBuilder(
             lambda.getColumnBuilder(),
             method,
-            new ValueColumnBuilder(value)
+            new ValueColumnBuilder<>(value)
         )
     );
   }
 
-  private static ConditionsBuilder create(
-      SerializableLambda lambdaLeft, ConditionMethod method, SerializableLambda lambdaRight) {
+  private static <T, R> ConditionsBuilder create(
+      ColumnBuilder<T, R> columnBuilder, ConditionMethod method, R value) {
+    return new ConditionsBuilder(
+        new ConditionBuilder(
+            columnBuilder,
+            method,
+            new ValueColumnBuilder<>(value)
+        )
+    );
+  }
+
+  private static <T, R> ConditionsBuilder create(
+      SerializableLambda<T, R> lambda, ConditionMethod method, Collection<R> value) {
+    return new ConditionsBuilder(
+        new ConditionBuilder(
+            lambda.getColumnBuilder(),
+            method,
+            new ValueColumnBuilder<>(value)
+        )
+    );
+  }
+
+  private static <T, R> ConditionsBuilder create(
+      ColumnBuilder<T, R> left, ConditionMethod method, Collection<R> value) {
+    return new ConditionsBuilder(
+        new ConditionBuilder(
+            left,
+            method,
+            new ValueColumnBuilder<>(value)
+        )
+    );
+  }
+
+  private static <T, O, R> ConditionsBuilder create(
+      SerializableLambda<T, R> lambdaLeft, ConditionMethod method,
+      SerializableLambda<O, R> lambdaRight) {
     return new ConditionsBuilder(
         new ConditionBuilder(
             lambdaLeft.getColumnBuilder(),
@@ -262,8 +586,9 @@ public class ConditionBuilders {
     );
   }
 
-  private static ConditionsBuilder create(
-      SerializableLambda lambdaLeft, ConditionMethod method, ColumnBuilder columnBuilder) {
+  private static <T, O, R> ConditionsBuilder create(
+      SerializableLambda<T, R> lambdaLeft, ConditionMethod method,
+      ColumnBuilder<O, R> columnBuilder) {
     return new ConditionsBuilder(
         new ConditionBuilder(
             lambdaLeft.getColumnBuilder(),
@@ -271,5 +596,25 @@ public class ConditionBuilders {
             columnBuilder
         )
     );
+  }
+
+  private static <T, O, R> ConditionsBuilder create(
+      ColumnBuilder<O, R> columnBuilder,
+      ConditionMethod method,
+      SerializableLambda<T, R> lambda) {
+    return new ConditionsBuilder(
+        new ConditionBuilder(
+            columnBuilder,
+            method,
+            lambda.getColumnBuilder()
+        )
+    );
+  }
+
+  private static <T, O, R> ConditionsBuilder create(
+      ColumnBuilder<O, R> left,
+      ConditionMethod method,
+      ColumnBuilder<T, R> right) {
+    return new ConditionsBuilder(new ConditionBuilder(left, method, right));
   }
 }

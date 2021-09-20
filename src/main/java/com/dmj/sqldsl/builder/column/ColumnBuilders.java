@@ -16,7 +16,7 @@ public class ColumnBuilders {
     return new FunctionType<>(Function.sum, column);
   }
 
-  public static SubQueryType subQuery(DslQueryBuilder queryBuilder) {
-    return new SubQueryType(queryBuilder);
+  public static <T, R> SubQueryType<T, R> subQuery(DslQueryBuilder queryBuilder) {
+    return new SubQueryType<>(queryBuilder);
   }
 }

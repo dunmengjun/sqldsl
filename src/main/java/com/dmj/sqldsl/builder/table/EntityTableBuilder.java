@@ -39,8 +39,8 @@ public class EntityTableBuilder implements TableBuilder {
     this.alias = alias;
   }
 
-  public <T, R> ColumnBuilder col(ColumnLambda<T, R> lambda) {
-    return new LambdaColumnBuilder(lambda, alias);
+  public <T, R> ColumnBuilder<T, R> col(ColumnLambda<T, R> lambda) {
+    return new LambdaColumnBuilder<>(lambda, alias);
   }
 
   public Optional<String> getAlias() {

@@ -7,7 +7,7 @@ import com.dmj.sqldsl.model.column.Column;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class LambdaAliasColumnBuilder implements ColumnBuilder {
+public class LambdaAliasColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
   private ColumnLambda<?, ?> function;
 

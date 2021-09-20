@@ -21,8 +21,8 @@ public class SubQueryTableBuilder implements TableBuilder {
     return new SubQueryTableBuilder(queryBuilder, TableBuilder.getAlias("subQuery"));
   }
 
-  public <T, R> ColumnBuilder col(ColumnLambda<T, R> lambda) {
-    return new LambdaColumnBuilder(lambda, alias);
+  public <T, R> ColumnBuilder<T, R> col(ColumnLambda<T, R> lambda) {
+    return new LambdaColumnBuilder<>(lambda, alias);
   }
 
   @Override

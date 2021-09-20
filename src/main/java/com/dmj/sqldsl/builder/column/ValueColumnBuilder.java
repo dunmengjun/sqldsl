@@ -8,7 +8,7 @@ import java.util.Collection;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ValueColumnBuilder implements ColumnBuilder {
+public class ValueColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
   private Object value;
 

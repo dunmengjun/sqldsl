@@ -9,9 +9,9 @@ import com.dmj.sqldsl.model.column.FunctionColumn;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class FunctionColumnBuilder implements ColumnBuilder {
+public class FunctionColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
-  private FunctionType<?, ?> function;
+  private FunctionType<T, ?> function;
   private ColumnLambda<?, ?> alias;
 
   @Override

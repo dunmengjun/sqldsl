@@ -8,34 +8,34 @@ CREATE TABLE dept
 );
 
 INSERT INTO dept(name, parent)
-VALUES ('集团总部', null);
+VALUES ('Group headquarters', null);
 
 INSERT INTO dept(name, parent)
-VALUES ('人事部', 1);
+VALUES ('Personnel Department', 1);
 
 INSERT INTO dept(name, parent)
-VALUES ('开发部', 1);
+VALUES ('Development Department', 1);
 
 INSERT INTO dept(name, parent)
-VALUES ('财政部', 1);
+VALUES ('Ministry of Finance', 1);
 
 INSERT INTO dept(name, parent)
-VALUES ('采购部', 4);
+VALUES ('Purchasing Department', 4);
 
 INSERT INTO dept(name, parent)
-VALUES ('会计部', 4);
+VALUES ('Accounting Department', 4);
 
 INSERT INTO dept(name, parent)
-VALUES ('业务开发组', 3);
+VALUES ('Business Development Team', 3);
 
 INSERT INTO dept(name, parent)
-VALUES ('研究院', 3);
+VALUES ('Research Institute', 3);
 
 INSERT INTO dept(name, parent)
-VALUES ('日常办公采购组', 5);
+VALUES ('Daily Office Purchasing Group', 5);
 
 INSERT INTO dept(name, parent)
-VALUES ('大型物料采购组', 5);
+VALUES ('Large material purchasing group', 5);
 
 INSERT INTO dept(name, parent)
-VALUES ('特殊物件采购组', 5);
+VALUES ('Special Items Purchasing Group', 5);

@@ -7,7 +7,7 @@ import com.dmj.sqldsl.model.column.SubQueryValueColumn;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class SubQueryColumnBuilder implements ColumnBuilder {
+public class SubQueryColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
   private DslQueryBuilder queryBuilder;
 
