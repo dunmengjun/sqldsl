@@ -61,4 +61,26 @@ public class SubQueryTest extends DatabaseTest {
     );
     assertEquals(expected, actual);
   }
+
+  @TestTemplate
+  public void should_return_user_eq_16_when_select_given_the_left_join_sub_query() {
+    DslQueryBuilder queryBuilder = DslQueryBuilder
+        .selectAll(User.class)
+        .from(User.class)
+        .where(lt(User::getAge, 17));
+    SubQueryTableBuilder subQuery = SubQueryTableBuilder.ref(queryBuilder);
+    DslQuery query = DslQueryBuilder
+        .selectAll(subQuery)
+        .from(User.class)
+        .leftJoin(subQuery, eq(subQuery.col(User::getId), User::getId))
+        .where(eq(subQuery.col(User::getAge), 16))
+        .toQuery();
+
+    List<User> actual = executor.execute(query, User.class);
+
+    List<User> expected = singletonList(
+        new User(1, "alice", 16)
+    );
+    assertEquals(expected, actual);
+  }
 }

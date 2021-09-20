@@ -48,8 +48,7 @@ public class FromBuilder implements DslQueryBuilder {
     return this;
   }
 
-  public FromBuilder leftJoin(
-      EntityTableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
+  public FromBuilder leftJoin(TableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
     this.joinBuilders.add(new JoinBuilder(JoinFlag.left, tableBuilder, conditionsBuilder));
     return this;
   }
@@ -61,8 +60,7 @@ public class FromBuilder implements DslQueryBuilder {
   }
 
 
-  public FromBuilder rightJoin(
-      EntityTableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
+  public FromBuilder rightJoin(TableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
     this.joinBuilders.add(new JoinBuilder(
         JoinFlag.right, tableBuilder, conditionsBuilder));
     return this;
@@ -74,8 +72,7 @@ public class FromBuilder implements DslQueryBuilder {
     return this;
   }
 
-  public FromBuilder innerJoin(
-      EntityTableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
+  public FromBuilder innerJoin(TableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
     this.joinBuilders.add(new JoinBuilder(
         JoinFlag.inner, tableBuilder, conditionsBuilder));
     return this;
