@@ -13,6 +13,7 @@ import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.config.GlobalConfig;
 import com.dmj.sqldsl.builder.exception.GlobalConfigNotValidException;
 import com.dmj.sqldsl.builder.table.EntityTableBuilder;
+import com.dmj.sqldsl.builder.table.TableBuilder;
 import com.dmj.sqldsl.model.DslQuery;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +41,7 @@ public interface DslQueryBuilder {
   }
 
   @SafeVarargs
-  static <T, R> SelectBuilder selectAll(EntityTableBuilder tableBuilder,
+  static <T, R> SelectBuilder selectAll(TableBuilder tableBuilder,
       ColumnBuilder<T, R>... columnBuilders) {
     return new SelectBuilder(new EntityColumnsBuilder(tableBuilder, asList(columnBuilders)));
   }

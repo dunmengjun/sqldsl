@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toList;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.TableBuilder;
 import com.dmj.sqldsl.model.column.Column;
-import com.dmj.sqldsl.model.table.Table;
 import java.util.List;
 
 public class EntityColumnsBuilder implements ColumnsBuilder {
@@ -21,8 +20,7 @@ public class EntityColumnsBuilder implements ColumnsBuilder {
 
   @Override
   public List<Column> build(EntityConfig config) {
-    Table table = tableBuilder.build(config);
-    List<Column> columns = table.getColumns();
+    List<Column> columns = tableBuilder.build(config).getColumns();
     List<Column> excludeColumns = columnBuilders.stream()
         .map(columnBuilder -> columnBuilder.build(config))
         .collect(toList());

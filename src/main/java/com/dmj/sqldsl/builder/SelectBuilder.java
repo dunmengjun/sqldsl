@@ -13,6 +13,7 @@ import com.dmj.sqldsl.builder.column.type.FunctionType;
 import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityTableBuilder;
+import com.dmj.sqldsl.builder.table.TableBuilder;
 import com.dmj.sqldsl.model.column.Column;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,6 +75,10 @@ public class SelectBuilder {
 
   public FromBuilder from(Class<?> entityClass) {
     return new FromBuilder(this, new EntityTableBuilder(entityClass));
+  }
+
+  public FromBuilder from(TableBuilder tableBuilder) {
+    return new FromBuilder(this, tableBuilder);
   }
 
   protected List<Column> build(EntityConfig config) {

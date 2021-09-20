@@ -206,12 +206,12 @@ public class StandardModelVisitor extends ModelVisitor {
   }
 
   protected String visitSelectFromWhere(DslQuery query) {
-    String conditionsSqlString = query.getConditions()
+    String selectFrom = visit(query.getSelectFrom());
+    String conditions = query.getConditions()
         .map(x -> " where " + visitFirstConditions(x))
         .orElse("");
-    String groupBySql = query.getGroupBy().map(this::visit).orElse("");
-    return visit(query.getSelectFrom())
-        + conditionsSqlString + groupBySql;
+    String groupBy = query.getGroupBy().map(this::visit).orElse("");
+    return selectFrom + conditions + groupBy;
   }
 
   protected String visitLimit(String allSqlWithoutLimit, Limit limit) {

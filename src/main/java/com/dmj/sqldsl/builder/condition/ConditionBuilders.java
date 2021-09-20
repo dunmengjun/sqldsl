@@ -12,9 +12,11 @@ import static com.dmj.sqldsl.model.condition.ConditionMethod.notIn;
 import static com.dmj.sqldsl.model.condition.ConditionMethod.notLike;
 import static java.util.Arrays.asList;
 
+import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.DateRange;
 import com.dmj.sqldsl.builder.column.LikeValue;
+import com.dmj.sqldsl.builder.column.SubQueryColumnBuilder;
 import com.dmj.sqldsl.builder.column.ValueColumnBuilder;
 import com.dmj.sqldsl.builder.column.type.BooleanLambda;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
@@ -23,7 +25,6 @@ import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
 import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
-import com.dmj.sqldsl.builder.column.type.SubQueryType;
 import com.dmj.sqldsl.model.condition.ConditionMethod;
 import java.util.Collection;
 
@@ -462,8 +463,8 @@ public class ConditionBuilders {
   }
 
   public static <T, R> ConditionsBuilder in(ColumnLambda<T, R> lambda,
-      SubQueryType<T, R> subQuery) {
-    return create(lambda, in, subQuery.getColumnBuilder());
+      DslQueryBuilder queryBuilder) {
+    return create(lambda, in, new SubQueryColumnBuilder<>(queryBuilder));
   }
 
   public static <T> ConditionsBuilder notIn(
@@ -502,8 +503,8 @@ public class ConditionBuilders {
   }
 
   public static <T, R> ConditionsBuilder notIn(ColumnLambda<T, R> lambda,
-      SubQueryType<T, R> subQuery) {
-    return create(lambda, notIn, subQuery.getColumnBuilder());
+      DslQueryBuilder queryBuilder) {
+    return create(lambda, notIn, new SubQueryColumnBuilder<>(queryBuilder));
   }
 
   public static <T> ConditionsBuilder like(StringLambda<T> lambda, LikeValue likeValue) {

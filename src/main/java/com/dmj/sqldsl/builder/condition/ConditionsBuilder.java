@@ -13,9 +13,11 @@ import static com.dmj.sqldsl.model.condition.ConditionMethod.notLike;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.DateRange;
 import com.dmj.sqldsl.builder.column.LikeValue;
+import com.dmj.sqldsl.builder.column.SubQueryColumnBuilder;
 import com.dmj.sqldsl.builder.column.ValueColumnBuilder;
 import com.dmj.sqldsl.builder.column.type.BooleanLambda;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
@@ -24,7 +26,6 @@ import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
 import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
-import com.dmj.sqldsl.builder.column.type.SubQueryType;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.condition.ConditionElement;
 import com.dmj.sqldsl.model.condition.ConditionMethod;
@@ -491,8 +492,8 @@ public class ConditionsBuilder implements ConditionElementBuilder {
   }
 
   public <T, R> ConditionsBuilder in(ColumnLambda<T, R> lambda,
-      SubQueryType<T, R> subQuery) {
-    return addConditionBuilder(lambda, in, subQuery.getColumnBuilder());
+      DslQueryBuilder queryBuilder) {
+    return addConditionBuilder(lambda, in, new SubQueryColumnBuilder<>(queryBuilder));
   }
 
   public <T> ConditionsBuilder notIn(
@@ -531,8 +532,8 @@ public class ConditionsBuilder implements ConditionElementBuilder {
   }
 
   public <T, R> ConditionsBuilder notIn(ColumnLambda<T, R> lambda,
-      SubQueryType<T, R> subQuery) {
-    return addConditionBuilder(lambda, notIn, subQuery.getColumnBuilder());
+      DslQueryBuilder queryBuilder) {
+    return addConditionBuilder(lambda, notIn, new SubQueryColumnBuilder<>(queryBuilder));
   }
 
   public <T> ConditionsBuilder like(StringLambda<T> lambda, LikeValue likeValue) {
@@ -650,8 +651,7 @@ public class ConditionsBuilder implements ConditionElementBuilder {
     if (this.isEmpty()) {
       return Conditions.empty();
     }
-    this.elementBuilders.remove(0);
-    List<ConditionElement> elements = this.elementBuilders.stream()
+    List<ConditionElement> elements = this.elementBuilders.stream().skip(1)
         .flatMap(elementBuilder -> {
           if (elementBuilder instanceof ConditionsBuilder) {
             ConditionsBuilder conditionsBuilder = (ConditionsBuilder) elementBuilder;
