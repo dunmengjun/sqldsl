@@ -49,7 +49,7 @@ public class SelectBuilder {
   }
 
   @SafeVarargs
-  public final <T, R> SelectBuilder selectAll(EntityTableBuilder tableBuilder,
+  public final <T, R> SelectBuilder selectAll(TableBuilder tableBuilder,
       ColumnBuilder<T, R>... columnBuilders) {
     this.columnsBuilders.add(new EntityColumnsBuilder(tableBuilder, asList(columnBuilders)));
     return this;

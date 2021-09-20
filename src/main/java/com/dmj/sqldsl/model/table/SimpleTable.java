@@ -1,7 +1,5 @@
 package com.dmj.sqldsl.model.table;
 
-import com.dmj.sqldsl.model.column.Column;
-import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 
@@ -12,15 +10,11 @@ public class SimpleTable implements Table {
   @Getter
   private final String tableName;
 
-  private final List<Column> columns;
-
-  public SimpleTable(List<Column> columns, String tableName) {
-    this.columns = columns;
+  public SimpleTable(String tableName) {
     this.tableName = tableName;
   }
 
-  public SimpleTable(List<Column> columns, String tableName, String alias) {
-    this.columns = columns;
+  public SimpleTable(String tableName, String alias) {
     this.alias = alias;
     this.tableName = tableName;
   }
@@ -32,10 +26,5 @@ public class SimpleTable implements Table {
   @Override
   public String getName() {
     return getAlias().orElse(tableName);
-  }
-
-  @Override
-  public List<Column> getColumns() {
-    return columns;
   }
 }

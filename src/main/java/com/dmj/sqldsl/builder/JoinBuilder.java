@@ -24,6 +24,6 @@ public class JoinBuilder {
   private ConditionsBuilder conditionsBuilder;
 
   protected Join build(EntityConfig config) {
-    return new Join(flag, tableBuilder.build(config), conditionsBuilder.build(config));
+    return new Join(flag, tableBuilder.buildTable(config), conditionsBuilder.build(config));
   }
 }

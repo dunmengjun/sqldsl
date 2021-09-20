@@ -93,7 +93,7 @@ public class FromBuilder implements DslQueryBuilder {
     }
     SelectFrom selectFrom = SelectFrom.builder()
         .columns(selectBuilder.build(config))
-        .table(tableBuilder.build(config))
+        .table(tableBuilder.buildTable(config))
         .joins(joinBuilders.stream()
             .map(joinBuilder -> joinBuilder.build(config))
             .collect(toList()))

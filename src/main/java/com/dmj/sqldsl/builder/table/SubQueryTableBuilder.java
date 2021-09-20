@@ -6,16 +6,25 @@ import com.dmj.sqldsl.builder.column.LambdaColumnBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
+import com.dmj.sqldsl.model.column.Column;
+import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.model.table.SubQueryTable;
 import com.dmj.sqldsl.model.table.Table;
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@AllArgsConstructor
 public class SubQueryTableBuilder implements TableBuilder {
 
-  private DslQueryBuilder queryBuilder;
+  private final DslQueryBuilder queryBuilder;
 
-  private String alias;
+  private final String alias;
+
+  private DslQuery query;
+
+  private SubQueryTableBuilder(DslQueryBuilder queryBuilder, String alias) {
+    this.queryBuilder = queryBuilder;
+    this.alias = alias;
+  }
 
   public static SubQueryTableBuilder ref(DslQueryBuilder queryBuilder) {
     return new SubQueryTableBuilder(queryBuilder, TableBuilder.getAlias("subQuery"));
@@ -26,8 +35,20 @@ public class SubQueryTableBuilder implements TableBuilder {
   }
 
   @Override
-  public Table build(EntityConfig config) {
-    DslQuery dslQuery = queryBuilder.toQuery(config);
-    return new SubQueryTable(dslQuery, alias);
+  public Table buildTable(EntityConfig config) {
+    if (query == null) {
+      this.query = queryBuilder.toQuery(config);
+    }
+    return new SubQueryTable(query, alias);
+  }
+
+  @Override
+  public List<Column> buildColumns(EntityConfig config) {
+    if (query == null) {
+      this.query = queryBuilder.toQuery(config);
+    }
+    return query.getSelectFrom().getColumns().stream()
+        .map(column -> SimpleColumn.builder().tableName(alias).name(column.getName()).build())
+        .collect(Collectors.toList());
   }
 }

@@ -20,7 +20,7 @@ public class EntityColumnsBuilder implements ColumnsBuilder {
 
   @Override
   public List<Column> build(EntityConfig config) {
-    List<Column> columns = tableBuilder.build(config).getColumns();
+    List<Column> columns = tableBuilder.buildColumns(config);
     List<Column> excludeColumns = columnBuilders.stream()
         .map(columnBuilder -> columnBuilder.build(config))
         .collect(toList());

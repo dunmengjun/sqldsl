@@ -48,7 +48,15 @@ public class EntityTableBuilder implements TableBuilder {
   }
 
   @Override
-  public Table build(EntityConfig config) {
+  public Table buildTable(EntityConfig config) {
+    String tableName = getTableName(config.getTableAnnotation(), entityClass);
+    return getAlias()
+        .map(a -> new SimpleTable(tableName, a))
+        .orElse(new SimpleTable(tableName));
+  }
+
+  @Override
+  public List<Column> buildColumns(EntityConfig config) {
     String tableName = getTableName(config.getTableAnnotation(), entityClass);
     String realName = getAlias().orElse(tableName);
     Class<? extends Annotation> columnClass = config.getColumnAnnotation().getAnnotationClass();
@@ -62,8 +70,6 @@ public class EntityTableBuilder implements TableBuilder {
     if (columns.isEmpty()) {
       throw new NoColumnAnnotationException(entityClass, columnClass);
     }
-    return getAlias()
-        .map(a -> new SimpleTable(columns, tableName, a))
-        .orElse(new SimpleTable(columns, tableName));
+    return columns;
   }
 }
