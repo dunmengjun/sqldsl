@@ -8,5 +8,5 @@ public interface Column {
 
   String getName();
 
-  Optional<String> getAlias();
+  String getRealName();
 }

@@ -63,7 +63,7 @@ public class SqlDslExecutor implements Executor {
       while (resultSet.next()) {
         T target = newInstance(targetClass);
         for (Column column : columns) {
-          String name = column.getAlias().orElse(column.getName());
+          String name = column.getRealName();
           recursiveSetValue(name, target, resultSet.getObject(name));
         }
         list.add(target);

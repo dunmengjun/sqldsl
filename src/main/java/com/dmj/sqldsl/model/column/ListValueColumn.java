@@ -22,7 +22,7 @@ public class ListValueColumn implements Column {
   }
 
   @Override
-  public Optional<String> getAlias() {
-    return Optional.empty();
+  public String getRealName() {
+    return getName();
   }
 }

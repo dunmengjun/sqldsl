@@ -11,7 +11,7 @@ import com.dmj.sqldsl.model.Join;
 import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.Limit;
 import com.dmj.sqldsl.model.SelectFrom;
-import com.dmj.sqldsl.model.SimpleTable;
+import com.dmj.sqldsl.model.column.AliasColumn;
 import com.dmj.sqldsl.model.column.Function;
 import com.dmj.sqldsl.model.column.FunctionColumn;
 import com.dmj.sqldsl.model.column.ListValueColumn;
@@ -24,6 +24,8 @@ import com.dmj.sqldsl.model.condition.ConditionElement;
 import com.dmj.sqldsl.model.condition.ConditionMethod;
 import com.dmj.sqldsl.model.condition.Conditions;
 import com.dmj.sqldsl.model.condition.Or;
+import com.dmj.sqldsl.model.table.SimpleTable;
+import com.dmj.sqldsl.model.table.SubQueryTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,9 +57,7 @@ public class StandardModelVisitor extends ModelVisitor {
     String name = column.getTableName()
         .map(tableName -> String.format("%s.%s", tableName, column.getName()))
         .orElse(column.getName());
-    return column.getAlias()
-        .map(alias -> String.format("%s(%s) as %s", visit(column.getFunction()), name, alias))
-        .orElse(String.format("%s(%s)", visit(column.getFunction()), name));
+    return String.format("%s(%s) as %s", visit(column.getFunction()), name, column.getAlias());
   }
 
   private String visit(Function function) {
@@ -159,12 +159,9 @@ public class StandardModelVisitor extends ModelVisitor {
 
 
   protected String visit(SimpleColumn column) {
-    String name = column.getTableName()
+    return column.getTableName()
         .map(tableName -> String.format("%s.%s", tableName, column.getName()))
         .orElse(column.getName());
-    return column.getAlias()
-        .map(alias -> String.format("%s as %s", name, alias))
-        .orElse(name);
   }
 
   @Override
@@ -182,10 +179,20 @@ public class StandardModelVisitor extends ModelVisitor {
   }
 
   @Override
+  protected String visit(AliasColumn column) {
+    return String.format("%s as %s", visit(column.getColumn()), column.getAlias());
+  }
+
+  @Override
   protected String visit(SimpleTable table) {
     return table.getAlias()
         .map(alias -> String.format("%s as %s", table.getTableName(), alias))
         .orElse(table.getTableName());
+  }
+
+  @Override
+  protected String visit(SubQueryTable table) {
+    return String.format("(%s) %s", visit(table.getQuery()), table.getAlias());
   }
 
   private String visit(GroupBy groupBy) {

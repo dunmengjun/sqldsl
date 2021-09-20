@@ -18,11 +18,11 @@ public class SubQueryValueColumn implements Column {
 
   @Override
   public String getName() {
-    return null;
+    return "";
   }
 
   @Override
-  public Optional<String> getAlias() {
-    return Optional.empty();
+  public String getRealName() {
+    return getName();
   }
 }

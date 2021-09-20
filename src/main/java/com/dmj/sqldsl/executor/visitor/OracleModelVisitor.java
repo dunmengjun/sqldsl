@@ -2,6 +2,7 @@ package com.dmj.sqldsl.executor.visitor;
 
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Limit;
+import com.dmj.sqldsl.model.column.AliasColumn;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import java.util.ArrayList;
@@ -17,10 +18,11 @@ public class OracleModelVisitor extends StandardModelVisitor {
     query.getLimit().ifPresent(x -> {
       List<Column> columns = new ArrayList<>(query.getSelectFrom().getColumns());
       columns.add(
-          SimpleColumn.builder()
-              .name(PAGE_COLUMN_NAME)
-              .alias(PAGE_COLUMN_ALIAS)
-              .build()
+          new AliasColumn(
+              SimpleColumn.builder()
+                  .name(PAGE_COLUMN_NAME)
+                  .build(),
+              PAGE_COLUMN_ALIAS)
       );
       query.getSelectFrom().setColumns(columns);
     });
@@ -29,7 +31,7 @@ public class OracleModelVisitor extends StandardModelVisitor {
 
   @Override
   protected String visitLimit(String allSqlWithoutLimit, Limit limit) {
-    return String.format("select m.* from (%s) m where %s between %s and %s",
+    return String.format("select m.* from (%s) m where m.%s between %s and %s",
         allSqlWithoutLimit,
         PAGE_COLUMN_ALIAS,
         limit.getOffset(),

@@ -10,10 +10,12 @@ import com.dmj.sqldsl.builder.column.LambdaAliasColumnBuilder;
 import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.column.type.FunctionType;
+import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityTableBuilder;
 import com.dmj.sqldsl.model.column.Column;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,17 @@ public class SelectBuilder {
   @SafeVarargs
   public final <T, R> SelectBuilder selectAll(Class<T> entityClass,
       ColumnLambda<T, R>... excludeColumns) {
-    this.columnsBuilders.add(new EntityColumnsBuilder(entityClass, asList(excludeColumns)));
+    List<ColumnBuilder> columnBuilders = Arrays.stream(excludeColumns)
+        .map(SerializableLambda::getColumnBuilder)
+        .collect(Collectors.toList());
+    this.columnsBuilders.add(
+        new EntityColumnsBuilder(new EntityTableBuilder(entityClass), columnBuilders));
+    return this;
+  }
+
+  public SelectBuilder selectAll(EntityTableBuilder tableBuilder,
+      ColumnBuilder... columnBuilders) {
+    this.columnsBuilders.add(new EntityColumnsBuilder(tableBuilder, asList(columnBuilders)));
     return this;
   }
 

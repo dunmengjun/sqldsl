@@ -1,6 +1,7 @@
 package com.dmj.sqldsl.model;
 
 import com.dmj.sqldsl.model.column.Column;
+import com.dmj.sqldsl.model.table.Table;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder;

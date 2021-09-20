@@ -21,7 +21,7 @@ public class ValueColumn implements Column {
   }
 
   @Override
-  public Optional<String> getAlias() {
-    return Optional.empty();
+  public String getRealName() {
+    return getName();
   }
 }

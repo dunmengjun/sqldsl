@@ -1,6 +1,6 @@
 package com.dmj.sqldsl.executor.exception;
 
-import com.dmj.sqldsl.model.Table;
+import com.dmj.sqldsl.model.table.Table;
 import lombok.Getter;
 
 @Getter

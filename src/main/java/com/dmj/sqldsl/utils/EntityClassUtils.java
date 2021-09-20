@@ -3,12 +3,10 @@ package com.dmj.sqldsl.utils;
 import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
 import static com.dmj.sqldsl.utils.ReflectionUtils.recursiveGetFields;
 
-import com.dmj.sqldsl.builder.annotation.Alias;
 import com.dmj.sqldsl.builder.config.ColumnAnnotation;
 import com.dmj.sqldsl.builder.config.TableAnnotation;
 import com.dmj.sqldsl.builder.exception.NoTableAnnotationException;
 import java.lang.annotation.Annotation;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class EntityClassUtils {
@@ -42,16 +40,5 @@ public class EntityClassUtils {
           }
           return columnName;
         });
-  }
-
-  public static Optional<String> getAlias(Class<?> entityClass) {
-    if (!entityClass.isAnnotationPresent(Alias.class)) {
-      return Optional.empty();
-    }
-    String value = entityClass.getAnnotation(Alias.class).value();
-    if (StringUtils.isBlank(value)) {
-      value = entityClass.getSimpleName();
-    }
-    return Optional.of(value);
   }
 }

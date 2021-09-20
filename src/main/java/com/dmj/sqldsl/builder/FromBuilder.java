@@ -9,6 +9,7 @@ import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
+import com.dmj.sqldsl.builder.table.EntityTableBuilder;
 import com.dmj.sqldsl.builder.table.TableBuilder;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.JoinFlag;
@@ -42,17 +43,41 @@ public class FromBuilder implements DslQueryBuilder {
   }
 
   public FromBuilder leftJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
-    this.joinBuilders.add(new JoinBuilder(JoinFlag.left, entityClass, conditionsBuilder));
+    this.joinBuilders.add(new JoinBuilder(
+        JoinFlag.left, new EntityTableBuilder(entityClass), conditionsBuilder));
+    return this;
+  }
+
+  public FromBuilder leftJoin(
+      EntityTableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
+    this.joinBuilders.add(new JoinBuilder(JoinFlag.left, tableBuilder, conditionsBuilder));
     return this;
   }
 
   public FromBuilder rightJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
-    this.joinBuilders.add(new JoinBuilder(JoinFlag.right, entityClass, conditionsBuilder));
+    this.joinBuilders.add(new JoinBuilder(
+        JoinFlag.right, new EntityTableBuilder(entityClass), conditionsBuilder));
+    return this;
+  }
+
+
+  public FromBuilder rightJoin(
+      EntityTableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
+    this.joinBuilders.add(new JoinBuilder(
+        JoinFlag.right, tableBuilder, conditionsBuilder));
     return this;
   }
 
   public FromBuilder innerJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
-    this.joinBuilders.add(new JoinBuilder(JoinFlag.inner, entityClass, conditionsBuilder));
+    this.joinBuilders.add(new JoinBuilder(
+        JoinFlag.inner, new EntityTableBuilder(entityClass), conditionsBuilder));
+    return this;
+  }
+
+  public FromBuilder innerJoin(
+      EntityTableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
+    this.joinBuilders.add(new JoinBuilder(
+        JoinFlag.inner, tableBuilder, conditionsBuilder));
     return this;
   }
 
@@ -66,7 +91,7 @@ public class FromBuilder implements DslQueryBuilder {
   }
 
   protected DslQuery.DslQueryBuilder build(EntityConfig config) {
-    if (hasDuplicateIn(joinBuilders, JoinBuilder::getEntityClass)) {
+    if (hasDuplicateIn(joinBuilders, JoinBuilder::getTableBuilder)) {
       throw new JoinTableRepeatedlyException();
     }
     SelectFrom selectFrom = SelectFrom.builder()

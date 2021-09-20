@@ -53,6 +53,10 @@ public class ConditionBuilders {
     return create(left, eq, right);
   }
 
+  public static <T, R> ConditionsBuilder eq(ColumnLambda<T, R> left, ColumnBuilder right) {
+    return create(left, eq, right);
+  }
+
   public static <T> ConditionsBuilder ne(StringLambda<T> lambda, String value) {
     return create(lambda, ne, value);
   }

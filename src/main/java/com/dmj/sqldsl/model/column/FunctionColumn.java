@@ -11,7 +11,7 @@ public class FunctionColumn implements Column {
 
   @Getter
   private Function function;
-  private Column column;
+  private AliasColumn column;
 
   @Override
   public Optional<String> getTableName() {
@@ -24,7 +24,11 @@ public class FunctionColumn implements Column {
   }
 
   @Override
-  public Optional<String> getAlias() {
+  public String getRealName() {
+    return column.getAlias();
+  }
+
+  public String getAlias() {
     return column.getAlias();
   }
 }

@@ -4,8 +4,7 @@ import com.dmj.sqldsl.executor.exception.UnsupportedColumnException;
 import com.dmj.sqldsl.executor.exception.UnsupportedConditionException;
 import com.dmj.sqldsl.executor.exception.UnsupportedTableException;
 import com.dmj.sqldsl.model.DslQuery;
-import com.dmj.sqldsl.model.SimpleTable;
-import com.dmj.sqldsl.model.Table;
+import com.dmj.sqldsl.model.column.AliasColumn;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.FunctionColumn;
 import com.dmj.sqldsl.model.column.ListValueColumn;
@@ -17,6 +16,9 @@ import com.dmj.sqldsl.model.condition.Condition;
 import com.dmj.sqldsl.model.condition.ConditionElement;
 import com.dmj.sqldsl.model.condition.Conditions;
 import com.dmj.sqldsl.model.condition.Or;
+import com.dmj.sqldsl.model.table.SimpleTable;
+import com.dmj.sqldsl.model.table.SubQueryTable;
+import com.dmj.sqldsl.model.table.Table;
 import java.util.List;
 
 public abstract class ModelVisitor {
@@ -32,6 +34,8 @@ public abstract class ModelVisitor {
       return visit((FunctionColumn) column);
     } else if (column instanceof SubQueryValueColumn) {
       return visit((SubQueryValueColumn) column);
+    } else if (column instanceof AliasColumn) {
+      return visit((AliasColumn) column);
     }
     throw new UnsupportedColumnException(column);
   }
@@ -39,6 +43,8 @@ public abstract class ModelVisitor {
   protected String visit(Table table) {
     if (table instanceof SimpleTable) {
       return visit((SimpleTable) table);
+    } else if (table instanceof SubQueryTable) {
+      return visit((SubQueryTable) table);
     }
     throw new UnsupportedTableException(table);
   }
@@ -77,7 +83,11 @@ public abstract class ModelVisitor {
 
   protected abstract String visit(ListValueColumn column);
 
+  protected abstract String visit(AliasColumn column);
+
   protected abstract String visit(SimpleTable table);
+
+  protected abstract String visit(SubQueryTable table);
 
   public abstract List<Parameter> getParams();
 }
