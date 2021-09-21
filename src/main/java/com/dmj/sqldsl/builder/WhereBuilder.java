@@ -23,14 +23,6 @@ public class WhereBuilder implements DslQueryBuilder {
     this.conditionsBuilder = conditionsBuilder;
   }
 
-  public LimitBuilder limit(int offset, int size) {
-    return new WhereLimitBuilder(this, offset, size);
-  }
-
-  public LimitBuilder limit(int size) {
-    return new WhereLimitBuilder(this, 0, size);
-  }
-
   @SafeVarargs
   public final <T, R> GroupByBuilder groupBy(ColumnLambda<T, R>... functions) {
     List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(functions)
@@ -43,11 +35,8 @@ public class WhereBuilder implements DslQueryBuilder {
     return new WhereGroupByBuilder(this, new NormalColumnsBuilder(asList(columnBuilders)));
   }
 
-  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
+  @Override
+  public DslQuery.DslQueryBuilder build(EntityConfig config) {
     return fromBuilder.build(config).conditions(conditionsBuilder.build(config));
-  }
-
-  public DslQuery toQuery(EntityConfig config) {
-    return this.build(config).build();
   }
 }

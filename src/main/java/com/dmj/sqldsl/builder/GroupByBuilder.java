@@ -24,14 +24,6 @@ public abstract class GroupByBuilder implements DslQueryBuilder {
     return this;
   }
 
-  public LimitBuilder limit(int offset, int size) {
-    return new GroupByLimitBuilder(this, offset, size);
-  }
-
-  public LimitBuilder limit(int size) {
-    return new GroupByLimitBuilder(this, 0, size);
-  }
-
   public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
     return new GroupOrderByBuilder(this,
         asModifiableList(new OrderBuilder(function.getColumnBuilder(), isAsc)));
@@ -49,13 +41,9 @@ public abstract class GroupByBuilder implements DslQueryBuilder {
         .orElse(new GroupBy(columns));
   }
 
-  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
-    return buildDslQueryBuilder(config).groupBy(this.buildGroupBy(config));
-  }
-
   @Override
-  public DslQuery toQuery(EntityConfig config) {
-    return this.build(config).build();
+  public DslQuery.DslQueryBuilder build(EntityConfig config) {
+    return buildDslQueryBuilder(config).groupBy(this.buildGroupBy(config));
   }
 
   protected abstract DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config);

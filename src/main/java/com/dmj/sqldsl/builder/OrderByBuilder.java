@@ -19,7 +19,8 @@ public abstract class OrderByBuilder implements DslQueryBuilder {
 
   protected abstract DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config);
 
-  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
+  @Override
+  public DslQuery.DslQueryBuilder build(EntityConfig config) {
     List<Order> orders = orderBuilders.stream()
         .map(orderBuilder -> orderBuilder.build(config))
         .collect(toList());
@@ -29,18 +30,5 @@ public abstract class OrderByBuilder implements DslQueryBuilder {
   public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
     this.orderBuilders.add(new OrderBuilder(function.getColumnBuilder(), isAsc));
     return this;
-  }
-
-  public LimitBuilder limit(int offset, int size) {
-    return new OrderByLimitBuilder(this, offset, size);
-  }
-
-  public LimitBuilder limit(int size) {
-    return new OrderByLimitBuilder(this, 0, size);
-  }
-
-  @Override
-  public DslQuery toQuery(EntityConfig config) {
-    return this.build(config).build();
   }
 }

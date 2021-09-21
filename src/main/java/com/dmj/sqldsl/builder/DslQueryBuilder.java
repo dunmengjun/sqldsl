@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 
 public interface DslQueryBuilder {
 
-  DslQuery toQuery(EntityConfig config);
+  DslQuery.DslQueryBuilder build(EntityConfig config);
 
   default DslQuery toQuery() {
     if (!GlobalConfig.isValid()) {
       throw new GlobalConfigNotValidException();
     }
-    return toQuery(GlobalConfig.entityConfig);
+    return this.build(GlobalConfig.entityConfig).build();
   }
 
   @SafeVarargs
@@ -65,5 +65,13 @@ public interface DslQueryBuilder {
   static <T, R, O> SelectBuilder selectAs(ColumnLambda<T, R> column,
       ColumnLambda<O, R> alias) {
     return new SelectBuilder(new AliasColumnBuilder<>(column.getColumnBuilder(), alias));
+  }
+
+  default LimitBuilder limit(int offset, int size) {
+    return new LimitBuilder(this, offset, size);
+  }
+
+  default LimitBuilder limit(int size) {
+    return new LimitBuilder(this, 0, size);
   }
 }

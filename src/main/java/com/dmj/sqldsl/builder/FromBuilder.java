@@ -38,14 +38,6 @@ public class FromBuilder implements DslQueryBuilder {
     return new WhereBuilder(this, conditionsBuilder);
   }
 
-  public LimitBuilder limit(int offset, int size) {
-    return new FromLimitBuilder(this, offset, size);
-  }
-
-  public LimitBuilder limit(int size) {
-    return new FromLimitBuilder(this, 0, size);
-  }
-
   public FromBuilder leftJoin(Class<?> entityClass, ConditionsBuilder conditionsBuilder) {
     this.joinBuilders.add(new JoinBuilder(
         JoinFlag.left, new EntityBuilder(entityClass), conditionsBuilder));
@@ -106,7 +98,8 @@ public class FromBuilder implements DslQueryBuilder {
         asModifiableList(new OrderBuilder(columnBuilder, isAsc)));
   }
 
-  protected DslQuery.DslQueryBuilder build(EntityConfig config) {
+  @Override
+  public DslQuery.DslQueryBuilder build(EntityConfig config) {
     if (hasDuplicateIn(joinBuilders, JoinBuilder::getTableBuilder)) {
       throw new JoinTableRepeatedlyException();
     }
@@ -118,9 +111,5 @@ public class FromBuilder implements DslQueryBuilder {
             .collect(toList()))
         .build();
     return DslQuery.builder().selectFrom(selectFrom);
-  }
-
-  public DslQuery toQuery(EntityConfig config) {
-    return this.build(config).build();
   }
 }
