@@ -17,4 +17,14 @@ public class FromGroupByBuilder extends GroupByBuilder {
   protected DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config) {
     return fromBuilder.build(config);
   }
+
+  @Override
+  public void setSelectBuilder(SelectBuilder selectBuilder) {
+    fromBuilder.setSelectBuilder(selectBuilder);
+  }
+
+  @Override
+  public SelectBuilder getSelectBuilder() {
+    return fromBuilder.getSelectBuilder();
+  }
 }

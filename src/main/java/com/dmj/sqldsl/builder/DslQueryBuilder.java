@@ -22,6 +22,10 @@ public interface DslQueryBuilder {
 
   DslQuery.DslQueryBuilder build(EntityConfig config);
 
+  void setSelectBuilder(SelectBuilder selectBuilder);
+
+  SelectBuilder getSelectBuilder();
+
   default DslQuery toQuery() {
     if (!GlobalConfig.isValid()) {
       throw new GlobalConfigNotValidException();

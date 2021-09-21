@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class FromBuilder implements DslQueryBuilder {
 
-  private final SelectBuilder selectBuilder;
+  private SelectBuilder selectBuilder;
   private final TableBuilder tableBuilder;
   private final List<JoinBuilder> joinBuilders;
 
@@ -111,5 +111,15 @@ public class FromBuilder implements DslQueryBuilder {
             .collect(toList()))
         .build();
     return DslQuery.builder().selectFrom(selectFrom);
+  }
+
+  @Override
+  public void setSelectBuilder(SelectBuilder selectBuilder) {
+    this.selectBuilder = selectBuilder;
+  }
+
+  @Override
+  public SelectBuilder getSelectBuilder() {
+    return this.selectBuilder;
   }
 }

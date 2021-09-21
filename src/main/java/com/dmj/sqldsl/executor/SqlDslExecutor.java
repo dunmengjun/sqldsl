@@ -73,7 +73,7 @@ public class SqlDslExecutor implements Executor {
 
   private <T> List<T> buildResult(Class<T> targetClass, ResultSet resultSet) throws SQLException {
     List<T> list = new ArrayList<>();
-    if (resultSet.getRow() != 1) {
+    if (resultSet.getMetaData().getColumnCount() != 1) {
       logger.warn(
           String.format("The result set actual has %s column of data, "
                   + "With given result type %s, will return only the first column data",

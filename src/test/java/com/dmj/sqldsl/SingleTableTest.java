@@ -1,5 +1,6 @@
 package com.dmj.sqldsl;
 
+import static com.dmj.sqldsl.builder.column.ColumnBuilders.all;
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.count;
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.distinct;
 import static com.dmj.sqldsl.builder.column.LikeValue.contains;
@@ -261,7 +262,7 @@ public class SingleTableTest extends DatabaseTest {
   }
 
   @TestTemplate
-  public void should_return_the_sum_with_distinct_for_age_when_select_given_sum_and_distinct() {
+  public void should_return_the_count_with_distinct_for_age_when_select_given_count_and_distinct() {
     DslQuery query = DslQueryBuilder
         .select(count(distinct(TypeUser::getAge)))
         .from(User.class)
@@ -280,5 +281,17 @@ public class SingleTableTest extends DatabaseTest {
         .toQuery();
 
     assertThrows(ExecutionException.class, () -> executor.execute(query, long.class));
+  }
+
+  @TestTemplate
+  public void should_return_the_count_all_when_select_given_count_all() {
+    DslQuery query = DslQueryBuilder
+        .select(count(all()))
+        .from(User.class)
+        .toQuery();
+
+    List<Long> actual = executor.execute(query, Long.class);
+
+    assertEquals(singletonList(3L), actual);
   }
 }

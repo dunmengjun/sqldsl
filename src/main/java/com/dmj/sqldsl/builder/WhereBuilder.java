@@ -39,4 +39,14 @@ public class WhereBuilder implements DslQueryBuilder {
   public DslQuery.DslQueryBuilder build(EntityConfig config) {
     return fromBuilder.build(config).conditions(conditionsBuilder.build(config));
   }
+
+  @Override
+  public void setSelectBuilder(SelectBuilder selectBuilder) {
+    fromBuilder.setSelectBuilder(selectBuilder);
+  }
+
+  @Override
+  public SelectBuilder getSelectBuilder() {
+    return fromBuilder.getSelectBuilder();
+  }
 }

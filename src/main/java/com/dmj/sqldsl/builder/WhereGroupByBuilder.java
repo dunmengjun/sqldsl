@@ -18,4 +18,14 @@ public class WhereGroupByBuilder extends GroupByBuilder {
   protected DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config) {
     return whereBuilder.build(config);
   }
+
+  @Override
+  public void setSelectBuilder(SelectBuilder selectBuilder) {
+    whereBuilder.setSelectBuilder(selectBuilder);
+  }
+
+  @Override
+  public SelectBuilder getSelectBuilder() {
+    return whereBuilder.getSelectBuilder();
+  }
 }

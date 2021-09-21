@@ -20,4 +20,14 @@ public class LimitBuilder implements DslQueryBuilder {
   public DslQuery.DslQueryBuilder build(EntityConfig config) {
     return queryBuilder.build(config).limit(new Limit(offset, size));
   }
+
+  @Override
+  public void setSelectBuilder(SelectBuilder selectBuilder) {
+    queryBuilder.setSelectBuilder(selectBuilder);
+  }
+
+  @Override
+  public SelectBuilder getSelectBuilder() {
+    return queryBuilder.getSelectBuilder();
+  }
 }
