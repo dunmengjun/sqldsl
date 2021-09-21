@@ -1,5 +1,7 @@
 package com.dmj.sqldsl;
 
+import static com.dmj.sqldsl.builder.column.ColumnBuilders.count;
+import static com.dmj.sqldsl.builder.column.ColumnBuilders.distinct;
 import static com.dmj.sqldsl.builder.column.LikeValue.contains;
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.between;
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
@@ -12,13 +14,16 @@ import static com.dmj.sqldsl.util.DateUtils.parseDate;
 import static com.dmj.sqldsl.util.DateUtils.parseRange;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.column.DateRange;
 import com.dmj.sqldsl.dto.AliasUser;
 import com.dmj.sqldsl.dto.NameUser;
 import com.dmj.sqldsl.entity.Book;
+import com.dmj.sqldsl.entity.TypeUser;
 import com.dmj.sqldsl.entity.User;
+import com.dmj.sqldsl.executor.exception.ExecutionException;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
 import java.util.Arrays;
@@ -253,5 +258,27 @@ public class SingleTableTest extends DatabaseTest {
     List<Book> expected = singletonList(
         new Book(1, "book1", parseDate("2021-09-29 19:23:11")));
     assertEquals(expected, actual);
+  }
+
+  @TestTemplate
+  public void should_return_the_sum_with_distinct_for_age_when_select_given_sum_and_distinct() {
+    DslQuery query = DslQueryBuilder
+        .select(count(distinct(TypeUser::getAge)))
+        .from(User.class)
+        .toQuery();
+
+    List<Long> actual = executor.execute(query, Long.class);
+
+    assertEquals(singletonList(2L), actual);
+  }
+
+  @TestTemplate
+  public void should_throw_exception_when_select_given_primitive_result_type() {
+    DslQuery query = DslQueryBuilder
+        .select(count(distinct(TypeUser::getAge)))
+        .from(User.class)
+        .toQuery();
+
+    assertThrows(ExecutionException.class, () -> executor.execute(query, long.class));
   }
 }

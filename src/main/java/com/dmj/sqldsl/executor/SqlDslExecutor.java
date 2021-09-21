@@ -9,6 +9,7 @@ import com.dmj.sqldsl.executor.visitor.ModelVisitor;
 import com.dmj.sqldsl.executor.visitor.Parameter;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.column.Column;
+import com.dmj.sqldsl.utils.AssertUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +33,10 @@ public class SqlDslExecutor implements Executor {
 
   @Override
   public <T> List<T> execute(DslQuery query, Class<T> targetClass) {
+    if (targetClass.isPrimitive()) {
+      throw new ExecutionException(
+          "Jdbc not supported primitive type, cause your result type is: " + targetClass);
+    }
     try {
       return executeQuery(query, targetClass);
     } catch (SQLException e) {
@@ -58,18 +63,40 @@ public class SqlDslExecutor implements Executor {
       DslQuery query,
       Class<T> targetClass) throws SQLException {
     try (ResultSet resultSet = statement.executeQuery()) {
-      List<Column> columns = query.getSelectFrom().getColumns();
-      List<T> list = new ArrayList<>();
-      while (resultSet.next()) {
-        T target = newInstance(targetClass);
-        for (Column column : columns) {
-          String name = column.getRealName();
-          recursiveSetValue(name, target, resultSet.getObject(name));
-        }
-        list.add(target);
+      if (!AssertUtils.isBaseClass(targetClass)) {
+        return buildResult(targetClass, resultSet, query.getSelectFrom().getColumns());
+      } else {
+        return buildResult(targetClass, resultSet);
       }
-      return list;
     }
+  }
+
+  private <T> List<T> buildResult(Class<T> targetClass, ResultSet resultSet) throws SQLException {
+    List<T> list = new ArrayList<>();
+    if (resultSet.getRow() != 1) {
+      logger.warn(
+          String.format("The result set actual has %s column of data, "
+                  + "With given result type %s, will return only the first column data",
+              resultSet.getRow(), targetClass));
+    }
+    while (resultSet.next()) {
+      list.add(resultSet.getObject(1, targetClass));
+    }
+    return list;
+  }
+
+  private <T> List<T> buildResult(Class<T> targetClass, ResultSet resultSet, List<Column> columns)
+      throws SQLException {
+    List<T> list = new ArrayList<>();
+    while (resultSet.next()) {
+      T target = newInstance(targetClass);
+      for (Column column : columns) {
+        String name = column.getRealName();
+        recursiveSetValue(name, target, resultSet.getObject(name));
+      }
+      list.add(target);
+    }
+    return list;
   }
 
   private void setParameter(PreparedStatement statement, List<Parameter> params)

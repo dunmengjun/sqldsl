@@ -66,6 +66,12 @@ public class StandardModelVisitor extends ModelVisitor {
         return "sum";
       case avg:
         return "avg";
+      case max:
+        return "max";
+      case min:
+        return "min";
+      case distinct:
+        return "distinct";
       default:
         throw new UnsupportedFunctionException(function);
     }
