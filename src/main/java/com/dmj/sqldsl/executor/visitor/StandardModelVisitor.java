@@ -54,10 +54,8 @@ public class StandardModelVisitor extends ModelVisitor {
 
   @Override
   protected String visit(FunctionColumn column) {
-    String name = column.getTableName()
-        .map(tableName -> String.format("%s.%s", tableName, column.getName()))
-        .orElse(column.getName());
-    return String.format("%s(%s) as %s", visit(column.getFunction()), name, column.getAlias());
+    String params = column.getParams().stream().map(this::visit).collect(joining(","));
+    return String.format("%s(%s)", visit(column.getFunction()), params);
   }
 
   private String visit(Function function) {
@@ -66,6 +64,8 @@ public class StandardModelVisitor extends ModelVisitor {
         return "count";
       case sum:
         return "sum";
+      case avg:
+        return "avg";
       default:
         throw new UnsupportedFunctionException(function);
     }

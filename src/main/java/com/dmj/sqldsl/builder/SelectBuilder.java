@@ -3,14 +3,12 @@ package com.dmj.sqldsl.builder;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+import com.dmj.sqldsl.builder.column.AliasColumnBuilder;
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.ColumnsBuilder;
 import com.dmj.sqldsl.builder.column.EntityColumnsBuilder;
-import com.dmj.sqldsl.builder.column.FunctionColumnBuilder;
-import com.dmj.sqldsl.builder.column.LambdaAliasColumnBuilder;
 import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.column.type.FunctionType;
 import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityBuilder;
@@ -71,13 +69,13 @@ public class SelectBuilder {
 
   public <T, R, O> SelectBuilder selectAs(ColumnLambda<T, R> column,
       ColumnLambda<O, R> alias) {
-    this.aliasBuilders.add(new LambdaAliasColumnBuilder<>(column, alias));
+    this.aliasBuilders.add(new AliasColumnBuilder<>(column.getColumnBuilder(), alias));
     return this;
   }
 
-  public <T, R, O> SelectBuilder selectAs(FunctionType<T, R> functionType,
+  public <T, R, O> SelectBuilder selectAs(ColumnBuilder<T, R> columnBuilder,
       ColumnLambda<O, R> alias) {
-    this.aliasBuilders.add(new FunctionColumnBuilder<T, R>(functionType, alias));
+    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
     return this;
   }
 

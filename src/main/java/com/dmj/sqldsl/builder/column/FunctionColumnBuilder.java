@@ -1,23 +1,28 @@
 package com.dmj.sqldsl.builder.column;
 
-import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.column.type.FunctionType;
-import com.dmj.sqldsl.builder.config.EntityConfig;
-import com.dmj.sqldsl.model.column.AliasColumn;
-import com.dmj.sqldsl.model.column.Column;
-import com.dmj.sqldsl.model.column.FunctionColumn;
-import lombok.AllArgsConstructor;
+import static java.util.stream.Collectors.toList;
 
-@AllArgsConstructor
+import com.dmj.sqldsl.builder.config.EntityConfig;
+import com.dmj.sqldsl.model.column.Column;
+import com.dmj.sqldsl.model.column.Function;
+import com.dmj.sqldsl.model.column.FunctionColumn;
+import java.util.List;
+
 public class FunctionColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
-  private FunctionType<T, ?> function;
-  private ColumnLambda<?, ?> alias;
+  private final Function function;
+  private final List<ColumnBuilder<?, ?>> params;
+
+  public FunctionColumnBuilder(Function function, List<ColumnBuilder<?, ?>> params) {
+    this.function = function;
+    this.params = params;
+  }
 
   @Override
   public Column build(EntityConfig config) {
-    Column build = function.getColumnLambda().getColumnBuilder().build(config);
-    String aliasName = config.getTranslator().translate(alias.getMethodName());
-    return new FunctionColumn(function.getFunction(), new AliasColumn(build, aliasName));
+    List<Column> columns = params.stream()
+        .map(columnBuilder -> columnBuilder.build(config))
+        .collect(toList());
+    return new FunctionColumn(function, columns);
   }
 }
