@@ -19,6 +19,7 @@ import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.SelectFrom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,6 +78,13 @@ public class FromBuilder implements DslQueryBuilder {
   @SafeVarargs
   public final <T, R> GroupByBuilder groupBy(ColumnLambda<T, R>... functions) {
     List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(functions)
+        .map(SerializableLambda::getColumnBuilder)
+        .collect(Collectors.toList());
+    return new FromGroupByBuilder(this, new NormalColumnsBuilder(columnBuilders));
+  }
+
+  public final <T> GroupByBuilder groupBy(Collection<ColumnLambda<T, ?>> functions) {
+    List<ColumnBuilder<?, ?>> columnBuilders = functions.stream()
         .map(SerializableLambda::getColumnBuilder)
         .collect(Collectors.toList());
     return new FromGroupByBuilder(this, new NormalColumnsBuilder(columnBuilders));

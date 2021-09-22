@@ -8,8 +8,12 @@ import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.ColumnsBuilder;
 import com.dmj.sqldsl.builder.column.EntityColumnsBuilder;
 import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
+import com.dmj.sqldsl.builder.column.type.BooleanLambda;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
+import com.dmj.sqldsl.builder.column.type.LongLambda;
+import com.dmj.sqldsl.builder.column.type.NumberLambda;
 import com.dmj.sqldsl.builder.column.type.SerializableLambda;
+import com.dmj.sqldsl.builder.column.type.StringLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityBuilder;
 import com.dmj.sqldsl.builder.table.TableBuilder;
@@ -73,8 +77,26 @@ public class SelectBuilder {
     return this;
   }
 
-  public <T, R, O> SelectBuilder selectAs(ColumnBuilder<T, R> columnBuilder,
-      ColumnLambda<O, R> alias) {
+  public <T, O> SelectBuilder selectAs(ColumnBuilder<T, Number> columnBuilder,
+      NumberLambda<O> alias) {
+    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
+    return this;
+  }
+
+  public <T, O> SelectBuilder selectAs(ColumnBuilder<T, Long> columnBuilder,
+      LongLambda<O> alias) {
+    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
+    return this;
+  }
+
+  public <T, O> SelectBuilder selectAs(ColumnBuilder<T, String> columnBuilder,
+      StringLambda<O> alias) {
+    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
+    return this;
+  }
+
+  public <T, O> SelectBuilder selectAs(ColumnBuilder<T, Boolean> columnBuilder,
+      BooleanLambda<O> alias) {
     this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
     return this;
   }

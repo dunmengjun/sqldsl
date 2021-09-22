@@ -569,6 +569,12 @@ public class ConditionsBuilder implements ConditionElementBuilder {
     return this;
   }
 
+  public ConditionsBuilder and(ConditionsBuilder conditionsBuilder) {
+    this.elementBuilders.add(new AndBuilder());
+    this.elementBuilders.add(conditionsBuilder);
+    return this;
+  }
+
   public ConditionsBuilder or() {
     this.defaultJunction = new OrBuilder();
     return this;
@@ -582,8 +588,14 @@ public class ConditionsBuilder implements ConditionElementBuilder {
     return this;
   }
 
+  public ConditionsBuilder or(ConditionsBuilder conditionsBuilder) {
+    this.elementBuilders.add(new OrBuilder());
+    this.elementBuilders.add(conditionsBuilder);
+    return this;
+  }
+
   private <T, R> ConditionsBuilder addConditionBuilder(
-      SerializableLambda<T, R> lambda, ConditionMethod method, Object value) {
+      SerializableLambda<T, R> lambda, ConditionMethod method, R value) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(
         lambda.getColumnBuilder(),
@@ -593,8 +605,18 @@ public class ConditionsBuilder implements ConditionElementBuilder {
   }
 
   private <T, R> ConditionsBuilder addConditionBuilder(
+      SerializableLambda<T, R> lambda, ConditionMethod method, Collection<R> value) {
+    this.elementBuilders.add(defaultJunction);
+    this.elementBuilders.add(new ConditionBuilder(
+        lambda.getColumnBuilder(),
+        method,
+        new ValueColumnBuilder<>(value)));
+    return this;
+  }
+
+  private <T, O, R> ConditionsBuilder addConditionBuilder(
       SerializableLambda<T, R> lambdaLeft, ConditionMethod method,
-      SerializableLambda<T, R> lambdaRight) {
+      SerializableLambda<O, R> lambdaRight) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(
         lambdaLeft.getColumnBuilder(),
@@ -602,7 +624,6 @@ public class ConditionsBuilder implements ConditionElementBuilder {
         lambdaRight.getColumnBuilder()));
     return this;
   }
-
 
   private <T, O, R> ConditionsBuilder addConditionBuilder(
       SerializableLambda<T, R> left, ConditionMethod method,
@@ -620,9 +641,18 @@ public class ConditionsBuilder implements ConditionElementBuilder {
     return this;
   }
 
+  private <T, R> ConditionsBuilder addConditionBuilder(
+      ColumnBuilder<T, R> left, ConditionMethod method, R value) {
+    this.elementBuilders.add(defaultJunction);
+    this.elementBuilders.add(new ConditionBuilder(
+        left,
+        method,
+        new ValueColumnBuilder<>(value)));
+    return this;
+  }
 
   private <T, R> ConditionsBuilder addConditionBuilder(
-      ColumnBuilder<T, R> left, ConditionMethod method, Object value) {
+      ColumnBuilder<T, R> left, ConditionMethod method, Collection<R> value) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(
         left,
