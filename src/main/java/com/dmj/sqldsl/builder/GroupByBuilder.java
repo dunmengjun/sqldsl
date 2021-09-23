@@ -33,4 +33,14 @@ public class GroupByBuilder extends AbstractDslQueryBuilder {
         .orElse(new GroupBy(columns));
     return queryBuilder.buildDslQueryBuilder(config).groupBy(groupBy);
   }
+
+  @Override
+  public void setSelectBuilder(SelectBuilder selectBuilder) {
+    this.queryBuilder.setSelectBuilder(selectBuilder);
+  }
+
+  @Override
+  public SelectBuilder getSelectBuilder() {
+    return this.queryBuilder.getSelectBuilder();
+  }
 }

@@ -20,14 +20,23 @@ public class DslQuery {
   }
 
   public Optional<Conditions> getConditions() {
-    return Optional.ofNullable(conditions);
+    if (conditions == null || conditions.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(conditions);
   }
 
   public Optional<GroupBy> getGroupBy() {
-    return Optional.ofNullable(groupBy);
+    if (groupBy == null || groupBy.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(groupBy);
   }
 
   public Optional<OrderBy> getOrderBy() {
+    if (orderBy == null || orderBy.isEmpty()) {
+      return Optional.empty();
+    }
     return Optional.ofNullable(orderBy);
   }
 }

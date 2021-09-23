@@ -18,4 +18,14 @@ public class WhereBuilder extends AbstractDslQueryBuilder {
   public DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config) {
     return fromBuilder.buildDslQueryBuilder(config).conditions(conditionsBuilder.build(config));
   }
+
+  @Override
+  public void setSelectBuilder(SelectBuilder selectBuilder) {
+    this.fromBuilder.setSelectBuilder(selectBuilder);
+  }
+
+  @Override
+  public SelectBuilder getSelectBuilder() {
+    return this.fromBuilder.getSelectBuilder();
+  }
 }

@@ -7,4 +7,8 @@ import lombok.AllArgsConstructor;
 public class OrderBy {
 
   private List<Order> orders;
+
+  public boolean isEmpty() {
+    return orders == null || orders.isEmpty();
+  }
 }

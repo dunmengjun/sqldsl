@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class User {
 
   @Column
-  private int id;
+  private Integer id;
 
   @Column
   private String name;

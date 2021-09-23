@@ -17,4 +17,8 @@ public class Conditions implements ConditionElement {
   public static Conditions empty() {
     return new Conditions(emptyList());
   }
+
+  public boolean isEmpty() {
+    return conditionElements == null || conditionElements.isEmpty();
+  }
 }

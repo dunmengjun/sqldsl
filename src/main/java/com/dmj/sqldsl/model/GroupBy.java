@@ -8,9 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 public class GroupBy {
 
+  @Getter
   private List<Column> columns;
   private Conditions conditions;
 
@@ -19,6 +19,13 @@ public class GroupBy {
   }
 
   public Optional<Conditions> getConditions() {
-    return Optional.ofNullable(conditions);
+    if (conditions == null || conditions.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(conditions);
+  }
+
+  public boolean isEmpty() {
+    return columns == null || columns.isEmpty();
   }
 }

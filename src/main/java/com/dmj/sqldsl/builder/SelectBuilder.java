@@ -39,6 +39,20 @@ public class SelectBuilder {
     this.aliasBuilders.add(aliasBuilder);
   }
 
+  public SelectBuilder() {
+    this.columnsBuilders = new ArrayList<>();
+    this.aliasBuilders = new ArrayList<>();
+  }
+
+  public boolean isEmpty() {
+    return columnsBuilders.isEmpty() && aliasBuilders.isEmpty();
+  }
+
+  public void add(SelectBuilder selectBuilder) {
+    this.columnsBuilders.addAll(selectBuilder.columnsBuilders);
+    this.aliasBuilders.addAll(selectBuilder.aliasBuilders);
+  }
+
   @SafeVarargs
   public final <T, R> SelectBuilder selectAll(Class<T> entityClass,
       ColumnLambda<T, R>... excludeColumns) {

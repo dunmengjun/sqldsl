@@ -16,11 +16,12 @@ import java.util.List;
 
 public class FromBuilder extends AbstractDslQueryBuilder {
 
+  private SelectBuilder selectBuilder;
   private final TableBuilder tableBuilder;
   private final List<JoinBuilder> joinBuilders;
 
   public FromBuilder(SelectBuilder selectBuilder, TableBuilder tableBuilder) {
-    super(selectBuilder);
+    this.selectBuilder = selectBuilder;
     this.tableBuilder = tableBuilder;
     this.joinBuilders = new ArrayList<>();
   }
@@ -70,12 +71,22 @@ public class FromBuilder extends AbstractDslQueryBuilder {
       throw new JoinTableRepeatedlyException();
     }
     SelectFrom selectFrom = SelectFrom.builder()
-        .columns(super.getSelectBuilder().build(config))
+        .columns(this.selectBuilder.build(config))
         .table(tableBuilder.buildTable(config))
         .joins(joinBuilders.stream()
             .map(joinBuilder -> joinBuilder.build(config))
             .collect(toList()))
         .build();
     return DslQuery.builder().selectFrom(selectFrom);
+  }
+
+  @Override
+  public void setSelectBuilder(SelectBuilder selectBuilder) {
+    this.selectBuilder = selectBuilder;
+  }
+
+  @Override
+  public SelectBuilder getSelectBuilder() {
+    return this.selectBuilder;
   }
 }

@@ -2,9 +2,13 @@ package com.dmj.sqldsl.service.page;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Page<T> {
 
   private PageRequest request;

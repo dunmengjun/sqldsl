@@ -1,18 +1,21 @@
 package com.dmj.sqldsl.service;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
-import com.dmj.sqldsl.builder.GroupByBuilder;
+import com.dmj.sqldsl.builder.FromBuilder;
 import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.DateRange;
 import com.dmj.sqldsl.builder.column.LikeValue;
+import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
 import com.dmj.sqldsl.builder.column.type.BooleanLambda;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.column.type.DateLambda;
 import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
+import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
 import com.dmj.sqldsl.builder.condition.ConditionBuilders;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
@@ -28,7 +31,7 @@ import lombok.NoArgsConstructor;
 public class Wrapper<T> {
 
   private final ConditionsBuilder conditionsBuilder;
-  private final SelectBuilder selectBuilder;
+  private SelectBuilder selectBuilder;
   private final List<OrderByCondition<T, ?>> orderByConditions;
   private List<ColumnLambda<T, ?>> groupByLambdas;
   private Limit limit;
@@ -54,7 +57,7 @@ public class Wrapper<T> {
   }
 
   public Wrapper(Class<T> targetClass) {
-    this(DslQueryBuilder.selectAll(targetClass), targetClass);
+    this(new SelectBuilder(), targetClass);
   }
 
   protected Wrapper(SelectBuilder selectBuilder, Class<T> targetClass) {
@@ -387,15 +390,26 @@ public class Wrapper<T> {
   }
 
   protected DslQueryBuilder toQueryBuilder() {
-    GroupByBuilder having = this.selectBuilder
-        .from(entityClass)
+    //如果有group by, 则选择group by中的列
+    if (!groupByLambdas.isEmpty()) {
+      List<ColumnBuilder<?, ?>> columnBuilders = groupByLambdas.stream()
+          .map(SerializableLambda::getColumnBuilder).collect(toList());
+      this.selectBuilder.add(new SelectBuilder(new NormalColumnsBuilder(columnBuilders)));
+    }
+    //如果selectAs和group by都没有被调用，则选择所有
+    if (this.selectBuilder.isEmpty()) {
+      this.selectBuilder = DslQueryBuilder.selectAll(entityClass);
+    }
+    FromBuilder from = this.selectBuilder
+        .from(entityClass);
+    DslQueryBuilder queryBuilder = from
         .where(conditionsBuilder)
         .groupBy(groupByLambdas)
         .having(havingConditionsBuilder);
-    orderByConditions.forEach(c -> having.orderBy(c.getLambda(), c.isAsc()));
+    orderByConditions.forEach(c -> queryBuilder.orderBy(c.getLambda(), c.isAsc()));
     if (this.limit != null) {
-      having.limit(limit.getOffset(), limit.getSize());
+      return queryBuilder.limit(this.limit.getOffset(), this.limit.getSize());
     }
-    return having;
+    return queryBuilder;
   }
 }

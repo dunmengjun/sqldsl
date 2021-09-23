@@ -19,15 +19,9 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractDslQueryBuilder implements DslQueryBuilder {
 
-  private SelectBuilder selectBuilder;
   private final List<OrderBuilder> orderBuilders;
 
   public AbstractDslQueryBuilder() {
-    this.orderBuilders = new ArrayList<>();
-  }
-
-  public AbstractDslQueryBuilder(SelectBuilder selectBuilder) {
-    this.selectBuilder = selectBuilder;
     this.orderBuilders = new ArrayList<>();
   }
 
@@ -81,14 +75,4 @@ public abstract class AbstractDslQueryBuilder implements DslQueryBuilder {
   }
 
   public abstract DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config);
-
-  @Override
-  public SelectBuilder getSelectBuilder() {
-    return selectBuilder;
-  }
-
-  @Override
-  public void setSelectBuilder(SelectBuilder selectBuilder) {
-    this.selectBuilder = selectBuilder;
-  }
 }
