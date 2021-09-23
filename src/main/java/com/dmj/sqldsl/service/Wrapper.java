@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.GroupByBuilder;
-import com.dmj.sqldsl.builder.OrderByBuilder;
 import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.DateRange;
@@ -292,13 +291,13 @@ public class Wrapper<T> {
     return this;
   }
 
-  public Wrapper<T> notLike(StringLambda<T> lambda, LikeValue likeValue) {
-    this.conditionsBuilder.notLike(lambda, likeValue);
+  public Wrapper<T> like(ColumnBuilder<T, String> lambda, LikeValue likeValue) {
+    this.conditionsBuilder.like(lambda, likeValue);
     return this;
   }
 
-  public Wrapper<T> like(ColumnBuilder<T, String> lambda, LikeValue likeValue) {
-    this.conditionsBuilder.like(lambda, likeValue);
+  public Wrapper<T> notLike(StringLambda<T> lambda, LikeValue likeValue) {
+    this.conditionsBuilder.notLike(lambda, likeValue);
     return this;
   }
 
@@ -393,18 +392,10 @@ public class Wrapper<T> {
         .where(conditionsBuilder)
         .groupBy(groupByLambdas)
         .having(havingConditionsBuilder);
-    DslQueryBuilder queryBuilder = having;
-    if (!orderByConditions.isEmpty()) {
-      OrderByCondition<T, ?> order = orderByConditions.remove(0);
-      OrderByBuilder orderByBuilder = having.orderBy(order.getLambda(), order.isAsc());
-      if (!orderByConditions.isEmpty()) {
-        orderByConditions.forEach(c -> orderByBuilder.orderBy(c.getLambda(), c.isAsc()));
-      }
-      queryBuilder = orderByBuilder;
-    }
+    orderByConditions.forEach(c -> having.orderBy(c.getLambda(), c.isAsc()));
     if (this.limit != null) {
-      queryBuilder.limit(limit.getOffset(), limit.getSize());
+      having.limit(limit.getOffset(), limit.getSize());
     }
-    return queryBuilder;
+    return having;
   }
 }

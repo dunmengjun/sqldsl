@@ -1,14 +1,8 @@
 package com.dmj.sqldsl.builder;
 
-import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
 import static com.dmj.sqldsl.utils.CollectionUtils.hasDuplicateIn;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
-import com.dmj.sqldsl.builder.column.ColumnBuilder;
-import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
-import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
@@ -18,19 +12,15 @@ import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.SelectFrom;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class FromBuilder implements DslQueryBuilder {
+public class FromBuilder extends AbstractDslQueryBuilder {
 
-  private SelectBuilder selectBuilder;
   private final TableBuilder tableBuilder;
   private final List<JoinBuilder> joinBuilders;
 
   public FromBuilder(SelectBuilder selectBuilder, TableBuilder tableBuilder) {
-    this.selectBuilder = selectBuilder;
+    super(selectBuilder);
     this.tableBuilder = tableBuilder;
     this.joinBuilders = new ArrayList<>();
   }
@@ -56,7 +46,6 @@ public class FromBuilder implements DslQueryBuilder {
     return this;
   }
 
-
   public FromBuilder rightJoin(TableBuilder tableBuilder, ConditionsBuilder conditionsBuilder) {
     this.joinBuilders.add(new JoinBuilder(
         JoinFlag.right, tableBuilder, conditionsBuilder));
@@ -75,59 +64,18 @@ public class FromBuilder implements DslQueryBuilder {
     return this;
   }
 
-  @SafeVarargs
-  public final <T, R> GroupByBuilder groupBy(ColumnLambda<T, R>... functions) {
-    List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(functions)
-        .map(SerializableLambda::getColumnBuilder)
-        .collect(Collectors.toList());
-    return new FromGroupByBuilder(this, new NormalColumnsBuilder(columnBuilders));
-  }
-
-  public final <T> GroupByBuilder groupBy(Collection<ColumnLambda<T, ?>> functions) {
-    List<ColumnBuilder<?, ?>> columnBuilders = functions.stream()
-        .map(SerializableLambda::getColumnBuilder)
-        .collect(Collectors.toList());
-    return new FromGroupByBuilder(this, new NormalColumnsBuilder(columnBuilders));
-  }
-
-  @SafeVarargs
-  public final <T, R> GroupByBuilder groupBy(ColumnBuilder<T, R>... columnBuilders) {
-    return new FromGroupByBuilder(this,
-        new NormalColumnsBuilder(asList(columnBuilders)));
-  }
-
-  public <T, R> OrderByBuilder orderBy(ColumnLambda<T, R> function, boolean isAsc) {
-    return new FromOrderByBuilder(this,
-        asModifiableList(new OrderBuilder(function.getColumnBuilder(), isAsc)));
-  }
-
-  public <T, R> OrderByBuilder orderBy(ColumnBuilder<T, R> columnBuilder, boolean isAsc) {
-    return new FromOrderByBuilder(this,
-        asModifiableList(new OrderBuilder(columnBuilder, isAsc)));
-  }
-
   @Override
-  public DslQuery.DslQueryBuilder build(EntityConfig config) {
+  public DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config) {
     if (hasDuplicateIn(joinBuilders, JoinBuilder::getTableBuilder)) {
       throw new JoinTableRepeatedlyException();
     }
     SelectFrom selectFrom = SelectFrom.builder()
-        .columns(selectBuilder.build(config))
+        .columns(super.getSelectBuilder().build(config))
         .table(tableBuilder.buildTable(config))
         .joins(joinBuilders.stream()
             .map(joinBuilder -> joinBuilder.build(config))
             .collect(toList()))
         .build();
     return DslQuery.builder().selectFrom(selectFrom);
-  }
-
-  @Override
-  public void setSelectBuilder(SelectBuilder selectBuilder) {
-    this.selectBuilder = selectBuilder;
-  }
-
-  @Override
-  public SelectBuilder getSelectBuilder() {
-    return this.selectBuilder;
   }
 }

@@ -1,21 +1,10 @@
 package com.dmj.sqldsl.builder;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-
-import com.dmj.sqldsl.builder.column.ColumnBuilder;
-import com.dmj.sqldsl.builder.column.NormalColumnsBuilder;
-import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.DslQuery;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
-public class WhereBuilder implements DslQueryBuilder {
+public class WhereBuilder extends AbstractDslQueryBuilder {
 
   private final FromBuilder fromBuilder;
   private final ConditionsBuilder conditionsBuilder;
@@ -25,37 +14,8 @@ public class WhereBuilder implements DslQueryBuilder {
     this.conditionsBuilder = conditionsBuilder;
   }
 
-  @SafeVarargs
-  public final <T, R> GroupByBuilder groupBy(ColumnLambda<T, R>... functions) {
-    List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(functions)
-        .map(SerializableLambda::getColumnBuilder).collect(toList());
-    return new WhereGroupByBuilder(this, new NormalColumnsBuilder(columnBuilders));
-  }
-
-  public final <T> GroupByBuilder groupBy(Collection<ColumnLambda<T, ?>> functions) {
-    List<ColumnBuilder<?, ?>> columnBuilders = functions.stream()
-        .map(SerializableLambda::getColumnBuilder)
-        .collect(Collectors.toList());
-    return new WhereGroupByBuilder(this, new NormalColumnsBuilder(columnBuilders));
-  }
-
-  @SafeVarargs
-  public final <T, R> GroupByBuilder groupBy(ColumnBuilder<T, R>... columnBuilders) {
-    return new WhereGroupByBuilder(this, new NormalColumnsBuilder(asList(columnBuilders)));
-  }
-
   @Override
-  public DslQuery.DslQueryBuilder build(EntityConfig config) {
-    return fromBuilder.build(config).conditions(conditionsBuilder.build(config));
-  }
-
-  @Override
-  public void setSelectBuilder(SelectBuilder selectBuilder) {
-    fromBuilder.setSelectBuilder(selectBuilder);
-  }
-
-  @Override
-  public SelectBuilder getSelectBuilder() {
-    return fromBuilder.getSelectBuilder();
+  public DslQuery.DslQueryBuilder buildDslQueryBuilder(EntityConfig config) {
+    return fromBuilder.buildDslQueryBuilder(config).conditions(conditionsBuilder.build(config));
   }
 }

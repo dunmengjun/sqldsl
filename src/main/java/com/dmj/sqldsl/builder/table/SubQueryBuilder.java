@@ -37,7 +37,7 @@ public class SubQueryBuilder implements TableBuilder {
   @Override
   public Table buildTable(EntityConfig config) {
     if (query == null) {
-      this.query = queryBuilder.build(config).build();
+      this.query = queryBuilder.toQuery(config);
     }
     return new SubQueryTable(query, alias);
   }
@@ -45,7 +45,7 @@ public class SubQueryBuilder implements TableBuilder {
   @Override
   public List<Column> buildColumns(EntityConfig config) {
     if (query == null) {
-      this.query = queryBuilder.build(config).build();
+      this.query = queryBuilder.toQuery(config);
     }
     return query.getSelectFrom().getColumns().stream()
         .map(column -> SimpleColumn.builder().tableName(alias).name(column.getName()).build())

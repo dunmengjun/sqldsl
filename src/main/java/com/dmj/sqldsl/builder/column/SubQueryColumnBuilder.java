@@ -13,6 +13,6 @@ public class SubQueryColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
   @Override
   public Column build(EntityConfig config) {
-    return new SubQueryValueColumn(queryBuilder.build(config).build());
+    return new SubQueryValueColumn(queryBuilder.toQuery(config));
   }
 }
