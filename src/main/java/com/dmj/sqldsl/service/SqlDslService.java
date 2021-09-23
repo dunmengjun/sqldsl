@@ -50,7 +50,7 @@ public class SqlDslService {
     }
 
     queryBuilder.setSelectBuilder(selectBuilder);
-    DslQuery dataQuery = queryBuilder.limit(request.getPageNumber(), request.getSize()).toQuery();
+    DslQuery dataQuery = queryBuilder.limit(request.getNumber(), request.getSize()).toQuery();
     List<T> resultList = executor.execute(dataQuery, resultClass);
 
     return new Page<>(request, total, resultList);

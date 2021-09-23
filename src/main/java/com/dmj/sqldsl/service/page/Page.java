@@ -13,8 +13,8 @@ public class Page<T> {
   @Getter
   private List<T> data;
 
-  public int getPageNumber() {
-    return request.getPageNumber();
+  public int getNumber() {
+    return request.getNumber();
   }
 
   public int getSize() {

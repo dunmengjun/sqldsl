@@ -33,6 +33,7 @@ public class Wrapper<T> {
   private final List<OrderByCondition<T, ?>> orderByConditions;
   private List<ColumnLambda<T, ?>> groupByLambdas;
   private Limit limit;
+  private ConditionsBuilder havingConditionsBuilder;
   private final Class<T> entityClass;
 
   @Data
@@ -63,6 +64,7 @@ public class Wrapper<T> {
     this.selectBuilder = selectBuilder;
     this.orderByConditions = new ArrayList<>();
     this.groupByLambdas = emptyList();
+    this.havingConditionsBuilder = ConditionBuilders.empty();
   }
 
   public Wrapper<T> eq(StringLambda<T> lambda, String value) {
@@ -77,6 +79,21 @@ public class Wrapper<T> {
 
   public Wrapper<T> eq(BooleanLambda<T> lambda, Boolean value) {
     this.conditionsBuilder.eq(lambda, value);
+    return this;
+  }
+
+  public Wrapper<T> eq(ColumnBuilder<T, Boolean> columnBuilder, Boolean value) {
+    this.conditionsBuilder.eq(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> eq(ColumnBuilder<T, String> columnBuilder, String value) {
+    this.conditionsBuilder.eq(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> eq(ColumnBuilder<T, Number> columnBuilder, Number value) {
+    this.conditionsBuilder.eq(columnBuilder, value);
     return this;
   }
 
@@ -95,6 +112,21 @@ public class Wrapper<T> {
     return this;
   }
 
+  public Wrapper<T> ne(ColumnBuilder<T, Boolean> columnBuilder, Boolean value) {
+    this.conditionsBuilder.ne(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> ne(ColumnBuilder<T, String> columnBuilder, String value) {
+    this.conditionsBuilder.ne(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> ne(ColumnBuilder<T, Number> columnBuilder, Number value) {
+    this.conditionsBuilder.ne(columnBuilder, value);
+    return this;
+  }
+
   public Wrapper<T> gt(StringLambda<T> lambda, String value) {
     this.conditionsBuilder.gt(lambda, value);
     return this;
@@ -107,6 +139,21 @@ public class Wrapper<T> {
 
   public Wrapper<T> gt(BooleanLambda<T> lambda, Boolean value) {
     this.conditionsBuilder.gt(lambda, value);
+    return this;
+  }
+
+  public Wrapper<T> gt(ColumnBuilder<T, Boolean> columnBuilder, Boolean value) {
+    this.conditionsBuilder.ne(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> gt(ColumnBuilder<T, String> columnBuilder, String value) {
+    this.conditionsBuilder.ne(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> gt(ColumnBuilder<T, Number> columnBuilder, Number value) {
+    this.conditionsBuilder.ne(columnBuilder, value);
     return this;
   }
 
@@ -125,6 +172,21 @@ public class Wrapper<T> {
     return this;
   }
 
+  public Wrapper<T> ge(ColumnBuilder<T, Boolean> columnBuilder, Boolean value) {
+    this.conditionsBuilder.ge(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> ge(ColumnBuilder<T, String> columnBuilder, String value) {
+    this.conditionsBuilder.ge(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> ge(ColumnBuilder<T, Number> columnBuilder, Number value) {
+    this.conditionsBuilder.ne(columnBuilder, value);
+    return this;
+  }
+
   public Wrapper<T> lt(StringLambda<T> lambda, String value) {
     this.conditionsBuilder.lt(lambda, value);
     return this;
@@ -140,18 +202,48 @@ public class Wrapper<T> {
     return this;
   }
 
+  public Wrapper<T> lt(ColumnBuilder<T, Boolean> columnBuilder, Boolean value) {
+    this.conditionsBuilder.lt(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> lt(ColumnBuilder<T, String> columnBuilder, String value) {
+    this.conditionsBuilder.lt(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> lt(ColumnBuilder<T, Number> columnBuilder, Number value) {
+    this.conditionsBuilder.lt(columnBuilder, value);
+    return this;
+  }
+
   public Wrapper<T> le(StringLambda<T> lambda, String value) {
-    this.conditionsBuilder.lt(lambda, value);
+    this.conditionsBuilder.le(lambda, value);
     return this;
   }
 
   public Wrapper<T> le(NumberLambda<T> lambda, Number value) {
-    this.conditionsBuilder.lt(lambda, value);
+    this.conditionsBuilder.le(lambda, value);
     return this;
   }
 
   public Wrapper<T> le(BooleanLambda<T> lambda, Boolean value) {
-    this.conditionsBuilder.lt(lambda, value);
+    this.conditionsBuilder.le(lambda, value);
+    return this;
+  }
+
+  public Wrapper<T> le(ColumnBuilder<T, Boolean> columnBuilder, Boolean value) {
+    this.conditionsBuilder.le(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> le(ColumnBuilder<T, String> columnBuilder, String value) {
+    this.conditionsBuilder.le(columnBuilder, value);
+    return this;
+  }
+
+  public Wrapper<T> le(ColumnBuilder<T, Number> columnBuilder, Number value) {
+    this.conditionsBuilder.le(columnBuilder, value);
     return this;
   }
 
@@ -205,6 +297,16 @@ public class Wrapper<T> {
     return this;
   }
 
+  public Wrapper<T> like(ColumnBuilder<T, String> lambda, LikeValue likeValue) {
+    this.conditionsBuilder.like(lambda, likeValue);
+    return this;
+  }
+
+  public Wrapper<T> notLike(ColumnBuilder<T, String> lambda, LikeValue likeValue) {
+    this.conditionsBuilder.notLike(lambda, likeValue);
+    return this;
+  }
+
   public Wrapper<T> between(DateLambda<T> lambda, DateRange range) {
     this.conditionsBuilder.between(lambda, range);
     return this;
@@ -245,8 +347,14 @@ public class Wrapper<T> {
     return this;
   }
 
-  public Wrapper<T> selectAs(ColumnBuilder<T, String> columnBuilder,
-      StringLambda<T> alias) {
+  public Wrapper<T> having(Consumer<Wrapper<T>> wrapperConsumer) {
+    Wrapper<T> wrapper = new Wrapper<>(entityClass);
+    wrapperConsumer.accept(wrapper);
+    this.havingConditionsBuilder = wrapper.getConditionsBuilder();
+    return this;
+  }
+
+  public Wrapper<T> selectAs(ColumnBuilder<T, String> columnBuilder, StringLambda<T> alias) {
     this.selectBuilder.selectAs(columnBuilder, alias);
     return this;
   }
@@ -284,7 +392,7 @@ public class Wrapper<T> {
         .from(entityClass)
         .where(conditionsBuilder)
         .groupBy(groupByLambdas)
-        .having(ConditionBuilders.empty());
+        .having(havingConditionsBuilder);
     DslQueryBuilder queryBuilder = having;
     if (!orderByConditions.isEmpty()) {
       OrderByCondition<T, ?> order = orderByConditions.remove(0);

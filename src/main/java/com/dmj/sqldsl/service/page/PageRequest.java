@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class PageRequest {
 
-  private int pageNumber;
+  private int number;
   private int size;
 
-  public static PageRequest of(int pageNumber, int size) {
-    return new PageRequest(pageNumber, size);
+  public static PageRequest of(int number, int size) {
+    return new PageRequest(number, size);
   }
 }
