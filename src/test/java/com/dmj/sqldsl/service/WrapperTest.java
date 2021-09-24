@@ -77,14 +77,14 @@ public class WrapperTest extends ServiceTest {
             .limit(1)
     );
 
-    List<TypeUser> expected = Arrays.asList(
-        new TypeUser(1, "alice", 16, 1)
+    List<TypeUser> expected = singletonList(
+            new TypeUser(1, "alice", 16, 1)
     );
     assertEquals(expected, actual);
   }
 
   @Test
-  public void should_return_type_user_list_when_select_given_group_by_and_get_top_1() {
+  public void should_return_type_user_list_when_select_given_group_by_and_get_max_age() {
     List<TypeUser> actual = service.select(
         new Wrapper<>(TypeUser.class)
             .selectAs(max(TypeUser::getAge), TypeUser::getAge)
@@ -95,6 +95,21 @@ public class WrapperTest extends ServiceTest {
         new TypeUser(null, null, 17, 1),
         new TypeUser(null, null, 17, 2),
         new TypeUser(null, null, 19, 3)
+    );
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void should_return_type_user_list_when_select_given_group_by_and_get_max_age_lt_17() {
+    List<TypeUser> actual = service.select(
+            new Wrapper<>(TypeUser.class)
+                    .selectAs(max(TypeUser::getAge), TypeUser::getAge)
+                    .groupBy(TypeUser::getType)
+                    .having(w -> w.gt(max(TypeUser::getAge), 17))
+    );
+
+    List<TypeUser> expected = singletonList(
+            new TypeUser(null, null, 19, 3)
     );
     assertEquals(expected, actual);
   }

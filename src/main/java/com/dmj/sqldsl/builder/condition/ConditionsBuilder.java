@@ -337,15 +337,15 @@ public class ConditionsBuilder implements ConditionElementBuilder {
   }
 
   public <T> ConditionsBuilder lt(ColumnBuilder<T, String> left, String value) {
-    return addConditionBuilder(left, ge, value);
+    return addConditionBuilder(left, lt, value);
   }
 
   public <T> ConditionsBuilder lt(ColumnBuilder<T, Number> left, Number value) {
-    return addConditionBuilder(left, ge, value);
+    return addConditionBuilder(left, lt, value);
   }
 
   public <T> ConditionsBuilder lt(ColumnBuilder<T, Boolean> left, Boolean value) {
-    return addConditionBuilder(left, ge, value);
+    return addConditionBuilder(left, lt, value);
   }
 
   public <T, O> ConditionsBuilder lt(NumberLambda<T> left, NumberLambda<O> right) {

@@ -145,17 +145,17 @@ public class Wrapper<T> {
   }
 
   public Wrapper<T> gt(ColumnBuilder<T, Boolean> columnBuilder, Boolean value) {
-    this.conditionsBuilder.ne(columnBuilder, value);
+    this.conditionsBuilder.gt(columnBuilder, value);
     return this;
   }
 
   public Wrapper<T> gt(ColumnBuilder<T, String> columnBuilder, String value) {
-    this.conditionsBuilder.ne(columnBuilder, value);
+    this.conditionsBuilder.gt(columnBuilder, value);
     return this;
   }
 
   public Wrapper<T> gt(ColumnBuilder<T, Number> columnBuilder, Number value) {
-    this.conditionsBuilder.ne(columnBuilder, value);
+    this.conditionsBuilder.gt(columnBuilder, value);
     return this;
   }
 
