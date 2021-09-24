@@ -5,7 +5,7 @@ import static com.dmj.sqldsl.platform.H2Mode.h2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
-import com.dmj.sqldsl.builder.WhereBuilder;
+import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.builder.exception.JoinTableRepeatedlyException;
 import com.dmj.sqldsl.dto.CommentRating;
 import com.dmj.sqldsl.dto.UserComment;
@@ -24,7 +24,7 @@ public class JoinTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_alice_with_comment_when_select_all_given_left_join() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class, User::getId, User::getAge)
         .selectAll(Comment.class, Comment::getUserId)
         .from(User.class)
@@ -44,7 +44,7 @@ public class JoinTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_comment_when_select_given_left_join_and_special_column() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .from(User.class)
@@ -63,7 +63,7 @@ public class JoinTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_comment_when_select_given_right_join_and_special_column() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .from(User.class)
@@ -83,7 +83,7 @@ public class JoinTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_comment_when_select_given_inner_join_and_special_column() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .from(User.class)
@@ -103,7 +103,7 @@ public class JoinTest extends DatabaseTest {
 
   @TestTemplate
   public void should_throw_exception_when_select_given_join_the_same_table_twice() {
-    WhereBuilder where = DslQueryBuilder
+    DslQueryBuilder where = new SelectBuilder()
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .from(User.class)
@@ -116,7 +116,7 @@ public class JoinTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_comment_rating_when_select_given_two_left_join() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .select(Satisfaction::getRating)

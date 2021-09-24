@@ -31,7 +31,7 @@ public class SubQueryBuilder implements TableBuilder {
   }
 
   public <T, R> ColumnBuilder<T, R> col(ColumnLambda<T, R> lambda) {
-    return new LambdaColumnBuilder<>(lambda, alias);
+    return new LambdaColumnBuilder<>(lambda.getLambdaType(), alias);
   }
 
   @Override

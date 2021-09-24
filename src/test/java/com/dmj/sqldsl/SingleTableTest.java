@@ -17,7 +17,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.dmj.sqldsl.builder.DslQueryBuilder;
+import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.builder.column.DateRange;
 import com.dmj.sqldsl.dto.AliasUser;
 import com.dmj.sqldsl.dto.NameUser;
@@ -37,7 +37,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_all_user_when_select_all_given_no_condition() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .toQuery();
@@ -54,7 +54,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_alice_user_when_select_by_id_given_id_is_1() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(eq(User::getId, 1))
@@ -68,7 +68,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_bob_user_when_select_by_name_given_name_is_bob() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(eq(User::getName, "bob"))
@@ -82,7 +82,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_two_user_when_select_by_or_condition_given_id_is_1_or_2() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(eq(User::getId, 1).or().eq(User::getId, 2))
@@ -99,7 +99,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_two_user_when_select_by_nested_or_condition_given_nested_condition() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(eq(User::getId, 1)
@@ -117,7 +117,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_one_user_with_select_fields_when_select_fields() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(User::getId, User::getName)
         .from(User.class)
         .where(eq(User::getId, 1))
@@ -133,7 +133,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_one_name_user_when_select_with_dto_given_result_is_dto() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(eq(User::getId, 1))
@@ -149,7 +149,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_one_user_when_select_given_multiple_select_function() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .select(User::getId, User::getName)
         .selectAll(User.class)
@@ -168,7 +168,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_with_alias_when_select_given_column_alias() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .selectAs(User::getName, AliasUser::getUserName)
         .from(User.class)
@@ -183,7 +183,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_name_contains_o_when_select_given_name_like() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(like(User::getName, contains("o")))
@@ -200,7 +200,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_name_not_contains_o_when_select_given_name_not_like() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(notLike(User::getName, contains("o")))
@@ -214,7 +214,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_in_special_ids_when_select_given_id_in() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(in(User::getId, 1, 2))
@@ -231,7 +231,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_not_in_special_ids_when_select_given_id_not_in() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(notIn(User::getId, 1, 2))
@@ -248,7 +248,7 @@ public class SingleTableTest extends DatabaseTest {
   @TestTemplate
   public void should_return_user_between_special_time_range_when_select_given_between_time_range() {
     DateRange dateRange = parseRange("2021-09-29 19:23:11,2021-09-29 20:23:11");
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(Book.class)
         .from(Book.class)
         .where(between(Book::getCreateTime, dateRange))
@@ -263,7 +263,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_the_count_with_distinct_for_age_when_select_given_count_and_distinct() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(count(distinct(TypeUser::getAge)))
         .from(User.class)
         .toQuery();
@@ -275,7 +275,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_throw_exception_when_select_given_primitive_result_type() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(count(distinct(TypeUser::getAge)))
         .from(User.class)
         .toQuery();
@@ -285,7 +285,7 @@ public class SingleTableTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_the_count_all_when_select_given_count_all() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(count(all()))
         .from(User.class)
         .toQuery();

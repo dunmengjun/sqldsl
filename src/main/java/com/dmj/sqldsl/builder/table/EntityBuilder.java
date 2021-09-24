@@ -40,7 +40,7 @@ public class EntityBuilder implements TableBuilder {
   }
 
   public <T, R> ColumnBuilder<T, R> col(ColumnLambda<T, R> lambda) {
-    return new LambdaColumnBuilder<>(lambda, alias);
+    return new LambdaColumnBuilder<>(lambda.getLambdaType(), alias);
   }
 
   public Optional<String> getAlias() {

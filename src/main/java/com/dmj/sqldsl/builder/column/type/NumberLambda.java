@@ -1,7 +1,7 @@
 package com.dmj.sqldsl.builder.column.type;
 
 @FunctionalInterface
-public interface NumberLambda<T> extends SerializableLambda<T, Number> {
+public interface NumberLambda<T> extends TypedLambda<T, Number> {
 
   Number apply(T t);
 

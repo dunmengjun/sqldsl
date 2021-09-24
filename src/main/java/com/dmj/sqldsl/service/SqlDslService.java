@@ -42,7 +42,7 @@ public class SqlDslService {
   public <T> Page<T> select(DslQueryBuilder queryBuilder, PageRequest request,
       Class<T> resultClass) {
     SelectBuilder selectBuilder = queryBuilder.getSelectBuilder();
-    queryBuilder.setSelectBuilder(DslQueryBuilder.select(count(all())));
+    queryBuilder.setSelectBuilder(new SelectBuilder().select(count(all())));
     long total = executor.execute(queryBuilder.toQuery(), Long.class).get(0);
 
     if (total == 0) {

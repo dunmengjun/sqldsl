@@ -7,10 +7,13 @@ import com.dmj.sqldsl.executor.exception.UnsupportedFunctionException;
 import com.dmj.sqldsl.executor.exception.UnsupportedJoinFlagException;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.GroupBy;
+import com.dmj.sqldsl.model.Having;
 import com.dmj.sqldsl.model.Join;
 import com.dmj.sqldsl.model.JoinFlag;
 import com.dmj.sqldsl.model.Limit;
+import com.dmj.sqldsl.model.OrderBy;
 import com.dmj.sqldsl.model.SelectFrom;
+import com.dmj.sqldsl.model.Where;
 import com.dmj.sqldsl.model.column.AliasColumn;
 import com.dmj.sqldsl.model.column.Function;
 import com.dmj.sqldsl.model.column.FunctionColumn;
@@ -31,9 +34,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
-@Getter
 public class StandardModelVisitor extends ModelVisitor {
 
+  @Getter
   private final List<Parameter> params;
 
   public StandardModelVisitor() {
@@ -42,8 +45,11 @@ public class StandardModelVisitor extends ModelVisitor {
 
   public String visit(DslQuery query) {
     String selectFromWhere = visitSelectFromWhere(query);
+    String orderBy = query.getOrderBy().map(this::visit).orElse("");
+    selectFromWhere = selectFromWhere + orderBy;
+    String finalSelectFromWhere = selectFromWhere;
     return query.getLimit()
-        .map(limit -> visitLimit(selectFromWhere, limit))
+        .map(limit -> visitLimit(finalSelectFromWhere, limit))
         .orElse(selectFromWhere);
   }
 
@@ -201,27 +207,39 @@ public class StandardModelVisitor extends ModelVisitor {
     return String.format("(%s) %s", visit(table.getQuery()), table.getAlias());
   }
 
-  private String visit(GroupBy groupBy) {
+  protected String visit(OrderBy orderBy) {
+    String orders = orderBy.getOrders().stream()
+        .map(order ->
+            String.format("%s %s", visit(order.getColumn()), order.isAsc() ? "asc" : "desc"))
+        .collect(joining(","));
+    return String.format(" order by %s", orders);
+  }
+
+  protected String visit(GroupBy groupBy) {
     String columnsSql = groupBy.getColumns().stream()
         .map(this::visit)
         .collect(joining(","));
-    String havingSql = groupBy.getConditions()
-        .map(conditions -> String.format(" having %s", visitFirstConditions(conditions)))
-        .orElse("");
-    return String.format(" group by %s%s", columnsSql, havingSql);
+    return String.format(" group by %s", columnsSql);
   }
 
-  protected String visitSelectFromWhere(DslQuery query) {
-    String selectFrom = visit(query.getSelectFrom());
-    String conditions = query.getConditions()
-        .map(x -> " where " + visitFirstConditions(x))
-        .orElse("");
-    String groupBy = query.getGroupBy().map(this::visit).orElse("");
-    return selectFrom + conditions + groupBy;
+  protected String visit(Having having) {
+    return String.format(" having %s", visitFirstConditions(having.getConditions()));
+  }
+
+  protected String visit(Where where) {
+    return String.format(" where %s", visitFirstConditions(where.getConditions()));
   }
 
   protected String visitLimit(String allSqlWithoutLimit, Limit limit) {
     return allSqlWithoutLimit + visit(limit);
+  }
+
+  protected String visitSelectFromWhere(DslQuery query) {
+    String selectFrom = visit(query.getSelectFrom());
+    String where = query.getWhere().map(this::visit).orElse("");
+    String groupBy = query.getGroupBy().map(this::visit).orElse("");
+    String having = query.getHaving().map(this::visit).orElse("");
+    return selectFrom + where + groupBy + having;
   }
 
   protected String visitFirstConditions(Conditions conditions) {

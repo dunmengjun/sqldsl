@@ -12,8 +12,8 @@ import com.dmj.sqldsl.builder.column.type.BooleanLambda;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
-import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
+import com.dmj.sqldsl.builder.column.type.TypedLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityBuilder;
 import com.dmj.sqldsl.builder.table.TableBuilder;
@@ -31,12 +31,6 @@ public class SelectBuilder {
     this.columnsBuilders = new ArrayList<>();
     this.columnsBuilders.add(columnsBuilder);
     this.aliasBuilders = new ArrayList<>();
-  }
-
-  public SelectBuilder(ColumnBuilder<?, ?> aliasBuilder) {
-    this.columnsBuilders = new ArrayList<>();
-    this.aliasBuilders = new ArrayList<>();
-    this.aliasBuilders.add(aliasBuilder);
   }
 
   public SelectBuilder() {
@@ -57,7 +51,7 @@ public class SelectBuilder {
   public final <T, R> SelectBuilder selectAll(Class<T> entityClass,
       ColumnLambda<T, R>... excludeColumns) {
     List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(excludeColumns)
-        .map(SerializableLambda::getColumnBuilder)
+        .map(TypedLambda::getColumnBuilder)
         .collect(toList());
     this.columnsBuilders.add(
         new EntityColumnsBuilder(new EntityBuilder(entityClass), columnBuilders));
@@ -74,7 +68,7 @@ public class SelectBuilder {
   @SafeVarargs
   public final <T, R> SelectBuilder select(ColumnLambda<T, R>... functions) {
     List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(functions)
-        .map(SerializableLambda::getColumnBuilder).collect(toList());
+        .map(TypedLambda::getColumnBuilder).collect(toList());
     this.columnsBuilders.add(new NormalColumnsBuilder(columnBuilders));
     return this;
   }
@@ -87,40 +81,42 @@ public class SelectBuilder {
 
   public <T, R, O> SelectBuilder selectAs(ColumnLambda<T, R> column,
       ColumnLambda<O, R> alias) {
-    this.aliasBuilders.add(new AliasColumnBuilder<>(column.getColumnBuilder(), alias));
+    this.aliasBuilders.add(
+        new AliasColumnBuilder<>(column.getColumnBuilder(), alias.getLambdaType()));
     return this;
   }
 
   public <T, O> SelectBuilder selectAs(ColumnBuilder<T, Number> columnBuilder,
       NumberLambda<O> alias) {
-    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
+    this.aliasBuilders.add(
+        new AliasColumnBuilder<>(columnBuilder, alias.getLambdaType()));
     return this;
   }
 
   public <T, O> SelectBuilder selectAs(ColumnBuilder<T, Long> columnBuilder,
       LongLambda<O> alias) {
-    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
+    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias.getLambdaType()));
     return this;
   }
 
   public <T, O> SelectBuilder selectAs(ColumnBuilder<T, String> columnBuilder,
       StringLambda<O> alias) {
-    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
+    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias.getLambdaType()));
     return this;
   }
 
   public <T, O> SelectBuilder selectAs(ColumnBuilder<T, Boolean> columnBuilder,
       BooleanLambda<O> alias) {
-    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias));
+    this.aliasBuilders.add(new AliasColumnBuilder<>(columnBuilder, alias.getLambdaType()));
     return this;
   }
 
-  public FromBuilder from(Class<?> entityClass) {
-    return new FromBuilder(this, new EntityBuilder(entityClass));
+  public DslQueryBuilder from(Class<?> entityClass) {
+    return new DslQueryBuilder(this, new EntityBuilder(entityClass));
   }
 
-  public FromBuilder from(TableBuilder tableBuilder) {
-    return new FromBuilder(this, tableBuilder);
+  public DslQueryBuilder from(TableBuilder tableBuilder) {
+    return new DslQueryBuilder(this, tableBuilder);
   }
 
   protected List<Column> build(EntityConfig config) {

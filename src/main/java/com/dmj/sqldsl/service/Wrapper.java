@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
-import com.dmj.sqldsl.builder.FromBuilder;
 import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.DateRange;
@@ -15,8 +14,8 @@ import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.column.type.DateLambda;
 import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
-import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
+import com.dmj.sqldsl.builder.column.type.TypedLambda;
 import com.dmj.sqldsl.builder.condition.ConditionBuilders;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 public class Wrapper<T> {
@@ -41,6 +41,7 @@ public class Wrapper<T> {
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
+  @EqualsAndHashCode
   static class OrderByCondition<T, R> {
 
     private ColumnLambda<T, R> lambda;
@@ -393,14 +394,14 @@ public class Wrapper<T> {
     //如果有group by, 则选择group by中的列
     if (!groupByLambdas.isEmpty()) {
       List<ColumnBuilder<?, ?>> columnBuilders = groupByLambdas.stream()
-          .map(SerializableLambda::getColumnBuilder).collect(toList());
+          .map(TypedLambda::getColumnBuilder).collect(toList());
       this.selectBuilder.add(new SelectBuilder(new NormalColumnsBuilder(columnBuilders)));
     }
     //如果selectAs和group by都没有被调用，则选择所有
     if (this.selectBuilder.isEmpty()) {
-      this.selectBuilder = DslQueryBuilder.selectAll(entityClass);
+      this.selectBuilder = new SelectBuilder().selectAll(entityClass);
     }
-    FromBuilder from = this.selectBuilder
+    DslQueryBuilder from = this.selectBuilder
         .from(entityClass);
     DslQueryBuilder queryBuilder = from
         .where(conditionsBuilder)

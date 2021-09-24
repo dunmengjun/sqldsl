@@ -10,28 +10,22 @@ import java.lang.invoke.SerializedLambda;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface SerializableLambda<T, R> extends Serializable, ColumnBuilderFactory<T, R> {
+public interface TypedLambda<T, R> extends Serializable, ColumnBuilderFactory<T, R> {
 
   Pattern regex = Pattern.compile("\\(L(.*?);\\)");
 
   default ColumnBuilder<T, R> getColumnBuilder() {
-    return new LambdaColumnBuilder<>(this);
+    return new LambdaColumnBuilder<>(getLambdaType());
   }
 
-  default String getMethodName() {
-    SerializedLambda lambda = invokeMethod("writeReplace", this);
-    return lambda.getImplMethodName();
-  }
-
-  default Class<?> getTargetClass() {
+  default LambdaType getLambdaType() {
     SerializedLambda lambda = invokeMethod("writeReplace", this);
     String instantiatedMethodType = lambda.getInstantiatedMethodType();
-
     Matcher matcher = regex.matcher(instantiatedMethodType);
     if (matcher.find()) {
       String group = matcher.group(1);
       group = group.replace("/", ".");
-      return forName(group);
+      return new LambdaType(forName(group), lambda.getImplMethodName());
     }
     throw new RuntimeException("unknown error");
   }

@@ -9,6 +9,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
+import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.builder.table.SubQueryBuilder;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.model.DslQuery;
@@ -22,11 +23,11 @@ public class SubQueryTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_in_sub_query_when_select_given_the_sub_query() {
-    DslQueryBuilder subQuery = DslQueryBuilder
+    DslQueryBuilder subQuery = new SelectBuilder()
         .select(User::getName)
         .from(User.class)
         .where(ge(User::getAge, 17));
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(in(User::getName, subQuery))
@@ -43,12 +44,12 @@ public class SubQueryTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_eq_16_when_select_given_the_sub_query() {
-    DslQueryBuilder queryBuilder = DslQueryBuilder
+    DslQueryBuilder queryBuilder = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(lt(User::getAge, 17));
     SubQueryBuilder subQuery = SubQueryBuilder.alias(queryBuilder);
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(subQuery)
         .from(subQuery)
         .where(eq(subQuery.col(User::getAge), 16))
@@ -64,12 +65,12 @@ public class SubQueryTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_user_eq_16_when_select_given_the_left_join_sub_query() {
-    DslQueryBuilder queryBuilder = DslQueryBuilder
+    DslQueryBuilder queryBuilder = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .where(lt(User::getAge, 17));
     SubQueryBuilder subQuery = SubQueryBuilder.alias(queryBuilder);
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(subQuery)
         .from(User.class)
         .leftJoin(subQuery, eq(subQuery.col(User::getId), User::getId))

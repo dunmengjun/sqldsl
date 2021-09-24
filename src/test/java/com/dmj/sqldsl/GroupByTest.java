@@ -5,7 +5,7 @@ import static com.dmj.sqldsl.builder.column.ColumnBuilders.sum;
 import static com.dmj.sqldsl.platform.H2Mode.h2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.dmj.sqldsl.builder.DslQueryBuilder;
+import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.dto.AgeCount;
 import com.dmj.sqldsl.dto.AgeSum;
 import com.dmj.sqldsl.entity.TypeUser;
@@ -20,7 +20,7 @@ public class GroupByTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_the_count_for_age_when_select_count_age_given_group_by_age() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(TypeUser::getAge)
         .selectAs(count(TypeUser::getType), AgeCount::getCount)
         .from(TypeUser.class)
@@ -38,7 +38,7 @@ public class GroupByTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_the_sum_for_age_when_select_sum_age_given_group_by_age() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(TypeUser::getType)
         .selectAs(sum(TypeUser::getAge), AgeSum::getCount)
         .from(TypeUser.class)

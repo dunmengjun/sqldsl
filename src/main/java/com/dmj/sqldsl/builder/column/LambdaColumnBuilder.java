@@ -4,7 +4,7 @@ import static com.dmj.sqldsl.utils.EntityClassUtils.getTableName;
 import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
 import static com.dmj.sqldsl.utils.ReflectionUtils.recursiveGetField;
 
-import com.dmj.sqldsl.builder.column.type.SerializableLambda;
+import com.dmj.sqldsl.builder.column.type.LambdaType;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.exception.NoColumnAnnotationException;
 import com.dmj.sqldsl.model.column.Column;
@@ -14,26 +14,28 @@ import com.dmj.sqldsl.utils.exception.ReflectionException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Optional;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(doNotUseGetters = true)
 public class LambdaColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
-  private final SerializableLambda<T, R> lambda;
+  private final LambdaType lambdaType;
 
   private String alias;
 
-  public LambdaColumnBuilder(SerializableLambda<T, R> lambda) {
-    this.lambda = lambda;
+  public LambdaColumnBuilder(LambdaType lambdaType) {
+    this.lambdaType = lambdaType;
   }
 
-  public LambdaColumnBuilder(SerializableLambda<T, R> lambda, String alias) {
-    this.lambda = lambda;
+  public LambdaColumnBuilder(LambdaType lambdaType, String alias) {
+    this.lambdaType = lambdaType;
     this.alias = alias;
   }
 
   @Override
   public Column build(EntityConfig config) {
-    String fieldName = config.getTranslator().translate(lambda.getMethodName());
-    return getColumn(lambda.getTargetClass(), fieldName, config);
+    String fieldName = config.getTranslator().translate(lambdaType.getMethodName());
+    return getColumn(lambdaType.getTargetClass(), fieldName, config);
   }
 
   private Column getColumn(Class<?> entityClass, String fieldName, EntityConfig config) {

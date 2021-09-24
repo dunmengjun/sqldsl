@@ -4,7 +4,7 @@ import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.dmj.sqldsl.builder.DslQueryBuilder;
+import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.dto.UserComment;
 import com.dmj.sqldsl.entity.Comment;
 import com.dmj.sqldsl.entity.User;
@@ -19,7 +19,7 @@ public class LimitTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_page_user_when_select_all_given_paged() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .limit(0, 2)
@@ -35,7 +35,7 @@ public class LimitTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_page_user_when_select_all_given_limit() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .selectAll(User.class)
         .from(User.class)
         .limit(1)
@@ -51,7 +51,7 @@ public class LimitTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_page_user_when_select_all_given_joined_and_paged() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .from(User.class)
@@ -69,7 +69,7 @@ public class LimitTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_page_user_when_select_all_given_joined_and_has_conditions_and_paged() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .from(User.class)
@@ -88,7 +88,7 @@ public class LimitTest extends DatabaseTest {
 
   @TestTemplate
   public void should_return_page_user_when_select_all_given_joined_and_has_conditions_and_limit() {
-    DslQuery query = DslQueryBuilder
+    DslQuery query = new SelectBuilder()
         .select(User::getName)
         .select(Comment::getId, Comment::getMessage)
         .from(User.class)

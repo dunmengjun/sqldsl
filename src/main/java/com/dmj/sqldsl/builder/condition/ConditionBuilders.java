@@ -23,8 +23,8 @@ import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.column.type.DateLambda;
 import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
-import com.dmj.sqldsl.builder.column.type.SerializableLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
+import com.dmj.sqldsl.builder.column.type.TypedLambda;
 import com.dmj.sqldsl.model.condition.ConditionMethod;
 import java.util.Collection;
 
@@ -532,7 +532,7 @@ public class ConditionBuilders {
   }
 
   private static <T, R> ConditionsBuilder create(
-      SerializableLambda<T, R> lambda, ConditionMethod method, R value) {
+      TypedLambda<T, R> lambda, ConditionMethod method, R value) {
     return new ConditionsBuilder(
         new ConditionBuilder(
             lambda.getColumnBuilder(),
@@ -554,7 +554,7 @@ public class ConditionBuilders {
   }
 
   private static <T, R> ConditionsBuilder create(
-      SerializableLambda<T, R> lambda, ConditionMethod method, Collection<R> value) {
+      TypedLambda<T, R> lambda, ConditionMethod method, Collection<R> value) {
     return new ConditionsBuilder(
         new ConditionBuilder(
             lambda.getColumnBuilder(),
@@ -576,8 +576,8 @@ public class ConditionBuilders {
   }
 
   private static <T, O, R> ConditionsBuilder create(
-      SerializableLambda<T, R> lambdaLeft, ConditionMethod method,
-      SerializableLambda<O, R> lambdaRight) {
+      TypedLambda<T, R> lambdaLeft, ConditionMethod method,
+      TypedLambda<O, R> lambdaRight) {
     return new ConditionsBuilder(
         new ConditionBuilder(
             lambdaLeft.getColumnBuilder(),
@@ -588,7 +588,7 @@ public class ConditionBuilders {
   }
 
   private static <T, O, R> ConditionsBuilder create(
-      SerializableLambda<T, R> lambdaLeft, ConditionMethod method,
+      TypedLambda<T, R> lambdaLeft, ConditionMethod method,
       ColumnBuilder<O, R> columnBuilder) {
     return new ConditionsBuilder(
         new ConditionBuilder(
@@ -602,7 +602,7 @@ public class ConditionBuilders {
   private static <T, O, R> ConditionsBuilder create(
       ColumnBuilder<O, R> columnBuilder,
       ConditionMethod method,
-      SerializableLambda<T, R> lambda) {
+      TypedLambda<T, R> lambda) {
     return new ConditionsBuilder(
         new ConditionBuilder(
             columnBuilder,
