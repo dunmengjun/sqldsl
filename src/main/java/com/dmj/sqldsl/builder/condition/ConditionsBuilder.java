@@ -25,7 +25,6 @@ import com.dmj.sqldsl.builder.column.type.DateLambda;
 import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
-import com.dmj.sqldsl.builder.column.type.TypedLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.model.condition.ConditionElement;
 import com.dmj.sqldsl.model.condition.ConditionMethod;
@@ -595,7 +594,7 @@ public class ConditionsBuilder implements ConditionElementBuilder {
   }
 
   private <T, R> ConditionsBuilder addConditionBuilder(
-      TypedLambda<T, R> lambda, ConditionMethod method, R value) {
+      ColumnLambda<T, R> lambda, ConditionMethod method, R value) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(
         lambda.getColumnBuilder(),
@@ -605,7 +604,7 @@ public class ConditionsBuilder implements ConditionElementBuilder {
   }
 
   private <T, R> ConditionsBuilder addConditionBuilder(
-      TypedLambda<T, R> lambda, ConditionMethod method, Collection<R> value) {
+      ColumnLambda<T, R> lambda, ConditionMethod method, Collection<R> value) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(
         lambda.getColumnBuilder(),
@@ -615,8 +614,8 @@ public class ConditionsBuilder implements ConditionElementBuilder {
   }
 
   private <T, O, R> ConditionsBuilder addConditionBuilder(
-      TypedLambda<T, R> lambdaLeft, ConditionMethod method,
-      TypedLambda<O, R> lambdaRight) {
+      ColumnLambda<T, R> lambdaLeft, ConditionMethod method,
+      ColumnLambda<O, R> lambdaRight) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(
         lambdaLeft.getColumnBuilder(),
@@ -626,7 +625,7 @@ public class ConditionsBuilder implements ConditionElementBuilder {
   }
 
   private <T, O, R> ConditionsBuilder addConditionBuilder(
-      TypedLambda<T, R> left, ConditionMethod method,
+      ColumnLambda<T, R> left, ConditionMethod method,
       ColumnBuilder<O, R> right) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(left.getColumnBuilder(), method, right));
@@ -635,7 +634,7 @@ public class ConditionsBuilder implements ConditionElementBuilder {
 
   private <T, O, R> ConditionsBuilder addConditionBuilder(
       ColumnBuilder<T, R> left, ConditionMethod method,
-      TypedLambda<O, R> right) {
+      ColumnLambda<O, R> right) {
     this.elementBuilders.add(defaultJunction);
     this.elementBuilders.add(new ConditionBuilder(left, method, right.getColumnBuilder()));
     return this;

@@ -4,7 +4,6 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.column.type.TypedLambda;
 import com.dmj.sqldsl.model.column.Function;
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +57,7 @@ public class ColumnBuilders {
   @SafeVarargs
   public static <T, R> ColumnBuilder<T, R> distinct(ColumnLambda<T, R>... lambdas) {
     List<ColumnBuilder<?, ?>> params = Arrays.stream(lambdas)
-        .map(TypedLambda::getColumnBuilder)
+        .map(ColumnLambda::getColumnBuilder)
         .collect(toList());
     return new FunctionColumnBuilder<>(Function.distinct, params);
   }

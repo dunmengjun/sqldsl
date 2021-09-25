@@ -13,7 +13,6 @@ import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
-import com.dmj.sqldsl.builder.column.type.TypedLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
 import com.dmj.sqldsl.builder.table.EntityBuilder;
 import com.dmj.sqldsl.builder.table.TableBuilder;
@@ -51,7 +50,7 @@ public class SelectBuilder {
   public final <T, R> SelectBuilder selectAll(Class<T> entityClass,
       ColumnLambda<T, R>... excludeColumns) {
     List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(excludeColumns)
-        .map(TypedLambda::getColumnBuilder)
+        .map(ColumnLambda::getColumnBuilder)
         .collect(toList());
     this.columnsBuilders.add(
         new EntityColumnsBuilder(new EntityBuilder(entityClass), columnBuilders));
@@ -68,7 +67,7 @@ public class SelectBuilder {
   @SafeVarargs
   public final <T, R> SelectBuilder select(ColumnLambda<T, R>... functions) {
     List<ColumnBuilder<?, ?>> columnBuilders = Arrays.stream(functions)
-        .map(TypedLambda::getColumnBuilder).collect(toList());
+        .map(ColumnLambda::getColumnBuilder).collect(toList());
     this.columnsBuilders.add(new NormalColumnsBuilder(columnBuilders));
     return this;
   }

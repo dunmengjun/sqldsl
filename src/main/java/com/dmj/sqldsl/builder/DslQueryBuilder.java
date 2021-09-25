@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
-import com.dmj.sqldsl.builder.column.type.TypedLambda;
 import com.dmj.sqldsl.builder.condition.ConditionBuilders;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import com.dmj.sqldsl.builder.config.EntityConfig;
@@ -73,7 +72,7 @@ public class DslQueryBuilder {
 
   public <T> DslQueryBuilder groupBy(Collection<ColumnLambda<T, ?>> functions) {
     List<ColumnBuilder<?, ?>> columnBuilders = functions.stream()
-        .map(TypedLambda::getColumnBuilder)
+        .map(ColumnLambda::getColumnBuilder)
         .collect(Collectors.toList());
     this.groupByColumnBuilders.addAll(columnBuilders);
     return this;

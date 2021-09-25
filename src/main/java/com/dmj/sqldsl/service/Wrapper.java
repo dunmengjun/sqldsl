@@ -15,7 +15,6 @@ import com.dmj.sqldsl.builder.column.type.DateLambda;
 import com.dmj.sqldsl.builder.column.type.LongLambda;
 import com.dmj.sqldsl.builder.column.type.NumberLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
-import com.dmj.sqldsl.builder.column.type.TypedLambda;
 import com.dmj.sqldsl.builder.condition.ConditionBuilders;
 import com.dmj.sqldsl.builder.condition.ConditionsBuilder;
 import java.util.ArrayList;
@@ -394,7 +393,7 @@ public class Wrapper<T> {
     //如果有group by, 则选择group by中的列
     if (!groupByLambdas.isEmpty()) {
       List<ColumnBuilder<?, ?>> columnBuilders = groupByLambdas.stream()
-          .map(TypedLambda::getColumnBuilder).collect(toList());
+          .map(ColumnLambda::getColumnBuilder).collect(toList());
       this.selectBuilder.add(new SelectBuilder(new NormalColumnsBuilder(columnBuilders)));
     }
     //如果selectAs和group by都没有被调用，则选择所有
