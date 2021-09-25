@@ -7,9 +7,7 @@ import lombok.Getter;
 @Getter
 public class EntityConfig {
 
-  private TableAnnotation tableAnnotation;
-  private ColumnAnnotation columnAnnotation;
-
-  @Builder.Default
-  private NameTranslator translator = new PojoLikedStyleTranslator();
+  private TableConfig tableConfig;
+  private ColumnConfig columnConfig;
+  private NameTranslator lambdaMethodTranslator;
 }

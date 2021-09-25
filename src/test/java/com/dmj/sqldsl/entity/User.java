@@ -1,6 +1,7 @@
 package com.dmj.sqldsl.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user")
 public class User {
 
-  @Column
+  @Id
   private Integer id;
 
   @Column

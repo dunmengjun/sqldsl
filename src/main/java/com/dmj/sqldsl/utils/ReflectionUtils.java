@@ -3,7 +3,6 @@ package com.dmj.sqldsl.utils;
 import static com.dmj.sqldsl.utils.CollectionUtils.asModifiableList;
 
 import com.dmj.sqldsl.utils.exception.ReflectionException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -41,14 +40,11 @@ public class ReflectionUtils {
     }
   }
 
-  public static Stream<Field> recursiveGetFields(Class<?> targetClass,
-      Class<? extends Annotation> annotationClass) {
-    Stream<Field> fieldStream = asModifiableList(targetClass.getDeclaredFields()).stream()
-        .filter(field -> field.isAnnotationPresent(annotationClass));
+  public static Stream<Field> recursiveGetFields(Class<?> targetClass) {
+    Stream<Field> fieldStream = asModifiableList(targetClass.getDeclaredFields()).stream();
     Class<?> superclass = targetClass.getSuperclass();
     while (superclass != null) {
-      Stream<Field> superClassFieldStream = Arrays.stream(superclass.getDeclaredFields())
-          .filter(field -> field.isAnnotationPresent(annotationClass));
+      Stream<Field> superClassFieldStream = Arrays.stream(superclass.getDeclaredFields());
       fieldStream = Stream.concat(fieldStream, superClassFieldStream);
       superclass = superclass.getSuperclass();
     }

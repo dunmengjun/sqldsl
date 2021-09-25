@@ -13,7 +13,6 @@ import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.model.table.SimpleTable;
 import com.dmj.sqldsl.model.table.Table;
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
@@ -49,7 +48,7 @@ public class EntityBuilder implements TableBuilder {
 
   @Override
   public Table buildTable(EntityConfig config) {
-    String tableName = getTableName(config.getTableAnnotation(), entityClass);
+    String tableName = getTableName(config.getTableConfig(), entityClass);
     return getAlias()
         .map(a -> new SimpleTable(tableName, a))
         .orElse(new SimpleTable(tableName));
@@ -57,10 +56,9 @@ public class EntityBuilder implements TableBuilder {
 
   @Override
   public List<Column> buildColumns(EntityConfig config) {
-    String tableName = getTableName(config.getTableAnnotation(), entityClass);
+    String tableName = getTableName(config.getTableConfig(), entityClass);
     String realName = getAlias().orElse(tableName);
-    Class<? extends Annotation> columnClass = config.getColumnAnnotation().getAnnotationClass();
-    List<Column> columns = getColumnNames(config.getColumnAnnotation(), entityClass)
+    List<Column> columns = getColumnNames(config.getColumnConfig(), entityClass)
         .map(columnName ->
             SimpleColumn.builder()
                 .tableName(realName)
@@ -68,7 +66,8 @@ public class EntityBuilder implements TableBuilder {
                 .build())
         .collect(toList());
     if (columns.isEmpty()) {
-      throw new NoColumnAnnotationException(entityClass, columnClass);
+      throw new NoColumnAnnotationException(entityClass,
+          config.getColumnConfig().getColumnAnnotationClass());
     }
     return columns;
   }

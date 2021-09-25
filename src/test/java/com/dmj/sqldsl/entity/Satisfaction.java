@@ -1,6 +1,7 @@
 package com.dmj.sqldsl.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import lombok.Data;
 @Table
 public class Satisfaction {
 
-  @Column
+  @Id
   private int id;
 
   @Column
