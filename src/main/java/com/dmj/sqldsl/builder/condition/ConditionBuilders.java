@@ -526,6 +526,12 @@ public class ConditionBuilders {
     return create(lambda, ge, range.getStart()).lt(lambda, range.getEnd());
   }
 
+  // TODO: 2021/9/25 需要实现下面的方法
+  // is null
+  // is not null
+  // is true
+  // is false
+
   public static ConditionsBuilder empty() {
     return new ConditionsBuilder();
   }
