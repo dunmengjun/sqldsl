@@ -172,8 +172,8 @@ public class StandardModelVisitor extends ModelVisitor {
 
   protected String visit(SimpleColumn column) {
     return column.getTableName()
-        .map(tableName -> String.format("%s.%s", tableName, column.getName()))
-        .orElse(column.getName());
+        .map(tableName -> String.format("%s.%s", tableName, column.getColumnName()))
+        .orElse(column.getColumnName());
   }
 
   @Override

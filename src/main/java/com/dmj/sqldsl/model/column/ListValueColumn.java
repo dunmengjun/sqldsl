@@ -17,12 +17,13 @@ public class ListValueColumn implements Column {
   }
 
   @Override
-  public String getName() {
+  public String getFieldName() {
     return "";
   }
 
   @Override
-  public String getRealName() {
-    return getName();
+  public String getColumnName() {
+    return "";
   }
+
 }

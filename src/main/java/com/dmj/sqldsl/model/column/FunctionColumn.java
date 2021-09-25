@@ -20,12 +20,12 @@ public class FunctionColumn implements Column {
   }
 
   @Override
-  public String getName() {
+  public String getFieldName() {
     return "";
   }
 
   @Override
-  public String getRealName() {
+  public String getColumnName() {
     return "";
   }
 }

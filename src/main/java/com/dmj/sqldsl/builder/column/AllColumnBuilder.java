@@ -9,7 +9,7 @@ public class AllColumnBuilder<T, R> implements ColumnBuilder<T, R> {
   @Override
   public Column build(EntityConfig config) {
     return SimpleColumn.builder()
-        .name("*")
+        .columnName("*")
         .build();
   }
 }

@@ -46,7 +46,8 @@ public class LambdaColumnBuilder<T, R> implements ColumnBuilder<T, R> {
         .orElseThrow(() -> new NoColumnAnnotationException(entityClass, columnClass));
     return SimpleColumn.builder()
         .tableName(tableName)
-        .name(columnName)
+        .fieldName(fieldName)
+        .columnName(columnName)
         .build();
   }
 

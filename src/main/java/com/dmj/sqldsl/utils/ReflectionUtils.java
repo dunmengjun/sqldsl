@@ -115,6 +115,17 @@ public class ReflectionUtils {
         .orElse(false);
   }
 
+  @SuppressWarnings("unchecked")
+  public static <T> T getValue(Field field, Object object) {
+    return accessField(field, field1 -> {
+      try {
+        return (T) field1.get(object);
+      } catch (IllegalAccessException e) {
+        throw new ReflectionException(e);
+      }
+    });
+  }
+
   private static <T> T accessField(Field field, Function<Field, T> function) {
     if (!field.isAccessible()) {
       field.setAccessible(true);

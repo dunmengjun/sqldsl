@@ -8,6 +8,7 @@ import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.executor.SqlDslExecutor;
 import com.dmj.sqldsl.model.DslQuery;
+import com.dmj.sqldsl.model.TableEntity;
 import com.dmj.sqldsl.service.page.Page;
 import com.dmj.sqldsl.service.page.PageRequest;
 import java.util.List;
@@ -56,5 +57,9 @@ public class SqlDslService {
     List<T> resultList = executor.execute(dataQuery, resultClass);
 
     return new Page<>(request, total, resultList);
+  }
+
+  public <T> int save(T entity) {
+    return executor.save(TableEntity.of(entity));
   }
 }

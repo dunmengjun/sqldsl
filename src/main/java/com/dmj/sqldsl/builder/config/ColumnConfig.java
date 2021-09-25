@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Builder
 public class ColumnConfig {
@@ -18,6 +19,7 @@ public class ColumnConfig {
   private String columnNameAttribute;
   private Class<? extends Annotation> idAnnotationClass;
   @Builder.Default
+  @Setter
   private NameTranslator globalFieldNameTranslator = new NotingTranslator();
 
   public Optional<String> getColumnName(Field field) {

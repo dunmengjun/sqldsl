@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 public class GlobalConfig {
 
-  public static EntityConfig entityConfig = EntityConfig.builder()
+  private static EntityConfig entityConfig = EntityConfig.builder()
       .tableConfig(TableConfig.builder()
           .annotationClass(Table.class)
           .tableNameAttribute("name")
@@ -21,5 +21,25 @@ public class GlobalConfig {
 
   public static boolean isValid() {
     return entityConfig != null;
+  }
+
+  public static void setEntityConfig(EntityConfig entityConfig) {
+    GlobalConfig.entityConfig = entityConfig;
+  }
+
+  public static EntityConfig getEntityConfig() {
+    return entityConfig;
+  }
+
+  public static void setGlobalColumnNameTranslator(NameTranslator translator) {
+    entityConfig.getColumnConfig().setGlobalFieldNameTranslator(translator);
+  }
+
+  public static void setGlobalTableNameTranslator(NameTranslator translator) {
+    entityConfig.getTableConfig().setGlobalTableNameTranslator(translator);
+  }
+
+  public static void setGlobalLambdaMethodTranslator(NameTranslator translator) {
+    entityConfig.setLambdaMethodTranslator(translator);
   }
 }

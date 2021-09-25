@@ -136,6 +136,9 @@ public class DslQueryBuilder {
   }
 
   public DslQuery toQuery(EntityConfig config) {
+    if (!GlobalConfig.isValid()) {
+      throw new GlobalConfigNotValidException();
+    }
     if (hasDuplicateIn(joinBuilders, JoinBuilder::getTableBuilder)) {
       throw new JoinTableRepeatedlyException();
     }
@@ -165,10 +168,7 @@ public class DslQueryBuilder {
   }
 
   public DslQuery toQuery() {
-    if (!GlobalConfig.isValid()) {
-      throw new GlobalConfigNotValidException();
-    }
-    return this.toQuery(GlobalConfig.entityConfig);
+    return this.toQuery(GlobalConfig.getEntityConfig());
   }
 
 

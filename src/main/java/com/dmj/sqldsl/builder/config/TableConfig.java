@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
 @Builder
@@ -19,6 +20,7 @@ public class TableConfig {
   private String tableNameAttribute;
 
   @Builder.Default
+  @Setter
   private NameTranslator globalTableNameTranslator = new NotingTranslator();
 
   public Optional<String> getTableName(Class<?> targetClass) {

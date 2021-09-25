@@ -19,4 +19,20 @@ public class StringUtils {
       throw new IllegalArgumentException(message);
     }
   }
+
+  public static String toUnderlineCase(String camelCase) {
+    if (camelCase == null) {
+      return null;
+    }
+    char[] charArray = camelCase.toCharArray();
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0, l = charArray.length; i < l; i++) {
+      if (charArray[i] >= 65 && charArray[i] <= 90) {
+        builder.append("_").append(charArray[i] += 32);
+      } else {
+        builder.append(charArray[i]);
+      }
+    }
+    return builder.toString();
+  }
 }

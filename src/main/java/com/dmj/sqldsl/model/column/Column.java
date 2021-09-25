@@ -6,7 +6,7 @@ public interface Column {
 
   Optional<String> getTableName();
 
-  String getName();
+  String getFieldName();
 
-  String getRealName();
+  String getColumnName();
 }

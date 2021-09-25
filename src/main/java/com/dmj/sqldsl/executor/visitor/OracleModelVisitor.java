@@ -20,7 +20,7 @@ public class OracleModelVisitor extends StandardModelVisitor {
       columns.add(
           new AliasColumn(
               SimpleColumn.builder()
-                  .name(PAGE_COLUMN_NAME)
+                  .columnName(PAGE_COLUMN_NAME)
                   .build(),
               PAGE_COLUMN_ALIAS)
       );

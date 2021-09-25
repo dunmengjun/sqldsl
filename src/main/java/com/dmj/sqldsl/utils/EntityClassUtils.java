@@ -7,6 +7,9 @@ import com.dmj.sqldsl.builder.config.TableConfig;
 import com.dmj.sqldsl.builder.exception.NoTableAnnotationException;
 import java.util.Optional;
 import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public class EntityClassUtils {
 
@@ -21,9 +24,20 @@ public class EntityClassUtils {
         });
   }
 
-  public static Stream<String> getColumnNames(ColumnConfig columnConfig, Class<?> entityClass) {
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
+  public static class FieldColumn {
+
+    private String fieldName;
+    private String columnName;
+  }
+
+  public static Stream<FieldColumn> getColumnNames(ColumnConfig columnConfig,
+      Class<?> entityClass) {
     return recursiveGetFields(entityClass)
-        .map(columnConfig::getColumnName)
+        .map(field -> columnConfig.getColumnName(field)
+            .map(name -> new FieldColumn(field.getName(), name)))
         .filter(Optional::isPresent)
         .map(Optional::get);
   }

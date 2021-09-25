@@ -21,12 +21,12 @@ public class AliasColumn implements Column {
   }
 
   @Override
-  public String getName() {
-    return column.getName();
+  public String getFieldName() {
+    return getAlias();
   }
 
   @Override
-  public String getRealName() {
+  public String getColumnName() {
     return getAlias();
   }
 }

@@ -48,7 +48,12 @@ public class SubQueryBuilder implements TableBuilder {
       this.query = queryBuilder.toQuery(config);
     }
     return query.getSelectFrom().getColumns().stream()
-        .map(column -> SimpleColumn.builder().tableName(alias).name(column.getName()).build())
+        .map(column ->
+            SimpleColumn.builder()
+                .tableName(alias)
+                .fieldName(column.getFieldName())
+                .columnName(column.getColumnName())
+                .build())
         .collect(Collectors.toList());
   }
 }

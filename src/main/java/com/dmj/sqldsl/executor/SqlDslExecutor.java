@@ -7,7 +7,9 @@ import static com.dmj.sqldsl.utils.ReflectionUtils.recursiveSetValue;
 import com.dmj.sqldsl.executor.exception.ExecutionException;
 import com.dmj.sqldsl.executor.visitor.ModelVisitor;
 import com.dmj.sqldsl.executor.visitor.Parameter;
+import com.dmj.sqldsl.executor.visitor.TableEntityVisitor;
 import com.dmj.sqldsl.model.DslQuery;
+import com.dmj.sqldsl.model.TableEntity;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.utils.AssertUtils;
 import java.sql.Connection;
@@ -16,12 +18,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SqlDslExecutor implements Executor {
-
-  private final Logger logger = LoggerFactory.getLogger(SqlDslExecutor.class);
 
   private final ConnectionManager manager;
   private final SqlDialect dialect;
@@ -32,25 +32,50 @@ public class SqlDslExecutor implements Executor {
   }
 
   @Override
-  public <T> List<T> execute(DslQuery query, Class<T> targetClass) {
-    if (targetClass.isPrimitive()) {
+  public <T> List<T> execute(DslQuery query, Class<T> resultClass) {
+    if (resultClass.isPrimitive()) {
       throw new ExecutionException(
-          "Jdbc not supported primitive type, cause your result type is: " + targetClass);
+          "Jdbc not supported primitive type, cause your result type is: " + resultClass);
     }
     try {
-      return executeQuery(query, targetClass);
+      return executeQuery(query, resultClass);
     } catch (SQLException e) {
       throw new ExecutionException(e);
     }
   }
 
+  @Override
+  public int save(TableEntity entity) {
+    try {
+      return saveOne(entity);
+    } catch (SQLException e) {
+      throw new ExecutionException(e);
+    }
+  }
+
+  private int saveOne(TableEntity entity) throws SQLException {
+    TableEntityVisitor visitor = new TableEntityVisitor();
+    String sql = visitor.visit(entity);
+    logSql(sql, visitor.getParams());
+    try (Connection connection = manager.getConnection()) {
+      try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        setParameter(statement, visitor.getParams());
+        return statement.executeUpdate();
+      }
+    }
+  }
+
+  private void logSql(String sql, List<Parameter> parameters) {
+    log.debug("=========================");
+    log.debug(sql);
+    log.debug(parameters.toString());
+    log.debug("=========================");
+  }
+
   private <T> List<T> executeQuery(DslQuery query, Class<T> targetClass) throws SQLException {
     ModelVisitor visitor = getModeVisitor(dialect);
     String sql = visitor.visit(query);
-    logger.debug("=========================");
-    logger.debug(sql);
-    logger.debug(visitor.getParams().toString());
-    logger.debug("=========================");
+    logSql(sql, visitor.getParams());
     try (Connection connection = manager.getConnection()) {
       try (PreparedStatement statement = connection.prepareStatement(sql)) {
         setParameter(statement, visitor.getParams());
@@ -71,16 +96,16 @@ public class SqlDslExecutor implements Executor {
     }
   }
 
-  private <T> List<T> buildResult(Class<T> targetClass, ResultSet resultSet) throws SQLException {
-    List<T> list = new ArrayList<>();
-    if (resultSet.getMetaData().getColumnCount() != 1) {
-      logger.warn(
-          String.format("The result set actual has %s column of data, "
-                  + "With given result type %s, will return only the first column data",
-              resultSet.getRow(), targetClass));
+  private <T> List<T> buildResult(Class<T> resultClass, ResultSet resultSet) throws SQLException {
+    int columnCount = resultSet.getMetaData().getColumnCount();
+    if (columnCount > 1) {
+      log.warn(String.format("The result set actual has %s column of data, "
+              + "With given result type %s, will return only the first column data",
+          columnCount, resultClass));
     }
+    List<T> list = new ArrayList<>();
     while (resultSet.next()) {
-      list.add(resultSet.getObject(1, targetClass));
+      list.add(resultSet.getObject(1, resultClass));
     }
     return list;
   }
@@ -91,8 +116,9 @@ public class SqlDslExecutor implements Executor {
     while (resultSet.next()) {
       T target = newInstance(targetClass);
       for (Column column : columns) {
-        String name = column.getRealName();
-        recursiveSetValue(name, target, resultSet.getObject(name));
+        String fieldName = column.getFieldName();
+        String columnName = column.getColumnName();
+        recursiveSetValue(fieldName, target, resultSet.getObject(columnName));
       }
       list.add(target);
     }

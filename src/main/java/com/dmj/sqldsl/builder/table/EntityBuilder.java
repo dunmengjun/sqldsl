@@ -57,12 +57,13 @@ public class EntityBuilder implements TableBuilder {
   @Override
   public List<Column> buildColumns(EntityConfig config) {
     String tableName = getTableName(config.getTableConfig(), entityClass);
-    String realName = getAlias().orElse(tableName);
+    String realTableName = getAlias().orElse(tableName);
     List<Column> columns = getColumnNames(config.getColumnConfig(), entityClass)
-        .map(columnName ->
+        .map(fieldColumn ->
             SimpleColumn.builder()
-                .tableName(realName)
-                .name(columnName)
+                .tableName(realTableName)
+                .fieldName(fieldColumn.getFieldName())
+                .columnName(fieldColumn.getColumnName())
                 .build())
         .collect(toList());
     if (columns.isEmpty()) {
