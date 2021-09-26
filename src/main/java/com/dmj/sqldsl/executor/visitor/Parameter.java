@@ -11,6 +11,9 @@ public class Parameter {
 
   @Override
   public String toString() {
+    if (value == null) {
+      return "null (NULL)";
+    }
     return String.format("%s (%s)", value, value.getClass().getSimpleName());
   }
 }

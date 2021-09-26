@@ -9,7 +9,7 @@ import com.dmj.sqldsl.executor.visitor.ModelVisitor;
 import com.dmj.sqldsl.executor.visitor.Parameter;
 import com.dmj.sqldsl.executor.visitor.TableEntityVisitor;
 import com.dmj.sqldsl.model.DslQuery;
-import com.dmj.sqldsl.model.TableEntity;
+import com.dmj.sqldsl.model.Entity;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.utils.AssertUtils;
 import java.sql.Connection;
@@ -45,7 +45,7 @@ public class SqlDslExecutor implements Executor {
   }
 
   @Override
-  public int save(TableEntity entity) {
+  public int save(Entity entity) {
     try {
       return saveOne(entity);
     } catch (SQLException e) {
@@ -53,7 +53,7 @@ public class SqlDslExecutor implements Executor {
     }
   }
 
-  private int saveOne(TableEntity entity) throws SQLException {
+  private int saveOne(Entity entity) throws SQLException {
     TableEntityVisitor visitor = new TableEntityVisitor();
     String sql = visitor.visit(entity);
     logSql(sql, visitor.getParams());

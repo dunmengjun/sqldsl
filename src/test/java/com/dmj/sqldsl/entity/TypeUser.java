@@ -17,6 +17,11 @@ public class TypeUser extends User {
     this.type = type;
   }
 
+  public TypeUser(String name, Integer age, Integer type) {
+    super(name, age);
+    this.type = type;
+  }
+
   @Column
   private Integer type;
 }

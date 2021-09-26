@@ -1,16 +1,10 @@
 package com.dmj.sqldsl.builder.table;
 
-import static com.dmj.sqldsl.utils.EntityClassUtils.getColumnNames;
-import static com.dmj.sqldsl.utils.EntityClassUtils.getTableName;
-import static java.util.stream.Collectors.toList;
-
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.LambdaColumnBuilder;
 import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.builder.config.EntityConfig;
-import com.dmj.sqldsl.builder.exception.NoColumnAnnotationException;
 import com.dmj.sqldsl.model.column.Column;
-import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.model.table.SimpleTable;
 import com.dmj.sqldsl.model.table.Table;
 import java.util.List;
@@ -48,28 +42,15 @@ public class EntityBuilder implements TableBuilder {
 
   @Override
   public Table buildTable(EntityConfig config) {
-    String tableName = getTableName(config.getTableConfig(), entityClass);
-    return getAlias()
-        .map(a -> new SimpleTable(tableName, a))
-        .orElse(new SimpleTable(tableName));
+    String tableName = config.getTableName(entityClass);
+    if (alias == null) {
+      return new SimpleTable(tableName);
+    }
+    return new SimpleTable(tableName, alias);
   }
 
   @Override
   public List<Column> buildColumns(EntityConfig config) {
-    String tableName = getTableName(config.getTableConfig(), entityClass);
-    String realTableName = getAlias().orElse(tableName);
-    List<Column> columns = getColumnNames(config.getColumnConfig(), entityClass)
-        .map(fieldColumn ->
-            SimpleColumn.builder()
-                .tableName(realTableName)
-                .fieldName(fieldColumn.getFieldName())
-                .columnName(fieldColumn.getColumnName())
-                .build())
-        .collect(toList());
-    if (columns.isEmpty()) {
-      throw new NoColumnAnnotationException(entityClass,
-          config.getColumnConfig().getColumnAnnotationClass());
-    }
-    return columns;
+    return config.getColumns(entityClass, alias);
   }
 }

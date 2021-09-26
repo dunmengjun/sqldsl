@@ -2,7 +2,7 @@ package com.dmj.sqldsl.executor.visitor;
 
 import static java.util.stream.Collectors.joining;
 
-import com.dmj.sqldsl.model.TableEntity;
+import com.dmj.sqldsl.model.Entity;
 import com.dmj.sqldsl.model.column.ValueColumn;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +17,14 @@ public class TableEntityVisitor {
     this.params = new ArrayList<>();
   }
 
-  public String visit(TableEntity entity) {
+  public String visit(Entity entity) {
     if (!entity.hasId()) {
       return visitInsert(entity);
     }
     return visitUpdate(entity);
   }
 
-  private String visitUpdate(TableEntity entity) {
+  private String visitUpdate(Entity entity) {
     String tableName = entity.getTableName();
     String sets = entity.getColumns().stream().map(column -> {
       params.add(new Parameter(column.getValue()));
@@ -35,7 +35,7 @@ public class TableEntityVisitor {
         entity.getId().getColumnName());
   }
 
-  private String visitInsert(TableEntity entity) {
+  private String visitInsert(Entity entity) {
     String tableName = entity.getTableName();
     String columns = entity.getColumns().stream()
         .map(ValueColumn::getColumnName)

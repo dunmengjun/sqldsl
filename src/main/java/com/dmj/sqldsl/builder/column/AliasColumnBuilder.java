@@ -15,8 +15,6 @@ public class AliasColumnBuilder<T, R> implements ColumnBuilder<T, R> {
 
   @Override
   public Column build(EntityConfig config) {
-    Column build = columnBuilder.build(config);
-    String aliasName = config.getLambdaMethodTranslator().translate(alias.getMethodName());
-    return new AliasColumn(build, aliasName);
+    return new AliasColumn(columnBuilder.build(config), config.translateLambda(alias));
   }
 }
