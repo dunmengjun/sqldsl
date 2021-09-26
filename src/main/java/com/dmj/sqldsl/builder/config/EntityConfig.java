@@ -4,11 +4,11 @@ import static com.dmj.sqldsl.utils.ReflectionUtils.recursiveGetFields;
 
 import com.dmj.sqldsl.builder.column.type.LambdaType;
 import com.dmj.sqldsl.builder.exception.NoColumnAnnotationException;
+import com.dmj.sqldsl.builder.exception.NoTableAnnotationException;
 import com.dmj.sqldsl.builder.table.EntityLayout;
 import com.dmj.sqldsl.builder.table.EntityLayout.EntityField;
 import com.dmj.sqldsl.model.Entity;
 import com.dmj.sqldsl.model.column.Column;
-import com.dmj.sqldsl.utils.EntityClassUtils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class EntityConfig {
 
   public EntityLayout getEntityLayout(Class<?> entityClass) {
     return entityLayoutCacheMap.computeIfAbsent(entityClass, key -> {
-      String tableName = EntityClassUtils.getTableName(tableConfig, key);
+      String tableName = recursiveGetTableName(key);
       List<Field> fields = recursiveGetFields(key).collect(Collectors.toList());
       EntityField id = null;
       List<EntityField> columns = new ArrayList<>();
@@ -87,5 +87,16 @@ public class EntityConfig {
       }
       return new EntityLayout(entityClass, tableName, id, columns);
     });
+  }
+
+  private String recursiveGetTableName(Class<?> entityClass) {
+    return tableConfig.getTableName(entityClass)
+        .orElseGet(() -> {
+          Class<?> superclass = entityClass.getSuperclass();
+          if (superclass == null) {
+            throw new NoTableAnnotationException(entityClass, tableConfig.getAnnotationClass());
+          }
+          return recursiveGetTableName(superclass);
+        });
   }
 }
