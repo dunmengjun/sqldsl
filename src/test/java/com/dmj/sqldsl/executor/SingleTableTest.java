@@ -1,4 +1,4 @@
-package com.dmj.sqldsl;
+package com.dmj.sqldsl.executor;
 
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.all;
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.count;
@@ -25,6 +25,7 @@ import com.dmj.sqldsl.entity.Book;
 import com.dmj.sqldsl.entity.TypeUser;
 import com.dmj.sqldsl.entity.User;
 import com.dmj.sqldsl.executor.exception.ExecutionException;
+import com.dmj.sqldsl.executor.support.DatabaseTest;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
 import java.util.Arrays;

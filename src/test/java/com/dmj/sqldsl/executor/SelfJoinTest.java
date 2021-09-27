@@ -1,4 +1,4 @@
-package com.dmj.sqldsl;
+package com.dmj.sqldsl.executor;
 
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
 import static java.util.Collections.singletonList;
@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.builder.table.EntityBuilder;
 import com.dmj.sqldsl.entity.Dept;
+import com.dmj.sqldsl.executor.support.DatabaseTest;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
 import java.util.List;

@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +54,15 @@ public class SqlDslExecutor implements Executor {
     }
   }
 
+  @Override
+  public int save(List<Entity> entities) {
+    try {
+      return saveList(entities);
+    } catch (SQLException e) {
+      throw new ExecutionException(e);
+    }
+  }
+
   private int saveOne(Entity entity) throws SQLException {
     TableEntityVisitor visitor = new TableEntityVisitor();
     String sql = visitor.visit(entity);
@@ -60,16 +70,59 @@ public class SqlDslExecutor implements Executor {
     try (Connection connection = manager.getConnection()) {
       try (PreparedStatement statement = connection.prepareStatement(sql)) {
         setParameter(statement, visitor.getParams());
-        return statement.executeUpdate();
+        int i = statement.executeUpdate();
+        log.debug("<== {}", i);
+        log.debug("=========================");
+        return i;
+      }
+    }
+  }
+
+  private int saveList(List<Entity> entities) throws SQLException {
+    List<Entity> insertList = new ArrayList<>(entities.size());
+    List<Entity> updateList = new ArrayList<>(entities.size());
+    entities.forEach(entity -> {
+      if (entity.hasId()) {
+        updateList.add(entity);
+      } else {
+        insertList.add(entity);
+      }
+    });
+    return executeBatch(insertList) + executeBatch(updateList);
+  }
+
+  private int executeBatch(List<Entity> entities) throws SQLException {
+    if (entities.isEmpty()) {
+      return 0;
+    }
+    Entity entity = entities.get(0);
+    TableEntityVisitor visitor = new TableEntityVisitor();
+    String sql = visitor.visit(entity);
+    log.debug("=========================");
+    log.debug("==> {}", sql);
+    try (Connection connection = manager.getConnection()) {
+      try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        for (Entity e : entities) {
+          TableEntityVisitor v = new TableEntityVisitor();
+          v.visit(e);
+          log.debug("==> {}", v.getParams().toString());
+          setParameter(statement, v.getParams());
+          statement.addBatch();
+        }
+        int sum = Arrays.stream(statement.executeBatch())
+            .filter(i -> i > 0)
+            .sum();
+        log.debug("<== {}", sum);
+        log.debug("=========================");
+        return sum;
       }
     }
   }
 
   private void logSql(String sql, List<Parameter> parameters) {
     log.debug("=========================");
-    log.debug(sql);
-    log.debug(parameters.toString());
-    log.debug("=========================");
+    log.debug("==> {}", sql);
+    log.debug("==> {}", parameters.toString());
   }
 
   private <T> List<T> executeQuery(DslQuery query, Class<T> targetClass) throws SQLException {
@@ -79,7 +132,10 @@ public class SqlDslExecutor implements Executor {
     try (Connection connection = manager.getConnection()) {
       try (PreparedStatement statement = connection.prepareStatement(sql)) {
         setParameter(statement, visitor.getParams());
-        return executeQuery(statement, query, targetClass);
+        List<T> resultList = executeQuery(statement, query, targetClass);
+        log.debug("<== {}", resultList.size());
+        log.debug("=========================");
+        return resultList;
       }
     }
   }

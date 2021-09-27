@@ -9,4 +9,6 @@ public interface Executor {
   <T> List<T> execute(DslQuery query, Class<T> resultClass);
 
   int save(Entity entity);
+
+  int save(List<Entity> entities);
 }

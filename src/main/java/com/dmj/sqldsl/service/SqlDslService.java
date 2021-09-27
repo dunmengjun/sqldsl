@@ -4,11 +4,13 @@ import static com.dmj.sqldsl.builder.column.ColumnBuilders.all;
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.count;
 import static com.dmj.sqldsl.builder.config.GlobalConfig.getEntityConfig;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.executor.SqlDslExecutor;
 import com.dmj.sqldsl.model.DslQuery;
+import com.dmj.sqldsl.model.Entity;
 import com.dmj.sqldsl.service.page.Page;
 import com.dmj.sqldsl.service.page.PageRequest;
 import java.util.List;
@@ -61,5 +63,12 @@ public class SqlDslService {
 
   public <T> int save(T entity) {
     return executor.save(getEntityConfig().getTableEntity(entity));
+  }
+
+  public <T> int save(List<T> entities) {
+    List<Entity> entityList = entities.stream()
+        .map(e -> getEntityConfig().getTableEntity(e))
+        .collect(toList());
+    return executor.save(entityList);
   }
 }

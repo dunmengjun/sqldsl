@@ -1,4 +1,4 @@
-package com.dmj.sqldsl;
+package com.dmj.sqldsl.executor.support;
 
 import com.dmj.sqldsl.executor.SqlDialect;
 import com.dmj.sqldsl.executor.SqlDslExecutor;

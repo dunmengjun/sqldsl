@@ -7,11 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.dmj.sqldsl.entity.TypeUser;
 import com.dmj.sqldsl.service.page.Page;
 import com.dmj.sqldsl.service.page.PageRequest;
+import com.dmj.sqldsl.service.support.ServiceSelectTest;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-public class WrapperTest extends ServiceTest {
+public class WrapperTest extends ServiceSelectTest {
 
   @Test
   public void should_return_type_user_list_when_select_given_type_user_class() {

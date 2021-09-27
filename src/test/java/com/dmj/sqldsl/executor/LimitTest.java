@@ -1,4 +1,4 @@
-package com.dmj.sqldsl;
+package com.dmj.sqldsl.executor;
 
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
 import static java.util.Collections.singletonList;
@@ -8,6 +8,7 @@ import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.dto.UserComment;
 import com.dmj.sqldsl.entity.Comment;
 import com.dmj.sqldsl.entity.User;
+import com.dmj.sqldsl.executor.support.DatabaseTest;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
 import java.util.Arrays;

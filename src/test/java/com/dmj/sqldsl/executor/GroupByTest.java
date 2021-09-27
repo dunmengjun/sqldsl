@@ -1,4 +1,4 @@
-package com.dmj.sqldsl;
+package com.dmj.sqldsl.executor;
 
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.count;
 import static com.dmj.sqldsl.builder.column.ColumnBuilders.sum;
@@ -9,6 +9,7 @@ import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.dto.AgeCount;
 import com.dmj.sqldsl.dto.AgeSum;
 import com.dmj.sqldsl.entity.TypeUser;
+import com.dmj.sqldsl.executor.support.DatabaseTest;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
 import java.util.Arrays;

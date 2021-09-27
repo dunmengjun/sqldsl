@@ -1,4 +1,4 @@
-package com.dmj.sqldsl;
+package com.dmj.sqldsl.executor;
 
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.eq;
 import static com.dmj.sqldsl.builder.condition.ConditionBuilders.ge;
@@ -12,6 +12,7 @@ import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.SelectBuilder;
 import com.dmj.sqldsl.builder.table.SubQueryBuilder;
 import com.dmj.sqldsl.entity.User;
+import com.dmj.sqldsl.executor.support.DatabaseTest;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.platform.Database;
 import java.util.Arrays;
