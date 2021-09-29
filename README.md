@@ -1,8 +1,7 @@
-# sqldsl
+# Sqldsl
 
 基于jdbc实现的sql dsl，类似Querydsl, 但不需要插件就可提供类型安全的查询(基于SerializedLambda)。可以很方便的和各种类型的库(比如mybatis,
-hibernate等)集成。
-(项目还处于早期阶段，目前还没有release, 目前测试可以，请不要用于生产环境)
+hibernate等)集成。(项目还处于早期阶段，测试可以，请不要用于生产环境)
 
 ### 特点
 
@@ -41,3 +40,268 @@ hibernate等)集成。
 6. 最少的依赖
 
 > 本项目基于jdk8编写只依赖于java标准库,javax.persistence, java.sql和一个日志门面slf4j-api, 再就没有任何依赖了
+
+### 开始
+
+#### Maven
+
+```xml
+
+<dependency>
+  <groupId>io.github.dunmengjun</groupId>
+  <artifactId>sqldsl</artifactId>
+  <version>1.0.2</version>
+</dependency>
+```
+
+#### Gradle
+
+```groovy
+implementation 'io.github.dunmengjun:sqldsl:1.0.2'
+```
+
+#### Spring环境下bean的配置(默认需要依赖javax.persistence,java.sql)
+
+```java
+
+@Configuration
+public class SqlDslConfiguration {
+
+  @Bean
+  public SqlDslService sqlDslService(DataSource dataSource) {
+    GlobalConfig.setGlobalColumnNameTranslator(new CamelToUnderlineTranslator());
+    GlobalConfig.setGlobalTableNameTranslator(new FirstCharToLowerTranslator());
+    return new SqlDslService(new SqlDslExecutor(SqlDialect.mysql, dataSource::getConnection));
+  }
+}
+```
+
+Spring环境和非Spring环境都是用的同一种api，区别只是在spring环境下，sqldslservice被spring所管理，而非spring环境需要手动new出来。
+
+#### 使用案例
+
+#### 1. 简单单表查询
+
+实体类
+
+```java
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "user")
+public class User {
+
+  @Id
+  private Integer id;
+
+  @Column
+  private String name;
+
+  @Column
+  private Integer age;
+
+  @Column
+  private Integer type;
+}
+```
+
+如果项目没有依赖javax.persistence, 而是依赖的orm框架自己的注解，也是可以配置的，sqldsl提供了一个全局配置去替换注解扫描
+
+```java
+public class GlobalConfig {
+
+  private static EntityConfig entityConfig = EntityConfig.builder()
+      .tableConfig(TableConfig.builder()
+          .annotationClass(Table.class)
+          .tableNameAttribute("name")
+          .build())
+      .columnConfig(ColumnConfig.builder()
+          .idAnnotationClass(Id.class)
+          .columnAnnotationClass(Column.class)
+          .columnNameAttribute("name")
+          .build())
+      .lambdaMethodTranslator(new PojoLikedStyleTranslator())
+      .build();
+  
+  ...
+
+  public static void setEntityConfig(EntityConfig entityConfig) {
+    GlobalConfig.entityConfig = entityConfig;
+  }
+  ...
+}
+```
+
+这是全局配置的源码，在工程中可以直接调用GlobalConfig.setEntityConfig方法去设置自己项目依赖的注解信息， sqldsl所有关于注解的处理都是在EntityConfig中进行。
+
+普通查询
+
+```java
+List<User> actual=sqlDslService.select(User.class);
+```
+
+分页查询
+
+```java    
+PageRequest request = PageRequest.of(1, 1);
+Page<User> actual = sqlDslService.select(request, User.class);
+```
+
+条件查询
+
+```java
+List<User> actual=sqlDslService.select(
+    new Wrapper<>(User.class)
+    .eq(User::getType,1)
+    );
+```
+
+limit查询
+
+```java
+List<User> actual=sqlDslService.select(
+    new Wrapper<>(User.class)
+    .eq(User::getType,1)
+    .limit(1)
+    );
+```
+
+分组查询
+
+```java
+List<User> actual=sqlDslService.select(
+    new Wrapper<>(User.class)
+    .selectAs(max(User::getAge),User::getAge)
+    .groupBy(User::getType)
+    .having(w->w.gt(max(User::getAge),17))
+    );
+```
+
+排序查询
+
+```java
+List<User> actual=sqlDslService.select(
+    new Wrapper<>(User.class)
+    .selectAs(max(User::getAge),User::getAge)
+    .groupBy(User::getType)
+    .orderBy(User::getType,false)
+    .limit(2)
+    );
+```
+
+#### 2. 多表复杂查询
+
+实体类就不列出来了
+
+普通join查询
+
+```java
+DslQueryBuilder queryBuilder=new SelectBuilder()
+    .selectAll(User.class,User::getId,User::getAge)
+    .selectAll(Comment.class,Comment::getUserId)
+    .from(User.class)
+    .leftJoin(Comment.class,eq(User::getId,Comment::getUserId))
+    .where(eq(User::getAge,17));
+
+    List<UserComment> actual=sqlDslService.select(queryBuilder,UserComment.class);
+```
+
+多join查询
+
+```java
+DslQueryBuilder queryBuilder=new SelectBuilder()
+    .select(User::getName)
+    .select(Comment::getId,Comment::getMessage)
+    .select(Satisfaction::getRating)
+    .from(User.class)
+    .leftJoin(Comment.class,eq(User::getId,Comment::getUserId))
+    .leftJoin(Satisfaction.class,eq(Comment::getId,Satisfaction::getCommentId))
+    .where(eq(Comment::getStatus,1));
+
+    List<CommentRating> actual=sqlDslService.select(queryBuilder,CommentRating.class);
+```
+
+自连接查询
+
+```java
+EntityBuilder selfDept=EntityBuilder.alias(Dept.class);
+    DslQueryBuilder queryBuilder=new SelectBuilder()
+    .selectAll(selfDept)
+    .from(Dept.class)
+    .leftJoin(selfDept,eq(Dept::getParent,selfDept.col(Dept::getId)))
+    .where(eq(Dept::getName,"Development Department"));
+
+    List<Dept> actual=sqlDslService.select(queryBuilder,Dept.class);
+```
+
+form子查询
+
+```java
+DslQueryBuilder queryBuilder=new SelectBuilder()
+    .selectAll(User.class)
+    .from(User.class)
+    .where(lt(User::getAge,17));
+
+    SubQueryBuilder subQuery=SubQueryBuilder.alias(queryBuilder);
+    DslQueryBuilder query=new SelectBuilder()
+    .selectAll(subQuery)
+    .from(subQuery)
+    .where(eq(subQuery.col(User::getAge),16));
+
+    List<User> actual=sqlDslService.select(query,User.class);
+```
+
+join子查询
+
+```java
+DslQueryBuilder queryBuilder=new SelectBuilder()
+    .selectAll(User.class)
+    .from(User.class)
+    .where(lt(User::getAge,17));
+
+    SubQueryBuilder subQuery=SubQueryBuilder.alias(queryBuilder);
+    DslQueryBuilder query=new SelectBuilder()
+    .selectAll(subQuery)
+    .from(User.class)
+    .leftJoin(subQuery,eq(subQuery.col(User::getId),User::getId))
+    .where(eq(subQuery.col(User::getAge),16));
+
+    List<User> actual=sqlDslService.select(query,User.class);
+```
+
+#### 插入和更新
+
+插入
+
+```java
+TypeUser entity=new TypeUser("alice",16,1);
+
+    sqlDslService.save(entity);
+```
+
+更新
+
+```java
+TypeUser entity=new TypeUser(1,"b bb",16,1);
+
+    sqlDslService.save(entity);
+```
+
+插入和更新的区别只在于有没有ID
+
+批量更新或者插入
+
+```java
+List<TypeUser> typeUsers=Arrays.asList(
+    new TypeUser(1,null,16,1),
+    new TypeUser("bob",16,1),
+    new TypeUser("tom",18,2)
+    );
+
+    sqlDslService.save(typeUsers);
+```
+
+批量操作会自动判断是更新还是删除(底层会把它们分开并生成更新或者插入的jdbc批量操作)
+
+还有很多的案例就不写在这儿了，需要详细的使用介绍，可以直接浏览单元测试，里面分得很细也很全，代码也很好阅读。
