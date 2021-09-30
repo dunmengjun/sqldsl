@@ -2,13 +2,15 @@ plugins {
     id 'java'
     id 'checkstyle'
     id "com.star-zero.gradle.githook" version "1.2.1"
+    id 'com.palantir.git-version' version '0.12.3'
     id "io.freefair.lombok" version "6.2.0"
     id 'maven-publish'
     id 'signing'
 }
 
 group 'io.github.dunmengjun'
-version '1.0.2'
+def details = versionDetails()
+version details.lastTag.substring(1, details.lastTag.length())
 
 repositories {
     mavenCentral()
@@ -77,7 +79,6 @@ signing {
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign publishing.publications.mavenJava
 }
-
 
 javadoc {
     options.encoding = 'UTF-8'
