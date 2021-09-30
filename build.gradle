@@ -6,6 +6,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id "org.sonarqube" version "3.3"
+    id 'jacoco'
 }
 
 group 'io.github.dunmengjun'
@@ -101,6 +102,17 @@ sonarqube {
     }
 }
 
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+    }
+}
+
 dependencies {
     implementation 'javax.persistence:persistence-api:1.0.2'
     implementation 'org.slf4j:slf4j-api:1.7.32'
@@ -115,8 +127,8 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
     testImplementation 'com.h2database:h2:1.4.200'
 }
