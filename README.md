@@ -51,14 +51,14 @@ hibernate等)集成。(项目还处于早期阶段，测试可以，请不要用
 <dependency>
   <groupId>io.github.dunmengjun</groupId>
   <artifactId>sqldsl</artifactId>
-  <version>1.0.2</version>
+  <version>{latest version}</version>
 </dependency>
 ```
 
 #### Gradle
 
 ```groovy
-implementation 'io.github.dunmengjun:sqldsl:1.0.2'
+implementation 'io.github.dunmengjun:sqldsl:{latest version}'
 ```
 
 #### Spring环境下bean的配置(默认需要依赖javax.persistence,java.sql)
