@@ -164,7 +164,7 @@ List<User> actual=sqlDslService.select(
     new Wrapper<>(User.class)
     .eq(User::getType,1)
     .limit(1)
-    );
+);
 ```
 
 分组查询
@@ -175,7 +175,7 @@ List<User> actual=sqlDslService.select(
     .selectAs(max(User::getAge),User::getAge)
     .groupBy(User::getType)
     .having(w->w.gt(max(User::getAge),17))
-    );
+);
 ```
 
 排序查询
@@ -187,7 +187,7 @@ List<User> actual=sqlDslService.select(
     .groupBy(User::getType)
     .orderBy(User::getType,false)
     .limit(2)
-    );
+);
 ```
 
 #### 2. 多表复杂查询
@@ -204,7 +204,7 @@ DslQueryBuilder queryBuilder=new SelectBuilder()
     .leftJoin(Comment.class,eq(User::getId,Comment::getUserId))
     .where(eq(User::getAge,17));
 
-    List<UserComment> actual=sqlDslService.select(queryBuilder,UserComment.class);
+List<UserComment> actual=sqlDslService.select(queryBuilder,UserComment.class);
 ```
 
 多join查询
@@ -219,20 +219,20 @@ DslQueryBuilder queryBuilder=new SelectBuilder()
     .leftJoin(Satisfaction.class,eq(Comment::getId,Satisfaction::getCommentId))
     .where(eq(Comment::getStatus,1));
 
-    List<CommentRating> actual=sqlDslService.select(queryBuilder,CommentRating.class);
+List<CommentRating> actual=sqlDslService.select(queryBuilder,CommentRating.class);
 ```
 
 自连接查询
 
 ```java
 EntityBuilder selfDept=EntityBuilder.alias(Dept.class);
-    DslQueryBuilder queryBuilder=new SelectBuilder()
+DslQueryBuilder queryBuilder=new SelectBuilder()
     .selectAll(selfDept)
     .from(Dept.class)
     .leftJoin(selfDept,eq(Dept::getParent,selfDept.col(Dept::getId)))
     .where(eq(Dept::getName,"Development Department"));
 
-    List<Dept> actual=sqlDslService.select(queryBuilder,Dept.class);
+List<Dept> actual=sqlDslService.select(queryBuilder,Dept.class);
 ```
 
 form子查询
@@ -243,13 +243,13 @@ DslQueryBuilder queryBuilder=new SelectBuilder()
     .from(User.class)
     .where(lt(User::getAge,17));
 
-    SubQueryBuilder subQuery=SubQueryBuilder.alias(queryBuilder);
-    DslQueryBuilder query=new SelectBuilder()
+SubQueryBuilder subQuery=SubQueryBuilder.alias(queryBuilder);
+DslQueryBuilder query=new SelectBuilder()
     .selectAll(subQuery)
     .from(subQuery)
     .where(eq(subQuery.col(User::getAge),16));
 
-    List<User> actual=sqlDslService.select(query,User.class);
+List<User> actual=sqlDslService.select(query,User.class);
 ```
 
 join子查询
@@ -260,14 +260,14 @@ DslQueryBuilder queryBuilder=new SelectBuilder()
     .from(User.class)
     .where(lt(User::getAge,17));
 
-    SubQueryBuilder subQuery=SubQueryBuilder.alias(queryBuilder);
-    DslQueryBuilder query=new SelectBuilder()
+SubQueryBuilder subQuery=SubQueryBuilder.alias(queryBuilder);
+DslQueryBuilder query=new SelectBuilder()
     .selectAll(subQuery)
     .from(User.class)
     .leftJoin(subQuery,eq(subQuery.col(User::getId),User::getId))
     .where(eq(subQuery.col(User::getAge),16));
 
-    List<User> actual=sqlDslService.select(query,User.class);
+List<User> actual=sqlDslService.select(query,User.class);
 ```
 
 #### 插入和更新
@@ -277,7 +277,7 @@ DslQueryBuilder queryBuilder=new SelectBuilder()
 ```java
 TypeUser entity=new TypeUser("alice",16,1);
 
-    sqlDslService.save(entity);
+sqlDslService.save(entity);
 ```
 
 更新
@@ -285,7 +285,7 @@ TypeUser entity=new TypeUser("alice",16,1);
 ```java
 TypeUser entity=new TypeUser(1,"b bb",16,1);
 
-    sqlDslService.save(entity);
+sqlDslService.save(entity);
 ```
 
 插入和更新的区别只在于有没有ID
@@ -297,9 +297,9 @@ List<TypeUser> typeUsers=Arrays.asList(
     new TypeUser(1,null,16,1),
     new TypeUser("bob",16,1),
     new TypeUser("tom",18,2)
-    );
+);
 
-    sqlDslService.save(typeUsers);
+sqlDslService.save(typeUsers);
 ```
 
 批量操作会自动判断是更新还是删除(底层会把它们分开并生成更新或者插入的jdbc批量操作)
