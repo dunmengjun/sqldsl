@@ -154,7 +154,7 @@ Page<User> actual = sqlDslService.select(request, User.class);
 List<User> actual=sqlDslService.select(
     new Wrapper<>(User.class)
     .eq(User::getType,1)
-    );
+);
 ```
 
 limit查询
