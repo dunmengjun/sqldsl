@@ -134,7 +134,6 @@ public class WrapperTest extends ServiceSelectTest {
 
   @Test
   public void should_distinct_the_same_order_by_when_select_given_multiple_order_by() {
-    // TODO: 2021/9/24 需要转换为语句生成测试
     List<TypeUser> actual = service.select(
         new Wrapper<>(TypeUser.class)
             .selectAs(max(TypeUser::getAge), TypeUser::getAge)
