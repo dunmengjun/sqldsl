@@ -11,7 +11,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ReflectionUtils {
 
   @SuppressWarnings("unchecked")

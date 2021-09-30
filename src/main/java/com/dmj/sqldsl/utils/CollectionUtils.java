@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class CollectionUtils {
 
   public static <T, E> boolean hasDuplicateIn(Collection<T> collection, Function<T, E> function) {

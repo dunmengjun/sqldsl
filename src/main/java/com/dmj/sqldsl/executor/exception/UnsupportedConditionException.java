@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class UnsupportedConditionException extends RuntimeException {
 
-  private final ConditionElement element;
+  private final transient ConditionElement element;
 
   public UnsupportedConditionException(ConditionElement element) {
     super("Unsupported condition: " + element);

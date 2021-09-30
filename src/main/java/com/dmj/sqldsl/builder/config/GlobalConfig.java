@@ -3,7 +3,9 @@ package com.dmj.sqldsl.builder.config;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class GlobalConfig {
 
   private static EntityConfig entityConfig = EntityConfig.builder()

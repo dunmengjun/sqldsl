@@ -1,5 +1,8 @@
 package com.dmj.sqldsl.utils;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class StringUtils {
 
   public static boolean isBlank(String value) {
@@ -28,7 +31,8 @@ public class StringUtils {
     StringBuilder builder = new StringBuilder();
     for (int i = 0, l = charArray.length; i < l; i++) {
       if (charArray[i] >= 65 && charArray[i] <= 90) {
-        builder.append("_").append(charArray[i] += 32);
+        charArray[i] += 32;
+        builder.append("_").append(charArray[i]);
       } else {
         builder.append(charArray[i]);
       }

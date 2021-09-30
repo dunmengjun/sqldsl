@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class LikeValue {
 
-  private String likeValue;
+  private String value;
 
   public static LikeValue startWith(String prefix) {
     assertNotEmpty(prefix, "The like prefix shouldn't be empty");
@@ -25,6 +25,6 @@ public class LikeValue {
   }
 
   public String build() {
-    return likeValue;
+    return value;
   }
 }

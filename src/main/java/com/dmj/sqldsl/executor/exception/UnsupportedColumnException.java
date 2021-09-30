@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class UnsupportedColumnException extends RuntimeException {
 
-  private final Column column;
+  private final transient Column column;
 
   public UnsupportedColumnException(Column column) {
     super("Unsupported column: " + column);

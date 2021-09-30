@@ -185,7 +185,7 @@ public class Wrapper<T> {
   }
 
   public Wrapper<T> ge(ColumnBuilder<T, Number> columnBuilder, Number value) {
-    this.conditionsBuilder.ne(columnBuilder, value);
+    this.conditionsBuilder.ge(columnBuilder, value);
     return this;
   }
 

@@ -8,11 +8,12 @@ import com.dmj.sqldsl.model.condition.ConditionMethod;
 
 public class ConditionBuilder implements ConditionElementBuilder {
 
-  private final ColumnBuilder left;
+  private final ColumnBuilder<?, ?> left;
   private final ConditionMethod method;
-  private final ColumnBuilder right;
+  private final ColumnBuilder<?, ?> right;
 
-  public ConditionBuilder(ColumnBuilder left, ConditionMethod method, ColumnBuilder right) {
+  public ConditionBuilder(ColumnBuilder<?, ?> left, ConditionMethod method,
+      ColumnBuilder<?, ?> right) {
     this.left = left;
     this.method = method;
     this.right = right;

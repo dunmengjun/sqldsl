@@ -7,7 +7,9 @@ import com.dmj.sqldsl.builder.column.type.ColumnLambda;
 import com.dmj.sqldsl.model.column.Function;
 import java.util.Arrays;
 import java.util.List;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ColumnBuilders {
 
   public static <T, R> ColumnBuilder<T, R> all() {

@@ -1,7 +1,9 @@
 package com.dmj.sqldsl.utils;
 
 import java.util.Date;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class AssertUtils {
 
   public static boolean isBaseClass(Class<?> targetClass) {

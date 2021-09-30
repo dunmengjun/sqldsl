@@ -26,7 +26,9 @@ import com.dmj.sqldsl.builder.column.type.NumberLambda;
 import com.dmj.sqldsl.builder.column.type.StringLambda;
 import com.dmj.sqldsl.model.condition.ConditionMethod;
 import java.util.Collection;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ConditionBuilders {
 
   public static <T> ConditionsBuilder eq(StringLambda<T> lambda, String value) {

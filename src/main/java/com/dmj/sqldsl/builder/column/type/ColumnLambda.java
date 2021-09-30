@@ -5,6 +5,7 @@ import static com.dmj.sqldsl.utils.ReflectionUtils.invokeMethod;
 
 import com.dmj.sqldsl.builder.column.ColumnBuilder;
 import com.dmj.sqldsl.builder.column.LambdaColumnBuilder;
+import com.dmj.sqldsl.builder.exception.UnknownException;
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.util.regex.Matcher;
@@ -30,6 +31,6 @@ public interface ColumnLambda<T, R> extends Serializable {
       group = group.replace("/", ".");
       return new LambdaType(forName(group), lambda.getImplMethodName());
     }
-    throw new RuntimeException("unknown error");
+    throw new UnknownException();
   }
 }

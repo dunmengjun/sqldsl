@@ -2,7 +2,9 @@ package com.dmj.sqldsl.executor.visitor;
 
 import com.dmj.sqldsl.executor.SqlDialect;
 import com.dmj.sqldsl.executor.exception.UnsupportedSqlDialectException;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ModelVisitorFactory {
 
   public static ModelVisitor getModeVisitor(SqlDialect dialect) {

@@ -372,7 +372,7 @@ public class ConditionsBuilder implements ConditionElementBuilder {
     return addConditionBuilder(left, lt, right);
   }
 
-  public <T, O> ConditionsBuilder lt(DateLambda<T> left, Date right) {
+  public <T> ConditionsBuilder lt(DateLambda<T> left, Date right) {
     return addConditionBuilder(left, lt, right);
   }
 
