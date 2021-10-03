@@ -34,7 +34,11 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-      - name: Build and analyze
+      - name: Build And Unit Test
+        run: ./gradlew build
+      - name: IntegrationTest
+        run: ./gradlew integrationTest
+      - name: Sonarqube Analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
