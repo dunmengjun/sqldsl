@@ -103,12 +103,8 @@ sonarqube {
     }
 }
 
-test {
-    finalizedBy jacocoTestReport
-}
-
 jacocoTestReport {
-    dependsOn test
+    getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
     reports {
         xml.required = true
     }
@@ -140,8 +136,6 @@ tasks.register('integrationTest', Test) {
 
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
-
-    useJUnitPlatform()
 }
 
 def testContainersVersion = '1.16.0'
@@ -187,6 +181,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+integrationTest {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 checkstyle {
