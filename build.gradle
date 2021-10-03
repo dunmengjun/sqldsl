@@ -102,6 +102,8 @@ sonarqube {
         property "sonar.coverage.exclusions", "**/exception/**"
         property "sonar.sources", "./src/main"
         property "sonar.tests", "./src/test,./src/integrationTest"
+        property "sonar.junit.reportPaths",
+                "$buildDir/test-results/test,$buildDir/test-results/integrationTest"
     }
 }
 
