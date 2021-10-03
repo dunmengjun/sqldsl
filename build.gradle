@@ -100,6 +100,8 @@ sonarqube {
         property "sonar.organization", "dunmengjun"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.exclusions", "**/exception/**"
+        property "sonar.sources", "./src/main"
+        property "sonar.tests", "./src/test,./src/integrationTest"
     }
 }
 
