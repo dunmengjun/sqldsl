@@ -1,5 +1,5 @@
 # Sqldsl
-[![Sonarqube-check](https://github.com/dunmengjun/sqldsl/actions/workflows/sonarqube-check.yml/badge.svg)](https://github.com/dunmengjun/sqldsl/actions/workflows/sonarqube-check.yml)&nbsp;&nbsp;&nbsp;[![Publish Package](https://github.com/dunmengjun/sqldsl/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/dunmengjun/sqldsl/actions/workflows/gradle-publish.yml)
+[![Sonarqube-check](https://github.com/dunmengjun/sqldsl/actions/workflows/sonarqube-check.yml/badge.svg)](https://github.com/dunmengjun/sqldsl/actions/workflows/sonarqube-check.yml)&nbsp;&nbsp;&nbsp;[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dunmengjun_sqldsl&metric=alert_status)](https://sonarcloud.io/dashboard?id=dunmengjun_sqldsl)&nbsp;&nbsp;&nbsp;[![Publish Package](https://github.com/dunmengjun/sqldsl/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/dunmengjun/sqldsl/actions/workflows/gradle-publish.yml)
 
 基于jdbc实现的sql dsl，类似Querydsl, 但不需要插件就可提供类型安全的查询(基于SerializedLambda)。可以很方便的和各种类型的库(比如mybatis,
 hibernate等)集成。(项目还处于早期阶段，测试可以，请不要用于生产环境)
