@@ -35,11 +35,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Build And Unit Test
-        run: ./gradlew build
+        run: ./gradlew build --info
       - name: IntegrationTest
-        run: ./gradlew integrationTest
+        run: ./gradlew integrationTest --info
       - name: Sonarqube Analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonarqube --info
+        run: ./gradlew sonarqube --info
