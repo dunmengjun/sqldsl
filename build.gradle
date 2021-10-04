@@ -169,9 +169,16 @@ dependencies {
     //integrationTest deps
     integrationTestImplementation "org.testcontainers:junit-jupiter:$testContainersVersion"
     integrationTestImplementation "org.testcontainers:testcontainers:$testContainersVersion"
+
     integrationTestImplementation "org.testcontainers:mysql:$testContainersVersion"
-    integrationTestImplementation "mysql:mysql-connector-java:8.0.26"
     integrationTestImplementation "org.testcontainers:postgresql:$testContainersVersion"
+    integrationTestImplementation "org.testcontainers:oracle-xe:$testContainersVersion"
+    integrationTestImplementation "org.testcontainers:mssqlserver:$testContainersVersion"
+
+    integrationTestImplementation "mysql:mysql-connector-java:8.0.26"
+    integrationTestImplementation "com.oracle.database.jdbc:ojdbc8:21.1.0.0"
+    integrationTestImplementation "com.microsoft.sqlserver:mssql-jdbc:9.4.0.jre8"
+
 
     integrationTestImplementation "ch.qos.logback:logback-core:$logbackVersion"
     integrationTestImplementation "ch.qos.logback:logback-classic:$logbackVersion"

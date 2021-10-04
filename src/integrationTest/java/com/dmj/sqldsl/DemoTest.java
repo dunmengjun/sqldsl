@@ -1,31 +1,37 @@
 package com.dmj.sqldsl;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import java.util.Arrays;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
-public class DemoTest {
+@Slf4j
+class DemoTest {
 
-  @Container
-  private static final MySQLContainer<?> MY_SQL_CONTAINER =
-      new MySQLContainer<>("mysql:5.7.34");
-
-  @Container
-  private final PostgreSQLContainer<?> postgresqlContainer =
-      new PostgreSQLContainer<>("postgres:9.6.12")
-          .withDatabaseName("foo")
-          .withUsername("foo")
-          .withPassword("secret");
+  private static final List<JdbcDatabaseContainer<?>> containers = Arrays.asList(
+      new MySQLContainer<>("mysql:5.7.34"),
+      new PostgreSQLContainer<>("postgres:9.6.12"),
+      new OracleContainer("oracleinanutshell/oracle-xe-11g"),
+      new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-latest")
+          .acceptLicense()
+  );
 
   @Test
   void test() {
-    assertTrue(MY_SQL_CONTAINER.isRunning());
-    assertTrue(postgresqlContainer.isRunning());
+    for (JdbcDatabaseContainer<?> container : containers) {
+      container.start();
+      log.info("==========================");
+      log.info("Driver Class: {}", container.getDriverClassName());
+      log.info("Username: {}", container.getUsername());
+      log.info("Password: {}", container.getPassword());
+      log.info("Url: {}", container.getJdbcUrl());
+      container.stop();
+      container.close();
+    }
   }
-
 }
