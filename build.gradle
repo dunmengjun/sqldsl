@@ -179,6 +179,7 @@ dependencies {
     integrationTestImplementation "com.oracle.database.jdbc:ojdbc8:21.1.0.0"
     integrationTestImplementation "com.microsoft.sqlserver:mssql-jdbc:9.4.0.jre8"
 
+
     integrationTestImplementation "ch.qos.logback:logback-core:$logbackVersion"
     integrationTestImplementation "ch.qos.logback:logback-classic:$logbackVersion"
 

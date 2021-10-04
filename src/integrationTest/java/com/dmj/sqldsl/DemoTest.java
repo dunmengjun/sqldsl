@@ -16,7 +16,7 @@ class DemoTest {
   private static final List<JdbcDatabaseContainer<?>> containers = Arrays.asList(
       new MySQLContainer<>("mysql:5.7.34"),
       new PostgreSQLContainer<>("postgres:9.6.12"),
-      new OracleContainer("epiclabs/docker-oracle-xe-11g"),
+      new OracleContainer("oracleinanutshell/oracle-xe-11g"),
       new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-latest")
           .acceptLicense()
   );
