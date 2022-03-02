@@ -10,5 +10,5 @@ public interface Executor {
 
   int save(Entity entity);
 
-  int save(List<Entity> entities);
+  BatchResult save(List<Entity> entities);
 }

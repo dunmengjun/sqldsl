@@ -8,6 +8,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.dmj.sqldsl.builder.DslQueryBuilder;
 import com.dmj.sqldsl.builder.SelectBuilder;
+import com.dmj.sqldsl.executor.BatchResult;
 import com.dmj.sqldsl.executor.SqlDslExecutor;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Entity;
@@ -65,7 +66,7 @@ public class SqlDslService {
     return executor.save(getEntityConfig().getTableEntity(entity));
   }
 
-  public <T> int save(List<T> entities) {
+  public <T> BatchResult save(List<T> entities) {
     List<Entity> entityList = entities.stream()
         .map(e -> getEntityConfig().getTableEntity(e))
         .collect(toList());

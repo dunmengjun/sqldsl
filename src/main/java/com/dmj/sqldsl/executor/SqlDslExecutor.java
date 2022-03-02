@@ -17,8 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,7 +56,7 @@ public class SqlDslExecutor implements Executor {
   }
 
   @Override
-  public int save(List<Entity> entities) {
+  public BatchResult save(List<Entity> entities) {
     try {
       return saveList(entities);
     } catch (SQLException e) {
@@ -78,43 +79,53 @@ public class SqlDslExecutor implements Executor {
     }
   }
 
-  private int saveList(List<Entity> entities) throws SQLException {
-    List<Entity> insertList = new ArrayList<>(entities.size());
-    List<Entity> updateList = new ArrayList<>(entities.size());
-    entities.forEach(entity -> {
-      if (entity.hasId()) {
-        updateList.add(entity);
-      } else {
-        insertList.add(entity);
-      }
-    });
-    return executeBatch(insertList) + executeBatch(updateList);
+  @AllArgsConstructor
+  @Getter
+  static class IndexEntity {
+
+    private Entity entity;
+    private int index;
   }
 
-  private int executeBatch(List<Entity> entities) throws SQLException {
-    if (entities.isEmpty()) {
-      return 0;
+  private BatchResult saveList(List<Entity> entities) throws SQLException {
+    List<IndexEntity> insertList = new ArrayList<>(entities.size());
+    List<IndexEntity> updateList = new ArrayList<>(entities.size());
+    for (int i = 0; i < entities.size(); i++) {
+      Entity entity = entities.get(i);
+      if (entity.hasId()) {
+        updateList.add(new IndexEntity(entity, i));
+      } else {
+        insertList.add(new IndexEntity(entity, i));
+      }
     }
-    Entity entity = entities.get(0);
+    return executeBatch(insertList).add(executeBatch(updateList));
+  }
+
+  private BatchResult executeBatch(List<IndexEntity> indexEntities) throws SQLException {
+    if (indexEntities.isEmpty()) {
+      return BatchResult.empty();
+    }
+    Entity entity = indexEntities.get(0).getEntity();
     TableEntityVisitor visitor = new TableEntityVisitor();
     String sql = visitor.visit(entity);
     log.debug("=========================");
     log.debug("==> {}", sql);
     try (Connection connection = manager.getConnection()) {
       try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        for (Entity e : entities) {
+        List<Integer> indexList = new ArrayList<>(indexEntities.size());
+        for (IndexEntity e : indexEntities) {
+          indexList.add(e.getIndex());
           TableEntityVisitor v = new TableEntityVisitor();
-          v.visit(e);
+          v.visit(e.getEntity());
           log.debug("==> {}", v.getParams().toString());
           setParameter(statement, v.getParams());
           statement.addBatch();
         }
-        int sum = Arrays.stream(statement.executeBatch())
-            .filter(i -> i > 0)
-            .sum();
-        log.debug("<== {}", sum);
+        int[] array = statement.executeBatch();
+        BatchResult saveResult = BatchResult.create(indexList, array);
+        log.debug("<== {}", saveResult.getAffectedRows());
         log.debug("=========================");
-        return sum;
+        return saveResult;
       }
     }
   }

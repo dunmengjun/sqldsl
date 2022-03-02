@@ -4,6 +4,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.entity.TypeUser;
+import com.dmj.sqldsl.executor.BatchResult;
 import com.dmj.sqldsl.service.support.ServiceSaveTest;
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +62,7 @@ public class SaveDataTest extends ServiceSaveTest {
         new TypeUser("tom", 18, 2)
     );
 
-    service.save(typeUsers);
+    BatchResult actualResult = service.save(typeUsers);
     List<TypeUser> actual = service.select(
         new Wrapper<>(TypeUser.class)
             .in(TypeUser::getId, 1, 2, 3)
@@ -73,5 +74,10 @@ public class SaveDataTest extends ServiceSaveTest {
         new TypeUser(3, "tom", 18, 2)
     );
     assertEquals(expected, actual);
+    BatchResult expectedResult = BatchResult.create(
+        Arrays.asList(0, 1, 2),
+        new int[]{1, 1, 1}
+    );
+    assertEquals(expectedResult, actualResult);
   }
 }
