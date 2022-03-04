@@ -3,6 +3,7 @@ package com.dmj.sqldsl.executor;
 import static com.dmj.sqldsl.executor.visitor.ModelVisitorFactory.getModeVisitor;
 import static com.dmj.sqldsl.utils.ReflectionUtils.newInstance;
 import static com.dmj.sqldsl.utils.ReflectionUtils.recursiveSetValue;
+import static java.util.stream.Collectors.toMap;
 
 import com.dmj.sqldsl.executor.exception.ExecutionException;
 import com.dmj.sqldsl.executor.visitor.ModelVisitor;
@@ -10,6 +11,7 @@ import com.dmj.sqldsl.executor.visitor.Parameter;
 import com.dmj.sqldsl.executor.visitor.TableEntityVisitor;
 import com.dmj.sqldsl.model.DslQuery;
 import com.dmj.sqldsl.model.Entity;
+import com.dmj.sqldsl.model.ModifiedFlag;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.utils.AssertUtils;
 import java.sql.Connection;
@@ -18,6 +20,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -57,11 +62,7 @@ public class SqlDslExecutor implements Executor {
 
   @Override
   public BatchResult save(List<Entity> entities) {
-    try {
-      return saveList(entities);
-    } catch (SQLException e) {
-      throw new ExecutionException(e);
-    }
+    return saveList(entities);
   }
 
   private int saveOne(Entity entity) throws SQLException {
@@ -87,18 +88,47 @@ public class SqlDslExecutor implements Executor {
     private int index;
   }
 
-  private BatchResult saveList(List<Entity> entities) throws SQLException {
-    List<IndexEntity> insertList = new ArrayList<>(entities.size());
-    List<IndexEntity> updateList = new ArrayList<>(entities.size());
+  private BatchResult saveList(List<Entity> entities) {
+    List<IndexEntity> indexEntities = new ArrayList<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
-      Entity entity = entities.get(i);
-      if (entity.hasId()) {
-        updateList.add(new IndexEntity(entity, i));
-      } else {
-        insertList.add(new IndexEntity(entity, i));
-      }
+      indexEntities.add(new IndexEntity(entities.get(i), i));
     }
-    return executeBatch(insertList).add(executeBatch(updateList));
+    Map<Integer, List<IndexEntity>> entityListMap = indexEntities.stream()
+        .collect(toListMap(indexEntity -> indexEntity.getEntity().hashCode()));
+    return entityListMap.values().stream().map(entityList -> {
+          List<IndexEntity> insertList = new ArrayList<>(entityList.size());
+          List<IndexEntity> updateList = new ArrayList<>(entityList.size());
+          for (IndexEntity entity : entityList) {
+            ModifiedFlag modifiedFlag = entity.getEntity().getModifiedFlag();
+            if (ModifiedFlag.UPDATE == modifiedFlag) {
+              updateList.add(entity);
+            } else if (ModifiedFlag.INSERT == modifiedFlag) {
+              insertList.add(entity);
+            }
+          }
+          return tryExecuteBatch(insertList).add(tryExecuteBatch(updateList));
+        })
+        .reduce(BatchResult::add)
+        .orElseThrow(() -> new ExecutionException("no batch result return!"));
+  }
+
+  private <T, K> Collector<T, ?, Map<K, List<T>>> toListMap(Function<T, K> function) {
+    return toMap(function, l -> {
+      List<T> list = new ArrayList<>();
+      list.add(l);
+      return list;
+    }, (oldList, newList) -> {
+      oldList.addAll(newList);
+      return oldList;
+    });
+  }
+
+  private BatchResult tryExecuteBatch(List<IndexEntity> indexEntities) {
+    try {
+      return executeBatch(indexEntities);
+    } catch (SQLException e) {
+      throw new ExecutionException(e);
+    }
   }
 
   private BatchResult executeBatch(List<IndexEntity> indexEntities) throws SQLException {

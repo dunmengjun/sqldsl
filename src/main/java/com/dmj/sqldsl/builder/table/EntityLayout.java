@@ -1,15 +1,21 @@
 package com.dmj.sqldsl.builder.table;
 
+import static com.dmj.sqldsl.builder.config.GlobalConfig.getEntityConfig;
 import static com.dmj.sqldsl.utils.ReflectionUtils.getValue;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
+import com.dmj.sqldsl.builder.column.type.ColumnLambda;
+import com.dmj.sqldsl.builder.exception.NoIdColumnException;
 import com.dmj.sqldsl.model.Entity;
+import com.dmj.sqldsl.model.ModifiedFlag;
 import com.dmj.sqldsl.model.column.Column;
 import com.dmj.sqldsl.model.column.SimpleColumn;
 import com.dmj.sqldsl.model.column.ValueColumn;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -49,13 +55,50 @@ public class EntityLayout {
 
   public Entity createEntity(Object entity) {
     ValueColumn valueId = null;
+    ModifiedFlag flag = ModifiedFlag.UPDATE;
+    List<String> forceUpdatedColumns = emptyList();
     if (id != null) {
       valueId = id.createValueColumn(entity);
+      if (entity instanceof Modified) {
+        Modified modified = (Modified) entity;
+        flag = modified.getModifiedFlag() == null ?
+            ModifiedFlag.UPDATE : modified.getModifiedFlag();
+        if (valueId.isNullValue()) {
+          flag = ModifiedFlag.INSERT;
+        }
+        if (flag == ModifiedFlag.UPDATE) {
+          List<ColumnLambda<?, ?>> columnLambdas = modified.getForceUpdatedColumns();
+          if (columnLambdas != null) {
+            forceUpdatedColumns = columnLambdas.stream()
+                .map(ColumnLambda::getLambdaType)
+                .map(type -> getEntityConfig().translateLambda(type))
+                .collect(Collectors.toList());
+          }
+        }
+      } else {
+        if (valueId.isNullValue()) {
+          flag = ModifiedFlag.INSERT;
+        }
+      }
+    } else {
+      if (entity instanceof Modified) {
+        Modified modified = (Modified) entity;
+        flag = modified.getModifiedFlag() == null ?
+            ModifiedFlag.UPDATE : modified.getModifiedFlag();
+        if (flag != ModifiedFlag.INSERT) {
+          throw new NoIdColumnException();
+        }
+      } else {
+        flag = ModifiedFlag.INSERT;
+      }
     }
+    List<String> finalForceUpdatedColumns = forceUpdatedColumns;
     List<ValueColumn> valueColumns = columns.stream()
         .map(entityField -> entityField.createValueColumn(entity))
+        .filter(valueColumn -> finalForceUpdatedColumns.contains(valueColumn.getFieldName())
+            || !valueColumn.isNullValue())
         .collect(toList());
-    return new Entity(tableName, valueId, valueColumns);
+    return new Entity(tableName, valueId, valueColumns, flag);
   }
 
   public List<Column> getAllColumns() {

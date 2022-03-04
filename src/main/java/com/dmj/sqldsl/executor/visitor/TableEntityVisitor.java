@@ -2,6 +2,7 @@ package com.dmj.sqldsl.executor.visitor;
 
 import static java.util.stream.Collectors.joining;
 
+import com.dmj.sqldsl.executor.exception.ExecutionException;
 import com.dmj.sqldsl.model.Entity;
 import com.dmj.sqldsl.model.column.ValueColumn;
 import java.util.ArrayList;
@@ -18,10 +19,14 @@ public class TableEntityVisitor {
   }
 
   public String visit(Entity entity) {
-    if (!entity.hasId()) {
-      return visitInsert(entity);
+    switch (entity.getModifiedFlag()) {
+      case INSERT:
+        return visitInsert(entity);
+      case UPDATE:
+        return visitUpdate(entity);
+      default:
+        throw new ExecutionException("Unsupported modified flag");
     }
-    return visitUpdate(entity);
   }
 
   private String visitUpdate(Entity entity) {
@@ -37,10 +42,14 @@ public class TableEntityVisitor {
 
   private String visitInsert(Entity entity) {
     String tableName = entity.getTableName();
-    String columns = entity.getColumns().stream()
+    List<ValueColumn> valueColumns = new ArrayList<>(entity.getColumns());
+    if (!entity.getId().isNullValue()) {
+      valueColumns.add(entity.getId());
+    }
+    String columns = valueColumns.stream()
         .map(ValueColumn::getColumnName)
         .collect(joining(","));
-    String values = entity.getColumns().stream()
+    String values = valueColumns.stream()
         .map(column -> {
           params.add(new Parameter(column.getValue()));
           return "?";

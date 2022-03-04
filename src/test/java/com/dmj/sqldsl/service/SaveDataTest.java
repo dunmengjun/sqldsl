@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dmj.sqldsl.entity.TypeUser;
 import com.dmj.sqldsl.executor.BatchResult;
+import com.dmj.sqldsl.model.ModifiedFlag;
 import com.dmj.sqldsl.service.support.ServiceSaveTest;
 import java.util.Arrays;
 import java.util.List;
@@ -50,30 +51,26 @@ public class SaveDataTest extends ServiceSaveTest {
             .eq(TypeUser::getId, 1)
     );
 
-    List<TypeUser> expected = singletonList(new TypeUser(1, null, 16, 1));
+    List<TypeUser> expected = singletonList(new TypeUser(1, "bob", 16, 1));
     assertEquals(expected, actual);
   }
 
   @Test
   public void should_update_insert_when_save_batch_given_list_entities() {
+    TypeUser typeUser = new TypeUser(1, null, 16, 1);
+    typeUser.setForceUpdatedColumns(TypeUser::getName);
+    TypeUser bob = new TypeUser(5, "bob", 16, 1);
+    bob.setModifiedFlag(ModifiedFlag.INSERT);
     List<TypeUser> typeUsers = Arrays.asList(
-        new TypeUser(1, null, 16, 1),
-        new TypeUser("bob", 16, 1),
+        typeUser,
+        bob,
         new TypeUser("tom", 18, 2)
     );
 
     BatchResult actualResult = service.save(typeUsers);
-    List<TypeUser> actual = service.select(
-        new Wrapper<>(TypeUser.class)
-            .in(TypeUser::getId, 1, 2, 3)
-    );
+    List<TypeUser> actual = service.select(TypeUser.class);
 
-    List<TypeUser> expected = Arrays.asList(
-        new TypeUser(1, null, 16, 1),
-        new TypeUser(2, "bob", 16, 1),
-        new TypeUser(3, "tom", 18, 2)
-    );
-    assertEquals(expected, actual);
+    assertEquals(3, actual.size());
     BatchResult expectedResult = BatchResult.create(
         Arrays.asList(0, 1, 2),
         new int[]{1, 1, 1}

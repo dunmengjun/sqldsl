@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class BatchResult {
 
-  private Map<Integer, Integer> resultMap;
+  private Map<Integer, Integer> resultMap = new HashMap<>(0);
   private int successful;
   private int failed;
   private int affectedRows;

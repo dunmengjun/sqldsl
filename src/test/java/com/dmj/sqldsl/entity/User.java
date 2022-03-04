@@ -5,8 +5,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class User {
 
   @Id
+  @Exclude
   private Integer id;
 
   @Column
