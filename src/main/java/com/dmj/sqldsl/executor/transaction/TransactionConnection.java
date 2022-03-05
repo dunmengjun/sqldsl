@@ -66,7 +66,11 @@ public class TransactionConnection implements Connection {
   }
 
   @Override
-  public void close() {
+  public void close() throws SQLException {
+  }
+
+  public void destroy() throws SQLException {
+    connection.close();
   }
 
   @Override

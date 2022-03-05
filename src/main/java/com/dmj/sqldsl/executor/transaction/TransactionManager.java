@@ -1,76 +1,114 @@
 package com.dmj.sqldsl.executor.transaction;
 
 
-import static com.dmj.sqldsl.executor.transaction.TransactionAttributes.defaultAttribute;
-
 import com.dmj.sqldsl.executor.ConnectionManager;
 import com.dmj.sqldsl.executor.exception.ExecutionException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class TransactionManager {
 
-  private TransactionAttributes transactionAttributes;
-
   private ConnectionManager connectionManager;
 
-  public TransactionManager(ConnectionManager connectionManager) {
-    this.transactionAttributes = defaultAttribute();
-    this.connectionManager = connectionManager;
-  }
+  protected static final ThreadLocal<Map<Object, Transaction>>
+      transactionMapThreadLocal = ThreadLocal.withInitial(HashMap::new);
+  protected static final ThreadLocal<Stack<Transaction>>
+      stackThreadLocal = ThreadLocal.withInitial(Stack::new);
 
-  protected static final ThreadLocal<Stack<Connection>> connectionThreadLocal;
-
-  static {
-    connectionThreadLocal = new InheritableThreadLocal<>();
-    connectionThreadLocal.set(new Stack<>());
-  }
-
-  public void doTransaction(Consumer<TransactionStatus> consumer) {
-    Connection connection = getConnection(this::getTransactionConnection);
-    TransactionStatus transactionStatus = new TransactionStatus(connection);
-    try {
-      consumer.accept(transactionStatus);
-    } finally {
-      releaseConnection();
+  public TransactionStatus getTransaction(TransactionDefinition definition) {
+    Map<Object, Transaction> transactionMap = transactionMapThreadLocal.get();
+    Stack<Transaction> stack = stackThreadLocal.get();
+    if (transactionMap.isEmpty()) {
+      TransactionConnection connection = getTransactionConnection(definition);
+      DefaultTransactionStatus status = new DefaultTransactionStatus(true);
+      Transaction transaction = Transaction.create(status, connection);
+      transactionMap.put(status, transaction);
+      stack.push(transaction);
+      return status;
     }
-  }
-
-  private Connection getConnection(Supplier<Connection> getRealConn) {
-    Stack<Connection> connectionStack = connectionThreadLocal.get();
-    Propagation propagation = transactionAttributes.getPropagation();
-    if (!connectionStack.isEmpty()
-        && Propagation.INTEGRATE_INTO == propagation) {
-      return connectionStack.peek();
+    Propagation propagation = definition.getPropagation();
+    if (Propagation.ISOLATE == propagation) {
+      TransactionConnection connection = getTransactionConnection(definition);
+      DefaultTransactionStatus status = new DefaultTransactionStatus(true);
+      Transaction transaction = Transaction.create(status, connection);
+      transactionMap.put(status, transaction);
+      stack.push(transaction);
+      return status;
     }
-    Connection connection = getRealConn.get();
-    connectionStack.push(connection);
-    return connection;
+    Transaction transaction = stack.peek();
+    DefaultTransactionStatus intoStatus = new DefaultTransactionStatus(false);
+    transactionMap.put(intoStatus, transaction);
+    transaction.getStatuses().add(intoStatus);
+    return intoStatus;
   }
 
-  private TransactionConnection getTransactionConnection() {
+  public void commit(TransactionStatus status) {
+    if (status.isCompleted()) {
+      throw new TransactionException("Can not commit finished transaction!");
+    }
+    Map<Object, Transaction> transactionMap = transactionMapThreadLocal.get();
+    if (transactionMap.isEmpty()) {
+      throw new TransactionException("No transaction content!");
+    }
+    Transaction transaction = transactionMap.get(status);
+    if (transaction == null) {
+      throw new TransactionException("No transaction found!");
+    }
+    if (!status.isNewTransaction()) {
+      transaction.remove(status);
+      transactionMap.remove(status);
+      return;
+    }
     try {
-      Connection connection = connectionManager.getConnection();
-      connection.setAutoCommit(false);
-      return new TransactionConnection(connection);
+      transaction.commit();
     } catch (SQLException e) {
-      throw new ExecutionException(e);
+      throw new TransactionException(e);
+    } finally {
+      transaction.getStatuses().forEach(transactionMap::remove);
+      Stack<Transaction> stack = stackThreadLocal.get();
+      stack.remove(transaction);
+      transaction.release();
     }
   }
+
+  public void rollback(TransactionStatus status) {
+    if (status.isCompleted()) {
+      throw new TransactionException("Can not rollback finished transaction!");
+    }
+    Map<Object, Transaction> transactionMap = transactionMapThreadLocal.get();
+    if (transactionMap.isEmpty()) {
+      throw new TransactionException("No transaction content!");
+    }
+    Transaction transaction = transactionMap.get(status);
+    if (transaction == null) {
+      throw new TransactionException("No transaction found!");
+    }
+    try {
+      transaction.rollback();
+    } catch (SQLException e) {
+      throw new TransactionException(e);
+    } finally {
+      transaction.getStatuses().forEach(transactionMap::remove);
+      Stack<Transaction> stack = stackThreadLocal.get();
+      stack.remove(transaction);
+      transaction.release();
+    }
+  }
+
 
   @SuppressWarnings("MagicConstant")
-  private void releaseConnection() {
-    Connection connection = connectionThreadLocal.get().pop();
+  private TransactionConnection getTransactionConnection(TransactionDefinition definition) {
     try {
-      connection.setAutoCommit(true);
-      int level = transactionAttributes.getIsolation().getLevel();
+      Connection connection = connectionManager.getConnection();
+      int level = definition.getIsolation().getLevel();
       connection.setTransactionIsolation(level);
-      connection.close();
+      connection.setAutoCommit(false);
+      return new TransactionConnection(connection);
     } catch (SQLException e) {
       throw new ExecutionException(e);
     }
