@@ -273,6 +273,10 @@ List<User> actual=sqlDslService.select(query,User.class);
 
 #### 插入和更新
 
+默认: null字段不更新和插入,有ID是更新,无ID是插入。
+可以定制化对每一个对象设置是更新还是插入, 还有强制更新插入的字段
+详情请看 单元测试SaveDataTest
+
 插入
 
 ```java
@@ -303,6 +307,8 @@ List<TypeUser> typeUsers=Arrays.asList(
 sqlDslService.save(typeUsers);
 ```
 
-批量操作会自动判断是更新还是删除(底层会把它们分开并生成更新或者插入的jdbc批量操作)
+批量操作会自动判断是更新还是插入(底层会把它们分开并生成更新或者插入的jdbc批量操作)
+
+新增 事务管理 详情请看 单元测试TransactionTest
 
 还有很多的案例就不写在这儿了，需要详细的使用介绍，可以直接浏览单元测试，里面分得很细也很全，代码也很好阅读。
